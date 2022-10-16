@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <title>WebMUD - Server</title>
+
+    <link rel="stylesheet" href="/theme.css" />
+    <link rel="stylesheet" href="/main.css" />
+    <link rel="stylesheet" href="main.css" />
+
+    <script defer="defer" src="/server/main.bundle.js"></script>
+  </head>
+  <body>
+    <h1>WebMUD Server</h1>
+
+    <div class="console">
+      <div class="console-section">
+        Console
+        <span class="float-right">
+          <label for="enable-debug">Debug</label>
+          <input type="checkbox" id="enable-debug" />
+        </span>
+      </div>
+      <div class="console-section log">
+        <div class="text-output" id="console-output"></div>
+      </div>
+      <input
+        class="console-section command"
+        type="text"
+        id="console-input"
+        placeholder=">"
+      />
+    </div>
+  </body>
+</html>

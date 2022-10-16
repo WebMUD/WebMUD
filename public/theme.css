@@ -1,0 +1,11 @@
+:root {
+  --color-main: #fff;
+  --color-main-bg: #000;
+
+  --color-console-border: #888;
+  
+  --color-info: #007bff;
+  --color-success: #28a745;
+  --color-warning: #ffc107;
+  --color-danger: #ee3e4f ;
+}

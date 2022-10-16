@@ -9,7 +9,7 @@ const _frames = {
  * @param obj incoming data, as JSON string or object
  * @returns the frame object matching the data, or false
  */
-function from(obj: any) {
+function parse(obj: any) {
   if (typeof obj === 'string') obj = JSON.parse(obj);
 
   for (const frame of Object.values(_frames)) {
@@ -21,6 +21,6 @@ function from(obj: any) {
 }
 
 export const frames = {
-  from,
+  parse,
   ..._frames,
 };

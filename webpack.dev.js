@@ -12,5 +12,8 @@ module.exports = merge(common, {
       directory: path.join(__dirname, 'public'),
     },
     compress: true,
+    client: {
+      progress: true,
+    },
   },
 });
