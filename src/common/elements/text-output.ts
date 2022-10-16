@@ -1,4 +1,4 @@
-import { createElement } from "../util";
+import { createElement } from '../util';
 
 export type TextField = HTMLElement | Text | string;
 
@@ -62,8 +62,9 @@ export class TextOutput {
   }
 
   protected static textField(text: TextField): HTMLElement {
-    if (typeof text === 'string') return createElement('span', {text});
-    if (text instanceof Text) return createElement('span', {children: [text]});
+    if (typeof text === 'string') return createElement('span', { text });
+    if (text instanceof Text)
+      return createElement('span', { children: [text] });
     return text;
   }
 }

@@ -16,7 +16,7 @@ const el = util.getElements({
   debug: 'enable-debug',
 });
 
-const server = window.server = new Server('my game', {});
+const server = (window.server = new Server('my game', {}));
 
 window.serverView = new ServerView({
   output: el.output,

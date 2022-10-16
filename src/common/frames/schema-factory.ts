@@ -16,7 +16,10 @@ export type SchemaProperties = {
  * @param properties other properties
  * @returns an Ajv schema
  */
-export default function schemaFactory(pattern: string, properties: SchemaProperties) {
+export default function schemaFactory(
+  pattern: string,
+  properties: SchemaProperties
+) {
   return {
     type: 'object',
     properties: {

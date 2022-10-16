@@ -11,21 +11,24 @@ export function getElements(ids: { [name: string]: string }) {
 export function createElement(
   type: string,
   options?: {
-    id?: string,
-    text?: string,
-    classList?: string[],
-    children?: Array<HTMLElement|Text|string>,
+    id?: string;
+    text?: string;
+    classList?: string[];
+    children?: Array<HTMLElement | Text | string>;
     attributes?: {
-      [attribute: string]: string,
-    },
+      [attribute: string]: string;
+    };
   }
 ) {
   const el = document.createElement(type);
-  
+
   if (options) {
     if (options.text) el.appendChild(document.createTextNode(options.text));
-    if (options.classList) for (const item of options.classList) el.classList.add(item);
-    if (options.attributes) for (const [key, value] of Object.entries(options.attributes)) el.setAttribute(key, value);
+    if (options.classList)
+      for (const item of options.classList) el.classList.add(item);
+    if (options.attributes)
+      for (const [key, value] of Object.entries(options.attributes))
+        el.setAttribute(key, value);
     if (options.children) for (const item of options.children) el.append(item);
     if (options.id) el.id = options.id;
   }

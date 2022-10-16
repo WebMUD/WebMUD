@@ -11,7 +11,7 @@ const NUM_CLIENTS = 2;
 
 declare global {
   interface Window {
-    clients: {[name: string]: VirtualClient};
+    clients: { [name: string]: VirtualClient };
   }
 }
 
@@ -25,9 +25,13 @@ let i = 1;
 function createClient() {
   const id = i++;
   const client = new Client();
-  window.clients[`c${id}`] = new VirtualClient(el.clients, `Virtual Client ${id}`, client);
+  window.clients[`c${id}`] = new VirtualClient(
+    el.clients,
+    `Virtual Client ${id}`,
+    client
+  );
 }
 
 el.create.onclick = createClient;
 
-for (let i = 0; i<NUM_CLIENTS; i++) createClient();
+for (let i = 0; i < NUM_CLIENTS; i++) createClient();

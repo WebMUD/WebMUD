@@ -14,8 +14,7 @@ module.exports = {
     extensions: ['.ts', '.js'],
   },
 
-  plugins: [
-  ],
+  plugins: [],
 
   module: {
     rules: [

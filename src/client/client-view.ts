@@ -3,8 +3,8 @@ import { View, ViewOptions } from '../common/view';
 import { Client } from './client';
 
 export type ClientViewOptions = ViewOptions & {
-  client: Client,
-}
+  client: Client;
+};
 
 export class ClientView extends View {
   constructor(options: ClientViewOptions) {

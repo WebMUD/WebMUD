@@ -1,4 +1,4 @@
 {
-    "entryPoints": ["./src/",],
-    "out": "./typedoc/doc"
+  "entryPoints": ["./src/"],
+  "out": "./typedoc/doc"
 }

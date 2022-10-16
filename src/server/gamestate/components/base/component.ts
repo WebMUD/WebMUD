@@ -1,3 +1,3 @@
 export abstract class Component {
-    public free(): void {};
+  public free(): void {}
 }

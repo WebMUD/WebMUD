@@ -16,7 +16,7 @@ const el = util.getElements({
   debug: 'enable-debug',
 });
 
-const client = window.client = new Client();
+const client = (window.client = new Client());
 
 window.client = new ClientView({
   output: el.output,

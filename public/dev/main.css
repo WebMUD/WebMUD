@@ -1,8 +1,8 @@
 .clients {
-    width: 100%;
+  width: 100%;
 }
 
 .clients .console {
-    float: left;
-    margin: 1em;
+  float: left;
+  margin: 1em;
 }

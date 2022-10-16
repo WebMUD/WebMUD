@@ -1,10 +1,10 @@
-import { Component } from "./component";
+import { Component } from './component';
 
 export class DataAttributeBoolean extends Component {
-    public data: boolean;
+  public data: boolean;
 
-    constructor(data: boolean) {
-        super();
-        this.data = data;
-    }
+  constructor(data: boolean) {
+    super();
+    this.data = data;
+  }
 }
