@@ -43,7 +43,7 @@ test('Gamestate#hierarchy', () => {
   expect(gs.getChildrenIDs(rooms.r1)).not.toContain(player);
   expect(gs.getChildrenIDs(rooms.r2)).toContain(player);
 
-  gs.move(props.notebook, player);
+  gs.pickUp(player, props.notebook);
   expect(gs.getChildrenIDs(player)).toContain(props.notebook);
 
   expect(() => gs.pickUp(player, props.desk)).toThrow();
@@ -64,7 +64,7 @@ test('Gamestate#events', () => {
       run = true;
     });
 
-  gs.move(props.notebook, player);
+  gs.pickUp(player, props.notebook);
 
   expect(run).toBe(true);
 });
