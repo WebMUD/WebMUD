@@ -7,6 +7,9 @@ export type ServerViewOptions = ViewOptions & {
   server: Server,
 }
 
+/**
+ * Connects {@link server/server.Server} to the DOM
+ */
 export class ServerView extends View {
   server: Server;
 

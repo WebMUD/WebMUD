@@ -7,7 +7,10 @@
     "lint": "prettier --config prettierrc.json --write .",
     "start": "webpack serve --open /dev --config webpack.dev.js",
     "test": "jest --config=jest.config.js",
-    "build": "webpack --config webpack.prod.js"
+    "build_dev": "webpack --config webpack.dev.js",
+    "build_prod": "webpack --config webpack.prod.js",
+    "build_doc": "typedoc --entryPointStrategy expand --theme hierarchy",
+    "build": "npm run build_doc && npm run build_prod"
   },
   "repository": {
     "type": "git",
@@ -29,6 +32,8 @@
     "prettier": "^2.7.1",
     "ts-jest": "^29.0.3",
     "ts-loader": "^9.4.1",
+    "typedoc": "^0.23.16",
+    "typedoc-theme-hierarchy": "^3.0.0",
     "typescript": "^4.8.4",
     "webpack": "^5.74.0",
     "webpack-cli": "^4.10.0",

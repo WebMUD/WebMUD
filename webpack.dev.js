@@ -8,9 +8,14 @@ module.exports = merge(common, {
   devtool: 'inline-source-map',
 
   devServer: {
-    static: {
-      directory: path.join(__dirname, 'public'),
-    },
+    static: [
+      {
+        directory: path.join(__dirname, 'public'),
+      },
+      {
+        directory: path.join(__dirname, 'typedoc'),
+      },
+    ],
     compress: true,
     client: {
       progress: true,

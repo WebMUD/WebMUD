@@ -1,7 +1,10 @@
 import Ajv from 'ajv';
 const ajv = new Ajv();
 
-type Properties = {
+/**
+ * Ajv schema properties {@link https://ajv.js.org/guide/getting-started.html}
+ */
+export type SchemaProperties = {
   [key: string]: {
     type: string;
   };
@@ -13,7 +16,7 @@ type Properties = {
  * @param properties other properties
  * @returns an Ajv schema
  */
-export default function schemaFactory(pattern: string, properties: Properties) {
+export default function schemaFactory(pattern: string, properties: SchemaProperties) {
   return {
     type: 'object',
     properties: {

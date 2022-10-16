@@ -12,6 +12,9 @@ import { Prop } from "./components/prop";
 import { Item } from "./components/item";
 import { EntityError } from "./entity-error";
 
+/**
+ * Holds and manipulates the current game state
+ */
 export class Gamestate extends Manager {
     /**
      * Create a player entity

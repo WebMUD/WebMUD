@@ -9,6 +9,9 @@ import { Collection } from "../common/collection";
 
 export interface ServerSettings {}
 
+/**
+ * Encapsulates the game server
+ */
 export class Server {
     public name: string;
 
@@ -33,17 +36,17 @@ export class Server {
 
         this.connection.on('connection', (conn: DataConnection) => this.onConnection(new Connection(conn)));
         this.connection.on('open', (id: string) => {
-            this.discoverID = id;
+            this.discoveryID = id;
             this.onReady.emit();
         });
     }
 
-    public get discoverID(): string {
+    public get discoveryID(): string {
         if (!this._discoveryID) throw new Error('discoveryID is not ready');
         return this._discoveryID;
     }
 
-    private set discoverID(value: string) {
+    private set discoveryID(value: string) {
         this._discoveryID = value;
     }
 
