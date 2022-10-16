@@ -13,60 +13,6 @@ import { Item } from "./components/item";
 import { EntityError } from "./entity-error";
 
 export class Gamestate extends Manager {
-    //TODO: make a real test
-    test() {
-        // bind this to this.nameOf so we can use it as a standalone function later
-        const nameOf = this.nameOf.bind(this);
-
-        const world = this.createWorld('World');
-        const room1 = this.createRoom('Room 1', 'The first room.', world);
-        const room2 = this.createRoom('Room 1', 'The second room.', world);
-        const room3 = this.createRoom('Room 3', 'The third room.', world);
-        this.connectEastWest(room1, room2);
-        this.connectNorthSouth(room2, room3);
-
-        const player = this.createPlayer('Player 1');
-        this.move(player, room1);
-
-        for (const playerX of this.players()) {
-            this.entity(playerX).get(HierarchyContainer).onJoin((entity)=>{
-                console.log(`--> EVENT: ${this.nameOf(playerX)} picked up ${this.nameOf(entity)}`)
-            })
-        }
-
-        const backpack = this.createProp('Backpack', 'A backpack', true, true);
-        const notebook = this.createProp('Notebook', 'A notebook', false, true);
-        const desk = this.createProp('Desk', 'Very heavy', true, false);
-
-        this.move(backpack, room1);
-        console.log('room 1 should have Player 1 and Backpack');
-        console.log(
-            'Room 1 contains', this.getChildren(room1).map(nameOf),
-        );
-
-        this.move(notebook, backpack);
-        console.log('Backpack should have Notebook');
-        console.log(
-            'Backpack contains', this.getChildren(backpack).map(nameOf)
-        );
-
-        this.pickUp(player, notebook);
-        console.log('Player 1 should have Notebook');
-        console.log(
-            'Player 1 has', this.getChildren(player).map(nameOf)
-        );
-        
-        console.log('Player 1 should own Notebook');
-        console.log(
-            'Notebook owned by', this.nameOf(this.getParent(notebook))
-        );
-
-        console.log('rooms', Array.from(this.rooms()).map(nameOf))
-
-        console.log('expect error');
-        this.pickUp(player, desk);
-    }
-
     /**
      * Create a player entity
      * @param name 
@@ -106,8 +52,9 @@ export class Gamestate extends Manager {
             .add(new Description(description))
             .add(new Room())
             .add(new Adjacent())
-            .add(new HierarchyChild(world))
+            .add(new HierarchyChild())
             .add(new HierarchyContainer())
+        this.move(e, world);
         return e;
     }
 
@@ -151,14 +98,16 @@ export class Gamestate extends Manager {
      * @param parent the container to move it to
      */
     move(target: EntityID, parent: EntityID) {
-        const mustExit = this.hasParent(target);
+        if (target === parent) throw new EntityError(this.entity(target), 'cannot move entity to itself');
+        
+        const hasOldParent = this.hasParent(target);
 
-        if (mustExit) this.getParent(target).get(HierarchyContainer).children.delete(target);
+        if (hasOldParent) this.getParent(target).get(HierarchyContainer).children.delete(target);
 
         this.entity(target).get(HierarchyChild).parent = parent;
         this.entity(parent).get(HierarchyContainer).children.add(target);
 
-        if (mustExit) this.getParent(target).get(HierarchyContainer).onLeave.emit(target);
+        if (hasOldParent) this.getParent(target).get(HierarchyContainer).onLeave.emit(target);
         this.entity(parent).get(HierarchyContainer).onJoin.emit(target);
     }
 
@@ -169,10 +118,14 @@ export class Gamestate extends Manager {
         this.move(item, player);
     }
 
-    getChildren(entity: EntityID): Entity[] {
+    getChildrenIDs(entity: EntityID): EntityID[] {
         this.entity(entity).require(HierarchyContainer);
+        return Array.from(this.entity(entity).get(HierarchyContainer).children);
+    }
+
+    getChildren(entity: EntityID): Entity[] {
         const getEntity = (x: EntityID) => this.entity(x);
-        return Array.from(this.entity(entity).get(HierarchyContainer).children).map(getEntity);
+        return this.getChildrenIDs(entity).map(getEntity);
     }
 
     hasParent(entity: EntityID): EntityID|false {
@@ -182,10 +135,14 @@ export class Gamestate extends Manager {
         return id;
     }
 
-    getParent(entity: EntityID): Entity {
+    getParentID(entity: EntityID): EntityID {
         const parentID = this.hasParent(entity);
         if (!parentID) throw new EntityError(this.entity(entity), 'does not have a parent');
-        return this.entity(parentID);
+        return parentID;
+    }
+
+    getParent(entity: EntityID): Entity {
+        return this.entity(this.getParentID(entity));
     }
 
     nameOf(entity: Entity|EntityID): string {
