@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <title>WebMUD - Development Interface</title>
+
+    <link rel="stylesheet" href="/theme.css" />
+    <link rel="stylesheet" href="/main.css" />
+    <link rel="stylesheet" href="main.css" />
+
+    <script defer="defer" src="/dev/main.bundle.js"></script>
+  </head>
+  <body>
+    <h1>WebMUD Development Interface</h1>
+
+    <a href="/doc"><h2>Docs</h2></a>
+
+    <section>
+      <h2><a href="/server">Server</a></h2>
+
+      <div class="console">
+        <div class="console-section">
+          Console
+          <span class="float-right">
+            <label for="enable-debug">Debug</label>
+            <input type="checkbox" id="enable-debug" />
+          </span>
+        </div>
+        <div class="console-section log">
+          <div class="text-output" id="console-output"></div>
+        </div>
+        <input
+          class="console-section command"
+          type="text"
+          id="console-input"
+          placeholder=">"
+        />
+      </div>
+    </section>
+
+    <section>
+      <h2>
+        <a href="/client">Clients</a>
+        <button id="create-client" class="info">New Client</button>
+      </h2>
+
+      <div id="clients" class="clients"></div>
+    </section>
+  </body>
+</html>

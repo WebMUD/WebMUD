@@ -3,19 +3,19 @@ import { data } from './mock-data';
 
 test('frames.from()', () => {
   // valid data
-  expect(frames.from(data.frameConnect)).toStrictEqual(
+  expect(frames.parse(data.frameConnect)).toStrictEqual(
     new frames.FrameConnect(data.username)
   );
 
   const jsonData = JSON.stringify(data.frameConnect);
 
-  expect(frames.from(jsonData)).toStrictEqual(
+  expect(frames.parse(jsonData)).toStrictEqual(
     new frames.FrameConnect(data.username)
   );
 
   // bad data
   expect(
-    frames.from({
+    frames.parse({
       type: 'invalid',
       username: 'data',
     })

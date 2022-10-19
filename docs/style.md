@@ -4,6 +4,11 @@ Linter (Prettier) enforces most of the styling.
 
 Use the [Google TypeScript Style Guide](https://google.github.io/styleguide/tsguide.html) for anything else.
 
+## Comments
+
+- Comments should not duplicate the code
+- Good comments do not excuse unclear code
+
 ## JSDoc
 
 - [Getting Started with JSDoc](https://jsdoc.app/about-getting-started.html)
