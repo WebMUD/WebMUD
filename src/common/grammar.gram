@@ -1,0 +1,4 @@
+
+start := moveChoice
+move := '[MOVEmoveMove ]' | '[GOgoGo ]'
+moveChoice := move '[NORTHnorthNorth] ' | move '[SOUTHsouthSouth] '
