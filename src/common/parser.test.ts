@@ -4,10 +4,10 @@ import * as Parser from './parser';
 
 function evaluate(input : string):any 
 {
-    const p = new Parser.Parser(input);
-    
-    
+    input = input.toLowerCase();
+    const p= require('./parser').parse(input);
+    console.log(p)
 }
 
-evaluate("Move south");
-evaluate("Move North");
+evaluate("MOVE SOUTH");
+evaluate("move north");

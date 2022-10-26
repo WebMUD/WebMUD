@@ -1,4 +1,5 @@
 
-start := moveChoice
-move := '[MOVEmoveMove ]' | '[GOgoGo ]'
-moveChoice := move '[NORTHnorthNorth] ' | move '[SOUTHsouthSouth] '
+start := moveCommand
+direction := 'north'/regex/i | 'south' | 'east' | 'west'
+moveKeyword := 'move '
+moveCommand := moveKeyword direction=direction
