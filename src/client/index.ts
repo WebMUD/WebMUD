@@ -1,3 +1,26 @@
-import * as _ from 'lodash';
+import { ClientView } from './client-view';
 
-import * as common from '../common/index';
+import * as util from '../common/util';
+import { Client } from './client';
+
+declare global {
+  interface Window {
+    clientView: ClientView;
+    client: Client;
+  }
+}
+
+const el = util.getElements({
+  output: 'console-output',
+  input: 'console-input',
+  debug: 'enable-debug',
+});
+
+const client = (window.client = new Client());
+
+window.client = new ClientView({
+  output: el.output,
+  input: el.input,
+  debug: el.debug,
+  client,
+});

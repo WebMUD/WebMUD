@@ -4,6 +4,15 @@
 export type EventHandler<T> = (data: T) => void;
 
 /**
+ * EventEmitter Abstraction
+ */
+export interface EventChannel<T> {
+  (cb: (data: T) => void): () => void;
+  emit: (data: T) => void;
+  clear: () => void;
+}
+
+/**
  * Simple event emitter
  */
 export class EventEmitter<T> {
@@ -38,5 +47,19 @@ export class EventEmitter<T> {
    */
   public emit(data: T): void {
     for (const handler of this.handlers) handler(data);
+  }
+
+  /**
+   * Create a new EventChannel
+   */
+  static channel<T>(): EventChannel<T> {
+    const eventEmitter: EventEmitter<T> = new EventEmitter<T>();
+    const result = (cb: (data: T) => void) => {
+      eventEmitter.add(cb);
+      return () => eventEmitter.remove(cb);
+    };
+    result.emit = (data: T) => eventEmitter.emit(data);
+    result.clear = () => eventEmitter.clear();
+    return result;
   }
 }

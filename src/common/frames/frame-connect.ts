@@ -26,12 +26,7 @@ export class FrameConnect {
   }
 
   public serialize(): string {
-    const obj = {
-      type: 'connect',
-      username: this.username,
-    };
-
-    return JSON.stringify(obj);
+    return JSON.stringify(this);
   }
 
   public static from(obj: any) {

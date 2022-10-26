@@ -1,4 +1,4 @@
-# TexyJoe MUD
+# WebMUD
 
 insert about...
 
