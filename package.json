@@ -4,9 +4,10 @@
   "description": "A Decentralized Multi-User-Dungeon",
   "private": true,
   "scripts": {
+    "genparser": "tspeg ./src/client/parser/grammar.peg ./src/client/parser/parser.ts",
     "lint": "prettier --config prettierrc.json --write .",
     "start": "webpack serve --open /dev --config webpack.dev.js",
-    "test": "jest --config=jest.config.js",
+    "test": "npm run genparser && jest --config=jest.config.js",
     "build_dev": "webpack --config webpack.dev.js",
     "build_prod": "webpack --config webpack.prod.js",
     "build_doc": "typedoc --entryPointStrategy expand --theme hierarchy",
@@ -28,10 +29,13 @@
   "devDependencies": {
     "@types/jest": "^29.1.1",
     "@types/lodash": "^4.14.186",
+    "@types/uuid": "^8.3.4",
     "jest": "^29.1.1",
+    "jest-environment-jsdom": "^29.2.2",
     "prettier": "^2.7.1",
     "ts-jest": "^29.0.3",
     "ts-loader": "^9.4.1",
+    "tspeg": "^3.2.1",
     "typedoc": "^0.23.16",
     "typedoc-theme-hierarchy": "^3.0.0",
     "typescript": "^4.8.4",
@@ -44,6 +48,8 @@
     "ajv": "^8.11.0",
     "lodash": "^4.17.21",
     "node": "^16.13.2",
-    "peerjs": "^1.4.7"
+    "peerjs": "^1.4.7",
+    "uuid": "^9.0.0"
+
   }
 }
