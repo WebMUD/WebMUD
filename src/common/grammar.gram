@@ -1,5 +1,0 @@
-
-start := moveCommand
-direction := 'north'/regex/i | 'south' | 'east' | 'west'
-moveKeyword := 'move '
-moveCommand := moveKeyword direction=direction
