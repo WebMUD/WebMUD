@@ -2,19 +2,16 @@ import { ConnectionBase, ConnectionStatus } from './connection-base';
 
 export class LocalConnection extends ConnectionBase {
   public connect(other: LocalConnection) {
-    this.listen(other);
-    this.target(other);
+    throw 'Not implemented';
   }
 
-  public send(data: string): undefined {
-    return undefined;
+  public send(data: string): Error | undefined {
+    throw 'Not implemented';
   }
 
-  public close() {}
-
-  private listen(other: LocalConnection) {}
-
-  private target(other: LocalConnection) {}
+  public close() {
+    throw 'Not implemented';
+  }
 
   /**
    * create a pair of LocalConnections linked to eachother
