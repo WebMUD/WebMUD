@@ -4,7 +4,13 @@ export class LocalConnection extends ConnectionBase {
   private pair: LocalConnection | null = null;
 
   public connect(other: LocalConnection) {
-    this.pair = other;
+    try {
+      this.pair = other;
+      ConnectionStatus.OK;
+    } catch (err) {
+      ConnectionStatus.ERROR;
+      throw err;
+    }
   }
 
   public send(data: string): Error | undefined {
@@ -15,6 +21,7 @@ export class LocalConnection extends ConnectionBase {
 
   public close() {
     this.pair = null;
+    ConnectionStatus.CLOSE;
   }
 
   /**
