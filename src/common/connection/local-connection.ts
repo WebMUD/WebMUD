@@ -1,16 +1,20 @@
 import { ConnectionBase, ConnectionStatus } from './connection-base';
 
 export class LocalConnection extends ConnectionBase {
+  private pair: LocalConnection | null = null;
+
   public connect(other: LocalConnection) {
-    throw 'Not implemented';
+    this.pair = other;
   }
 
   public send(data: string): Error | undefined {
-    throw 'Not implemented';
+    if (!this.pair) throw new Error('not paired');
+    this.pair.onData.emit(data);
+    return undefined;
   }
 
   public close() {
-    throw 'Not implemented';
+    this.pair = null;
   }
 
   /**
