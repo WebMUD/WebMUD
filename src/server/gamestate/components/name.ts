@@ -1,3 +1,3 @@
-import { DataAttributeString } from './base/data-attribute-string';
+import { DataAttribute } from './base/data-attribute';
 
-export class Name extends DataAttributeString {}
+export class Name extends DataAttribute<string> {}
