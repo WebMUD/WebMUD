@@ -1,7 +1,21 @@
 import { FrameConnect } from './frame-connect';
+import { FrameReconnect } from './frame-reconnect';
+import { FrameMessage } from './frame-message';
+import { FrameAvailableEntities } from './frame-available-entities';
+import { FrameCommandList } from './frame-command-list';
+import { FrameAssignToken } from './frame-assign-token';
+import { FrameSendCommand } from './frame-send-command';
+import { FrameRequestCommandList } from './frame-request-command-list';
 
 const _frames = {
-  FrameConnect,
+    FrameConnect,
+    FrameReconnect,
+    FrameMessage,
+    FrameAvailableEntities,
+    FrameCommandList,
+    FrameAssignToken,
+    FrameSendCommand,
+    FrameRequestCommandList,
 };
 
 /**

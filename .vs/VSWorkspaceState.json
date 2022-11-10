@@ -1,0 +1,10 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src",
+    "\\src\\common",
+    "\\src\\common\\frames"
+  ],
+  "SelectedNode": "\\src\\common\\frames\\frame-send-command.test.ts",
+  "PreviewInSolutionExplorer": false
+}
