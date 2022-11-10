@@ -1,16 +1,7 @@
+import { HierarchyChild, HierarchyContainer, Name, Player, Description, Room, Adjacent, Item, Prop, ChatChannel } from './components';
 import { Entity, EntityID } from './entity';
-import { Manager } from './manager';
-
-import { Name } from './components/name';
-import { HierarchyContainer } from './components/hierarchy-container';
-import { HierarchyChild } from './components/hierarchy-child';
-import { Adjacent } from './components/adjacent';
-import { Description } from './components/description';
-import { Player } from './components/player';
-import { Room } from './components/room';
-import { Prop } from './components/prop';
-import { Item } from './components/item';
 import { EntityError } from './entity-error';
+import { Manager } from './manager';
 
 /**
  * Holds and manipulates the current game state
@@ -26,7 +17,8 @@ export class Gamestate extends Manager {
       .add(new Name(name))
       .add(new Player())
       .add(new HierarchyChild())
-      .add(new HierarchyContainer());
+      .add(new HierarchyContainer())
+      .add(new ChatChannel);
     return e;
   }
 
@@ -36,7 +28,10 @@ export class Gamestate extends Manager {
    */
   createWorld(name: string): EntityID {
     const e = this.createEntity();
-    this.entity(e).add(new Name(name)).add(new HierarchyContainer());
+    this.entity(e)
+      .add(new Name(name))
+      .add(new HierarchyContainer())
+      .add(new ChatChannel())
     return e;
   }
 
@@ -54,7 +49,8 @@ export class Gamestate extends Manager {
       .add(new Room())
       .add(new Adjacent())
       .add(new HierarchyChild())
-      .add(new HierarchyContainer());
+      .add(new HierarchyContainer())
+      .add(new ChatChannel())
     this.move(e, world);
     return e;
   }
@@ -121,6 +117,8 @@ export class Gamestate extends Manager {
     if (hasOldParent)
       this.getParent(target).get(HierarchyContainer).onLeave.emit(target);
     this.entity(parent).get(HierarchyContainer).onJoin.emit(target);
+
+    this.entity(target).get(HierarchyChild).onMove.emit();
   }
 
   pickUp(player: EntityID, item: EntityID) {

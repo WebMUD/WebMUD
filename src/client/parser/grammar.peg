@@ -1,0 +1,20 @@
+---
+import {
+    MoveCommand,
+    Direction,
+    } from './commands';
+---
+
+start := moveCommand
+
+space := ' '
+
+moveCommand := 'move' space direction=direction
+    .command = MoveCommand {return new MoveCommand(this.direction.value);}
+
+direction := north | south | east | west
+
+north := text='north' .value = Direction {return Direction.NORTH;} | text='n' .value = Direction {return Direction.NORTH;}
+south := text='south' .value = Direction {return Direction.NORTH;} | text='s' .value = Direction {return Direction.NORTH;}
+east := text='east' .value = Direction {return Direction.NORTH;} | text='e' .value = Direction {return Direction.NORTH;}
+west := text='west' .value = Direction {return Direction.NORTH;} | text='w' .value = Direction {return Direction.NORTH;}
