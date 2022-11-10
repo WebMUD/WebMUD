@@ -5,6 +5,6 @@
     "\\src\\common",
     "\\src\\common\\frames"
   ],
-  "SelectedNode": "\\src\\common\\frames\\frame-send-command.test.ts",
+  "SelectedNode": "\\src\\common\\frames\\frame-command-list.test.ts",
   "PreviewInSolutionExplorer": false
 }
