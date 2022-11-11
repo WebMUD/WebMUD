@@ -1,4 +1,5 @@
-import { HierarchyChild, HierarchyContainer, Name, Player, Description, Room, Adjacent, Item, Prop, ChatChannel } from './components';
+import _ from 'lodash';
+import { HierarchyChild, HierarchyContainer, Name, Player, Description, Room, Adjacent, Item, Prop, ChatChannel, World } from './components';
 import { Entity, EntityID } from './entity';
 import { EntityError } from './entity-error';
 import { Manager } from './manager';
@@ -12,6 +13,8 @@ export class Gamestate extends Manager {
    * @param name
    */
   createPlayer(name: string): EntityID {
+    if (this.findPlayer(name)) throw new Error(`A player by the name ${name} already exists`);
+
     const e = this.createEntity();
     this.entity(e)
       .add(new Name(name))
@@ -27,11 +30,14 @@ export class Gamestate extends Manager {
    * @param name
    */
   createWorld(name: string): EntityID {
+    if (this.findWorld(name)) throw new Error(`A world by the name ${name} already exists`);
+
     const e = this.createEntity();
     this.entity(e)
       .add(new Name(name))
       .add(new HierarchyContainer())
       .add(new ChatChannel())
+      .add(new World())
     return e;
   }
 
@@ -42,6 +48,8 @@ export class Gamestate extends Manager {
    * @param world the world entity this room belongs to
    */
   createRoom(name: string, description: string, world: EntityID): EntityID {
+    if (this.findRoom(name)) throw new Error(`A room by the name ${name} already exists`);
+
     const e = this.createEntity();
     this.entity(e)
       .add(new Name(name))
@@ -71,17 +79,16 @@ export class Gamestate extends Manager {
   }
 
   /**
-   * Create a prop entity
+   * Create a static prop entity
+   * Props cannot be picked up
    * @param name
    * @param description
    * @param container is this prop a container? can it hold other items?
-   * @param item can this prop be picked up?
    */
   createProp(
     name: string,
     description: string,
     container: boolean = false,
-    item: boolean = false
   ): EntityID {
     const e = this.createEntity();
     this.entity(e)
@@ -90,7 +97,29 @@ export class Gamestate extends Manager {
       .add(new Prop())
       .add(new HierarchyChild());
     if (container) this.entity(e).add(new HierarchyContainer());
-    if (item) this.entity(e).add(new Item());
+    return e;
+  }
+
+  /**
+   * Create an item entity
+   * Items can be picked up
+   * @param name
+   * @param description
+   * @param container is this prop a container? can it hold other items?
+   */
+  createItem(
+    name: string,
+    description: string,
+    container: boolean = false,
+  ): EntityID {
+    const e = this.createEntity();
+    this.entity(e)
+      .add(new Name(name))
+      .add(new Description(description))
+      .add(new Prop())
+      .add(new Item())
+      .add(new HierarchyChild())
+    if (container) this.entity(e).add(new HierarchyContainer());
     return e;
   }
 
@@ -166,6 +195,13 @@ export class Gamestate extends Manager {
     return this.filter(Player, Name, HierarchyChild);
   }
 
+  worlds(): Iterable<EntityID> {
+    return this.filter(
+      World,
+      Name,
+    );
+  }
+
   rooms(): Iterable<EntityID> {
     return this.filter(
       Room,
@@ -175,5 +211,41 @@ export class Gamestate extends Manager {
       HierarchyChild,
       HierarchyContainer
     );
+  }
+
+  nameEqual(a: string, b: string) {
+    return a.toLowerCase() === b.toLocaleLowerCase();
+  }
+
+  findByName(entities: Iterable<EntityID>, name: string) {
+    for (const x of entities)
+      if (this.nameEqual(this.nameOf(x), name)) return x;
+    return undefined;
+  }
+
+  findWorld(name: string): EntityID | undefined {
+    return this.findByName(this.worlds(), name);
+  }
+
+  findRoom(name: string): EntityID | undefined {
+    return this.findByName(this.rooms(), name);
+  }
+
+  findPlayer(name: string): EntityID | undefined {
+    return this.findByName(this.players(), name);
+  }
+
+  getByName(name: string) {
+    return this.findByName(this.filter(Name), name);
+  }
+
+  /**
+   * Find by name or ID
+   */
+  find(x: string): string | false {
+    if (this.entityExists(x)) return x;
+    const e = this.getByName(x);
+    if (e) return e;
+    return false;
   }
 }
