@@ -3,6 +3,7 @@ import {
   Description,
   HierarchyChild,
   HierarchyContainer,
+  Name,
   Player,
   Room,
   World,
@@ -26,6 +27,9 @@ export class WorldUtilPlugin extends WebMUDServerPlugin {
           return server.error(`Unable to find an entity by the name of ${id}`);
 
         const e = server.gamestate.entity(entity);
+
+        if (!e.has(Name)) return server.bold(`Internal entity`);
+
         if (e.has(Player))
           server.bold(`Player: "${server.gamestate.nameOf(entity)}":`);
         else if (e.has(Room))
