@@ -3,6 +3,7 @@ export { HierarchyContainer } from './hierarchy-container'
 export { HierarchyChild } from './hierarchy-child';
 export { Adjacent } from './adjacent';
 export { Description } from './description';
+export { World } from './world';
 export { Player } from './player';
 export { Room } from './room';
 export { Prop } from './prop';
