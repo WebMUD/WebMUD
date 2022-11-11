@@ -17,6 +17,8 @@ export class ServerView extends View {
     super(options);
     this.server = options.server;
 
+    this.server.useView(this);
+
     this.server.onReady(() => {
       this.info('Ready');
     });

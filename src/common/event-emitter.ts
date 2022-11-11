@@ -4,12 +4,17 @@
 export type EventHandler<T> = (data: T) => void;
 
 /**
- * EventEmitter Abstraction
+ * the EventChannel interface abstracts EventEmitter to improve readability
  */
 export interface EventChannel<T> {
+  /** Call signature: listen for events */
   (cb: (data: T) => void): () => void;
+  /** emit an event */
   emit: (data: T) => void;
+  /** clear all listeners */
   clear: () => void;
+  /** listen to one event only */
+  once: (cb: (data: T) => void) => void;
 }
 
 /**
@@ -60,6 +65,13 @@ export class EventEmitter<T> {
     };
     result.emit = (data: T) => eventEmitter.emit(data);
     result.clear = () => eventEmitter.clear();
+    result.once = (cb: (data: T) => void) => {
+      let stop: ()=>void;
+      stop = result((data)=>{
+        cb(data);
+        stop();
+      });
+    }
     return result;
   }
 }
