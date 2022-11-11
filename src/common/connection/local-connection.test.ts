@@ -1,14 +1,16 @@
 import { LocalConnection } from './local-connection';
 
-test('runAndPair', () => {
-  let run = false;
-  const cb = (data: string) => {
-    expect(data).toBe('Test');
-    run = true;
-  };
+test('LocalConnection', () => {
+  let data = ['', ''];
 
   let connPair = LocalConnection.create();
-  connPair[1].onData(cb);
-  connPair[0].send('Test');
-  expect(run).toBe(true);
+
+  connPair[0].onData(x=>data[0]=x);
+  connPair[1].onData(x=>data[1]=x);
+
+  connPair[0].send('test 0');
+  connPair[1].send('test 1');
+
+  expect(data[0]).toBe('test 1');
+  expect(data[1]).toBe('test 0');
 });

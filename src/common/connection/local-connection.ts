@@ -4,17 +4,16 @@ export class LocalConnection extends ConnectionBase {
   private pair: LocalConnection | null = null;
 
   public connect(other: LocalConnection) {
-    try {
-      this.pair = other;
-      ConnectionStatus.OK;
-    } catch (err) {
-      ConnectionStatus.ERROR;
-      throw err;
-    }
+    this.pair = other;
+    this.status = ConnectionStatus.OK;
   }
 
   public send(data: string): Error | undefined {
-    if (!this.pair) throw new Error('not paired');
+    if (!this.pair) {
+      this.status = ConnectionStatus.ERROR;
+      return new Error('not paired');
+    }
+    
     this.pair.onData.emit(data);
     return undefined;
   }
