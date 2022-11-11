@@ -5,8 +5,8 @@ test('LocalConnection', () => {
 
   let connPair = LocalConnection.create();
 
-  connPair[0].onData(x=>data[0]=x);
-  connPair[1].onData(x=>data[1]=x);
+  connPair[0].onData(x => (data[0] = x));
+  connPair[1].onData(x => (data[1] = x));
 
   connPair[0].send('test 0');
   connPair[1].send('test 1');

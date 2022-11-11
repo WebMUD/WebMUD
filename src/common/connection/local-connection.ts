@@ -13,7 +13,7 @@ export class LocalConnection extends ConnectionBase {
       this.status = ConnectionStatus.ERROR;
       return new Error('not paired');
     }
-    
+
     this.pair.onData.emit(data);
     return undefined;
   }

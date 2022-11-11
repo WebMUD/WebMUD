@@ -48,9 +48,9 @@ export class UtilCommandsPlugin extends WebMUDServerPlugin {
     });
 
     server.commands.addCommand({
-      command: 'listclients',
+      command: 'clients',
       alias: ['lsc', 'lsclients'],
-      usage: 'listclients',
+      usage: 'clients',
       about: 'list the connected clients',
 
       use(argv: string[], commands) {
@@ -72,7 +72,7 @@ export class UtilCommandsPlugin extends WebMUDServerPlugin {
 
       use(argv: string[], commands) {
         const action = argv.shift() ?? 'list';
-        
+
         if (action === 'list') {
           server.small('flags: ' + Object.values(Server.FLAGS).join(','));
           server.small('options: ' + Object.values(Server.OPTIONS).join(','));
@@ -102,7 +102,7 @@ export class UtilCommandsPlugin extends WebMUDServerPlugin {
         } else if (action === 'show') {
           const x = argv.shift();
           if (!x) return server.error('Missing value for flag|option');
-          
+
           if (x in Server.FLAGS)
             server.info(`${x} is set to ${server.flag(x)}`);
           if (x in Server.OPTIONS)

@@ -140,6 +140,8 @@ export class Server extends Logger {
   }
 
   public createClient(connection: ConnectionBase, username: string): Client {
+    this.info(`${username} joined the game`);
+
     const player = this.gamestate.createPlayer(username);
     const client = new Client(this, connection, player);
     this.clients.add(client);
@@ -160,6 +162,8 @@ export class Server extends Logger {
   }
 
   public onConnection(connection: ConnectionBase) {
+    if (this.flag(Server.FLAGS.VERBOSE)) this.debug('connection opened');
+
     const stop = connection.onData(data => {
       const frame = frames.parse(data);
       if (!frame) throw new Error('Unable to parse incoming data: ' + data);
@@ -252,6 +256,11 @@ export class Server extends Logger {
     if (!(option in Server.OPTIONS)) throw new Error(`unkown option ${option}`);
     if (set !== undefined) this.options.set(option, set);
     return this.options.get(option);
+  }
+
+  joinLink() {
+    const origin = window.location.origin;
+    return `${origin}/client?server=${this.discoveryID}`;
   }
 
   get tps() {

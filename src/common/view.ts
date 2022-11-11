@@ -20,6 +20,7 @@ export class View {
       this.input = new TextInput(options.input);
     if (options.debug && options.debug instanceof HTMLInputElement) {
       const debugCheckbox = new CheckboxInput(options.debug);
+      if (debugCheckbox.value) this.output?.el.classList.add('debug-enable');
       debugCheckbox.enable.add(() => {
         if (this.output) this.output.el.classList.add('debug-enable');
       });

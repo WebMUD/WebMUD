@@ -4,6 +4,9 @@ import { Server } from './server';
 const PACKAGE = require('../../package.json');
 
 export type ServerViewOptions = ViewOptions & {
+  joinLink?: HTMLElement;
+  joinURL?: HTMLElement;
+
   server: Server;
   devMode: boolean;
 };
@@ -39,6 +42,11 @@ export class ServerView extends View {
       );
 
       this.info('Enter "help" for a list of commands.');
+
+      const link = this.server.joinLink();
+
+      if (options.joinURL) options.joinURL.textContent = link;
+      if (options.joinLink) options.joinLink.setAttribute('href', link);
     });
   }
 }
