@@ -72,6 +72,7 @@ export class UtilCommandsPlugin extends WebMUDServerPlugin {
 
       use(argv: string[], commands) {
         const action = argv.shift() ?? 'list';
+        
         if (action === 'list') {
           server.small('flags: ' + Object.values(Server.FLAGS).join(','));
           server.small('options: ' + Object.values(Server.OPTIONS).join(','));
@@ -81,6 +82,7 @@ export class UtilCommandsPlugin extends WebMUDServerPlugin {
           if (!flag) return server.error('Missing value for flag');
           if (!(flag in Server.FLAGS))
             return server.error(`Invalid flag ${flag}`);
+
           if (action === 'enable') {
             server.flag(flag, true);
             server.bold(`enabled ${flag}`);
@@ -100,6 +102,7 @@ export class UtilCommandsPlugin extends WebMUDServerPlugin {
         } else if (action === 'show') {
           const x = argv.shift();
           if (!x) return server.error('Missing value for flag|option');
+          
           if (x in Server.FLAGS)
             server.info(`${x} is set to ${server.flag(x)}`);
           if (x in Server.OPTIONS)

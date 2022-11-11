@@ -19,13 +19,13 @@ export class ClockPlugin extends WebMUDServerPlugin {
     server.commands.addCommand({
       command: 'timeset',
       alias: ['dateset'],
-      usage: 'timeset [<timestamp>|@]',
+      usage: 'timeset [<timestamp>|now]',
       about: 'set the game clock',
 
       use(argv: string[]) {
         const x = argv.shift();
         if (!x) return server.error(`Missing argument for timestamp`);
-        const timestamp = x === '@' ? Date.now() : parseInt(x);
+        const timestamp = x === 'now' ? Date.now() : parseInt(x);
         if (timestamp == NaN)
           return server.error(
             `Bad timestamp ${x}, must be number of milliseconds elapsed since January 1, 1970 00:00:00 UTC (unix timestamp)`
