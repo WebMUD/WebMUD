@@ -44,7 +44,7 @@ test('Server', () => {
 });
 
 test('Chat', () => {
-  const { server, world, startingRoom, player1, player2 } = mock(true);
+  const { server, world, startingRoom, player1, player2 } = mock(false);
 
   const msgData = {
     senderID: player1.client.player,

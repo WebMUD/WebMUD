@@ -40,7 +40,7 @@ export class MapEditPlugin extends WebMUDServerPlugin {
           if (!world) return server.error(`World ${_world} does not exist`);
         }
 
-        server.gamestate.createRoom(name, description, world);
+        server.initRoom(server.gamestate.createRoom(name, description, world));
 
         server.info(`Created room: ${server.gamestate.nameOf(world)}/${name}`);
       },

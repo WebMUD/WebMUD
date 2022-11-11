@@ -2,7 +2,7 @@ import { Client } from './client';
 import { Gamestate } from './gamestate/gamestate';
 import { DataConnection, Peer } from 'peerjs';
 import { EventEmitter } from '../common/event-emitter';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, StringChain } from 'lodash';
 import { ConnectionBase } from '../common/connection/connection-base';
 import { Connection } from '../common/connection/connection';
 import { Collection } from '../common/collection';
@@ -21,7 +21,9 @@ export type ServerSystem = (server: Server, deltaTime: number) => void;
 
 export interface ServerSettings {
   plugins: Array<WebMUDServerPlugin>;
-  tickRate: number;
+
+  TICK_RATE: number;
+  SPEED: number;
 }
 
 /**
@@ -38,24 +40,35 @@ export class Server extends Logger {
 
   public onReady = EventEmitter.channel<void>();
 
-  private settings: ServerSettings;
+  private flags = new Set<string>();
+  private options = new Map<string, number>();
+
   private _discoveryID: string;
   private clients = new Collection<Client>();
   private connection: Peer;
 
-  private lastTick = Date.now();
-  private tickTimer: number;
+  private _lastTick = Date.now();
+  private _tickTimer: number | null = null;
   private _tps = 0;
+  private _tc = 0;
 
   private systems = new Set<ServerSystem>();
 
-  constructor(name: string, settings?: Partial<ServerSettings>) {
+  constructor(
+    name: string,
+    settings?: Partial<ServerSettings>,
+    flags?: string[]
+  ) {
     super();
     this.name = name;
-    this.settings = { ...cloneDeep(Server.defaultSettings), ...settings };
+    const _settings = { ...cloneDeep(Server.defaultSettings), ...settings };
     this.gamestate = new Gamestate();
 
-    for (const plugin of this.settings.plugins) plugin.init(this);
+    this.option(Server.OPTIONS.TICK_RATE, _settings.TICK_RATE);
+    this.option(Server.OPTIONS.SPEED, _settings.SPEED);
+
+    if (flags) for (const flag of flags) this.flags.add(flag);
+    for (const plugin of _settings.plugins) plugin.init(this);
 
     this.onInput(data => this.commands.parse(data));
   }
@@ -76,26 +89,32 @@ export class Server extends Logger {
         this.print(prefix + `[${msg.senderName}]: ${msg.content}`);
       });
 
-    for (const room of this.gamestate.getChildren(world)) {
-      this.debug(`Initalizing room: ${this.gamestate.nameOf(room)}`);
-      const roomPrefix = `[${this.gamestate.nameOf(room)}]: `;
+    for (const room of this.gamestate.getChildrenIDs(world))
+      this.initRoom(room);
 
-      room.get(ChatChannel).event(msg => {
+    this.world = world;
+    this.startingRoom = startingRoom;
+  }
+
+  public initRoom(roomID: EntityID) {
+    const room = this.gamestate.entity(roomID);
+    this.debug(`Initalizing room: ${this.gamestate.nameOf(room)}`);
+    const roomPrefix = `[${this.gamestate.nameOf(room)}]: `;
+
+    room.get(ChatChannel).event(msg => {
+      if (this.flag(Server.FLAGS.VERBOSE))
         this.print(roomPrefix + `[${msg.senderName}]: ${msg.content}`);
-      });
+    });
 
-      room.get(HierarchyContainer).onLeave(id => {
+    room.get(HierarchyContainer).onLeave(id => {
+      if (this.flag(Server.FLAGS.VERBOSE))
         this.print(
           roomPrefix +
             `${this.gamestate.nameOf(id)} moved to ${this.gamestate.nameOf(
               this.gamestate.getParent(id)
             )}.`
         );
-      });
-    }
-
-    this.world = world;
-    this.startingRoom = startingRoom;
+    });
   }
 
   public startDiscovery() {
@@ -178,27 +197,39 @@ export class Server extends Logger {
   }
 
   public start() {
+    if (this._tickTimer !== null) return;
     this.info('Starting Simulation');
     const now = Date.now();
-    this.lastTick = now;
+    this._lastTick = now;
 
-    this.tickTimer = window.setInterval(
+    this._tickTimer = window.setInterval(
       () => this.tick(),
-      this.settings.tickRate
+      this.options.get(Server.OPTIONS.TICK_RATE)
     );
   }
 
   public stop() {
+    if (this._tickTimer === null) return;
     this.info('Halting Simulation');
-    window.clearInterval(this.tickTimer);
+    window.clearInterval(this._tickTimer);
+    this._tickTimer = null;
+  }
+
+  public restart() {
+    this.stop();
+    window.setTimeout(() => {
+      this.start();
+    });
   }
 
   private tick() {
     const now = Date.now();
-    const dt = now - this.lastTick;
+    const dt = now - this._lastTick;
     this._tps = 1000 / dt;
-    for (const system of this.systems) system(this, dt);
-    this.lastTick = now;
+    this._tc++;
+    const speed = this.option(Server.OPTIONS.SPEED) ?? 1;
+    for (const system of this.systems) system(this, dt * speed);
+    this._lastTick = now;
   }
 
   public addSystem(system: ServerSystem) {
@@ -209,16 +240,45 @@ export class Server extends Logger {
     this.systems.delete(system);
   }
 
+  flag(flag: string, set?: boolean) {
+    if (!(flag in Server.FLAGS)) throw new Error(`unkown flag ${flag}`);
+
+    if (set === true) this.flags.add(flag);
+    if (set === false) this.flags.delete(flag);
+    return this.flags.has(flag);
+  }
+
+  option(option: string, set?: number) {
+    if (!(option in Server.OPTIONS)) throw new Error(`unkown option ${option}`);
+    if (set !== undefined) this.options.set(option, set);
+    return this.options.get(option);
+  }
+
   get tps() {
     return this._tps;
   }
 
   set tps(x: number) {
-    this.settings.tickRate = 1000 / x;
+    this.option(Server.OPTIONS.TICK_RATE, 1000 / x);
+  }
+
+  get tc() {
+    return this._tc;
   }
 
   static defaultSettings: ServerSettings = {
     plugins: [],
-    tickRate: 500,
+    TICK_RATE: 500,
+    SPEED: 1,
+  };
+
+  static FLAGS = {
+    VERBOSE: 'VERBOSE',
+    DEV_MODE: 'DEV_MODE',
+  };
+
+  static OPTIONS = {
+    TICK_RATE: 'TICK_RATE',
+    SPEED: 'SPEED',
   };
 }

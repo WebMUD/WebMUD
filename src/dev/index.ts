@@ -1,11 +1,38 @@
 import * as util from '../common/util';
 
-import '../server/index';
+import { createServer } from '../server/main';
+
+const server = createServer(true, [
+  new WorldUtilPlugin(),
+  new MapEditPlugin(),
+  new UtilCommandsPlugin(),
+]);
+
+const world = server.gamestate.createWorld('TestWorld');
+const rooms = {
+  start: server.gamestate.createRoom(
+    'WelcomeRoom',
+    'Nothing to see here.',
+    world
+  ),
+  north: server.gamestate.createRoom(
+    'NorthRoom',
+    'A room to the north.',
+    world
+  ),
+};
+
+server.gamestate.connectNorthSouth(rooms.north, rooms.start);
+
+server.init(world, rooms.start);
 
 import { ClientView } from '../client/client-view';
 import { Client } from '../client/client';
 import { VirtualClient } from './virtual-client';
 import { create } from 'lodash';
+import { MapEditPlugin } from '../server/plugins/map-edit-plugin';
+import { WorldUtilPlugin } from '../server/plugins/world-util-plugin';
+import { UtilCommandsPlugin } from '../server/plugins/util-commands-plugin';
 
 const NUM_CLIENTS = 2;
 

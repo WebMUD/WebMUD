@@ -28,6 +28,8 @@ export class UtilCommandsPlugin extends WebMUDServerPlugin {
           server.start();
         } else if (target === 'stop') {
           server.stop();
+        } else if (target === 'restart') {
+          server.restart();
         } else {
           return server.error(`Unkown: ${target}`);
         }
@@ -41,32 +43,7 @@ export class UtilCommandsPlugin extends WebMUDServerPlugin {
       about: 'view current ticks per second',
 
       use(argv: string[]) {
-        server.info(`@${roundTo(server.tps, 5)} tps`);
-      },
-    });
-
-    server.commands.addCommand({
-      command: 'help',
-      alias: ['h'],
-      usage: 'help [<command>]',
-      about:
-        'get a list of commands, or specifiy a command to get more info about it',
-
-      use(argv: string[], commands) {
-        const cmd = argv.shift();
-        if (!cmd)
-          for (const cmd of commands.uniq.values())
-            server.print(`${cmd.command} - ${cmd.about}`);
-        else {
-          const command = commands.search(cmd);
-          if (!command) return server.error(`Unkown command: ${cmd}`);
-
-          server.print(
-            `Help page for ${command.command} (${command.alias.join('|')}):`
-          );
-          server.small(` - usage: ${command.usage}`);
-          server.small(` - ${command.about}`);
-        }
+        server.info(`${roundTo(server.tps, 5)} tps`);
       },
     });
 
@@ -83,6 +60,51 @@ export class UtilCommandsPlugin extends WebMUDServerPlugin {
               .map(client => client.name)
               .join(', ')
         );
+      },
+    });
+
+    server.commands.addCommand({
+      command: 'config',
+      alias: ['cfg'],
+      usage:
+        'config [list | enable <flag> | disable <flag> | set <option> <value> | show <flag|option>]',
+      about: 'configure server settings',
+
+      use(argv: string[], commands) {
+        const action = argv.shift() ?? 'list';
+        if (action === 'list') {
+          server.small('flags: ' + Object.values(Server.FLAGS).join(','));
+          server.small('options: ' + Object.values(Server.OPTIONS).join(','));
+          return;
+        } else if (action === 'enable' || action === 'disable') {
+          const flag = argv.shift();
+          if (!flag) return server.error('Missing value for flag');
+          if (!(flag in Server.FLAGS))
+            return server.error(`Invalid flag ${flag}`);
+          if (action === 'enable') {
+            server.flag(flag, true);
+            server.bold(`enabled ${flag}`);
+          } else {
+            server.flag(flag, false);
+            server.bold(`disabled ${flag}`);
+          }
+        } else if (action === 'set') {
+          const option = argv.shift();
+          const value = argv.shift();
+          if (!option) return server.error('Missing value for option');
+          if (!value) return server.error('Missing value for value');
+
+          if (!(option in Server.OPTIONS))
+            return server.error(`Invalid option ${option}`);
+          server.option(option, Number(value));
+        } else if (action === 'show') {
+          const x = argv.shift();
+          if (!x) return server.error('Missing value for flag|option');
+          if (x in Server.FLAGS)
+            server.info(`${x} is set to ${server.flag(x)}`);
+          if (x in Server.OPTIONS)
+            server.info(`${x} is set to ${server.option(x)}`);
+        }
       },
     });
   }
