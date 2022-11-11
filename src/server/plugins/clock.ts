@@ -60,7 +60,7 @@ export function clock(server: Server) {
         command: 'time',
         alias: [],
         usage: 'time',
-        about: 'get the server time',
+        about: 'get the game time',
     
         use(argv: string[]) {
             server.bold(`${getDate().toLocaleTimeString()}`);
@@ -71,7 +71,7 @@ export function clock(server: Server) {
         command: 'date',
         alias: [],
         usage: 'date',
-        about: 'get the server date',
+        about: 'get the game date',
     
         use(argv: string[]) {
             server.bold(`${getDate().toLocaleDateString()}`);
