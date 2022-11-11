@@ -15,11 +15,12 @@ import {
   HierarchyContainer,
 } from './gamestate/components';
 import { ServerCommands } from './server-commands';
+import { WebMUDServerPlugin } from './webmud-server-plugin';
 
 export type ServerSystem = (server: Server, deltaTime: number) => void;
 
 export interface ServerSettings {
-  plugins: Array<(server: Server) => void>;
+  plugins: Array<WebMUDServerPlugin>;
   tickRate: number;
 }
 
@@ -54,7 +55,7 @@ export class Server extends Logger {
     this.settings = { ...cloneDeep(Server.defaultSettings), ...settings };
     this.gamestate = new Gamestate();
 
-    for (const plugin of this.settings.plugins) plugin(this);
+    for (const plugin of this.settings.plugins) plugin.init(this);
 
     this.onInput(data => this.commands.parse(data));
   }
