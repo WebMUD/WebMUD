@@ -9,13 +9,17 @@ import { Collection } from '../common/collection';
 import { frames } from '../common/frames';
 import { EntityID } from './gamestate/entity';
 import { Logger } from '../common/logger';
-import { ChatChannel, Description, HierarchyContainer } from './gamestate/components';
+import {
+  ChatChannel,
+  Description,
+  HierarchyContainer,
+} from './gamestate/components';
 import { ServerCommands } from './server-commands';
 
 export type ServerSystem = (server: Server, deltaTime: number) => void;
 
 export interface ServerSettings {
-  plugins: Array<(server: Server)=>void>;
+  plugins: Array<(server: Server) => void>;
   tickRate: number;
 }
 
@@ -52,7 +56,7 @@ export class Server extends Logger {
 
     for (const plugin of this.settings.plugins) plugin(this);
 
-    this.onInput(data=>this.commands.parse(data));
+    this.onInput(data => this.commands.parse(data));
   }
 
   /**
@@ -64,20 +68,28 @@ export class Server extends Logger {
     this.info(`Initalizing world: ${this.gamestate.nameOf(world)}`);
     const prefix = `[${this.gamestate.nameOf(world)}]: `;
 
-    this.gamestate.entity(world).get(ChatChannel).event(msg=>{
-      this.print(prefix + `[${msg.senderName}]: ${msg.content}`);
-    });
+    this.gamestate
+      .entity(world)
+      .get(ChatChannel)
+      .event(msg => {
+        this.print(prefix + `[${msg.senderName}]: ${msg.content}`);
+      });
 
     for (const room of this.gamestate.getChildren(world)) {
       this.debug(`Initalizing room: ${this.gamestate.nameOf(room)}`);
       const roomPrefix = `[${this.gamestate.nameOf(room)}]: `;
 
-      room.get(ChatChannel).event(msg=>{
+      room.get(ChatChannel).event(msg => {
         this.print(roomPrefix + `[${msg.senderName}]: ${msg.content}`);
       });
 
-      room.get(HierarchyContainer).onLeave(id=>{
-        this.print(roomPrefix + `${this.gamestate.nameOf(id)} moved to ${this.gamestate.nameOf(this.gamestate.getParent(id))}.`);
+      room.get(HierarchyContainer).onLeave(id => {
+        this.print(
+          roomPrefix +
+            `${this.gamestate.nameOf(id)} moved to ${this.gamestate.nameOf(
+              this.gamestate.getParent(id)
+            )}.`
+        );
       });
     }
 
@@ -128,7 +140,7 @@ export class Server extends Logger {
   }
 
   public onConnection(connection: ConnectionBase) {
-    const stop = connection.onData((data)=>{
+    const stop = connection.onData(data => {
       const frame = frames.parse(data);
       if (!frame) throw new Error('Unable to parse incoming data: ' + data);
 
@@ -143,13 +155,13 @@ export class Server extends Logger {
       //   stop(); // incoming data can now be handled elsewhere
       //   return;
       // }
-      
+
       throw new Error(`Unexpected frame: ${data}`);
     });
   }
 
   private handlePings(connection: ConnectionBase) {
-    connection.onData((data)=>{
+    connection.onData(data => {
       const frame = frames.parse(data);
       if (!frame) throw new Error('Unable to parse incoming data: ' + data);
 
@@ -169,7 +181,10 @@ export class Server extends Logger {
     const now = Date.now();
     this.lastTick = now;
 
-    this.tickTimer = window.setInterval(()=>this.tick(), this.settings.tickRate);
+    this.tickTimer = window.setInterval(
+      () => this.tick(),
+      this.settings.tickRate
+    );
   }
 
   public stop() {
@@ -180,7 +195,7 @@ export class Server extends Logger {
   private tick() {
     const now = Date.now();
     const dt = now - this.lastTick;
-    this._tps = 1000/dt;
+    this._tps = 1000 / dt;
     for (const system of this.systems) system(this, dt);
     this.lastTick = now;
   }
@@ -188,7 +203,7 @@ export class Server extends Logger {
   public addSystem(system: ServerSystem) {
     this.systems.add(system);
   }
-  
+
   public removeSystem(system: ServerSystem) {
     this.systems.delete(system);
   }
@@ -198,7 +213,7 @@ export class Server extends Logger {
   }
 
   set tps(x: number) {
-    this.settings.tickRate = 1000/x
+    this.settings.tickRate = 1000 / x;
   }
 
   static defaultSettings: ServerSettings = {

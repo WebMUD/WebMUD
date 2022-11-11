@@ -21,12 +21,7 @@ const el = util.getElements({
 });
 
 const server = (window.server = new Server('my game', {
-  plugins: [
-    commands.util,
-    commands.world,
-    mapEdit,
-    clock,
-  ]
+  plugins: [commands.util, commands.world, mapEdit, clock],
 }));
 
 window.serverView = new ServerView({
@@ -36,11 +31,18 @@ window.serverView = new ServerView({
   server,
 });
 
-
 const world = server.gamestate.createWorld('World');
 const rooms = {
-  start: server.gamestate.createRoom('Welcome Room', 'Nothing to see here.', world),
-  north: server.gamestate.createRoom('North Room', 'A room to the north.', world),
+  start: server.gamestate.createRoom(
+    'Welcome Room',
+    'Nothing to see here.',
+    world
+  ),
+  north: server.gamestate.createRoom(
+    'North Room',
+    'A room to the north.',
+    world
+  ),
 };
 
 server.gamestate.connectNorthSouth(rooms.north, rooms.start);

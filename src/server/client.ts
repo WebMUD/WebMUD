@@ -4,20 +4,29 @@ import { EntityID } from './gamestate/entity';
 import { frames } from '../common/frames';
 import { EventEmitter } from '../common/event-emitter';
 import { ChatChannel, ChatMessage } from './gamestate/components/chat-channel';
-import { HierarchyChild, HierarchyContainer, Name, Room } from './gamestate/components';
+import {
+  HierarchyChild,
+  HierarchyContainer,
+  Name,
+  Room,
+} from './gamestate/components';
 import { Server } from './server';
 
 export class Client {
   public readonly id: string = uuidv4();
   public player: EntityID;
   public server: Server;
-  
+
   public onConnectionClose = EventEmitter.channel<void>();
   public onRoomExit = EventEmitter.channel<void>();
 
   private connection: ConnectionBase | null;
 
-  constructor(server: Server, connection: ConnectionBase | null, player: EntityID) {
+  constructor(
+    server: Server,
+    connection: ConnectionBase | null,
+    player: EntityID
+  ) {
     this.server = server;
     this.player = player;
     this.useConnection(connection);
@@ -56,61 +65,80 @@ export class Client {
    * Attach the connection to the gamestate and start listening for commands
    */
   public start(world: EntityID) {
-
     const closeCallbacks: Array<Function> = [];
 
     if (!this.connection) throw new Error('No attached connection');
 
-    this.onConnectionClose.once(this.connection.onData((data)=>{
-      const frame = frames.parse(data);
-      if (!frame) throw new Error('Unable to parse incoming data: ' + data);
-      
-      // handle client requests
-    }));
+    this.onConnectionClose.once(
+      this.connection.onData(data => {
+        const frame = frames.parse(data);
+        if (!frame) throw new Error('Unable to parse incoming data: ' + data);
 
-    this.onConnectionClose.once(
-      this.gs.entity(this.player).get(HierarchyChild).onMove(()=>this.onMove())
-    );
-    
-    this.onConnectionClose.once(
-      this.gs.entity(world).get(ChatChannel).event((msg)=>{
-        this.chatMessage(msg);
+        // handle client requests
       })
     );
 
     this.onConnectionClose.once(
-      this.gs.entity(this.player).get(ChatChannel).event((data)=>{
-        this.chatMessage(data);
-      })
+      this.gs
+        .entity(this.player)
+        .get(HierarchyChild)
+        .onMove(() => this.onMove())
+    );
+
+    this.onConnectionClose.once(
+      this.gs
+        .entity(world)
+        .get(ChatChannel)
+        .event(msg => {
+          this.chatMessage(msg);
+        })
+    );
+
+    this.onConnectionClose.once(
+      this.gs
+        .entity(this.player)
+        .get(ChatChannel)
+        .event(data => {
+          this.chatMessage(data);
+        })
     );
   }
 
   /**
    * Handle player movement events
-   * @param gamestate 
+   * @param gamestate
    */
   public onMove() {
     // the onRoomExit event emitter is used to stop listening for events in the previous room when moving between rooms
     // onRoomExit.once() should be used rather than onRoomExit()
     this.onRoomExit.emit();
-    
+
     this.onRoomExit.once(
-      this.gs.getParent(this.player).get(HierarchyContainer).onJoin((id)=>{
-        this.entityEnter(id);
-      })
+      this.gs
+        .getParent(this.player)
+        .get(HierarchyContainer)
+        .onJoin(id => {
+          this.entityEnter(id);
+        })
     );
 
     this.onRoomExit.once(
-      this.gs.getParent(this.player).get(HierarchyContainer).onLeave((id)=>{
-        this.entityExit(id);
-      })
+      this.gs
+        .getParent(this.player)
+        .get(HierarchyContainer)
+        .onLeave(id => {
+          this.entityExit(id);
+        })
     );
-    
+
     if (this.gs.getParent(this.player).has(ChatChannel)) {
       this.onRoomExit.once(
-        this.gs.getParent(this.player).get(ChatChannel).event((msg)=>{
-          this.chatMessage(msg);
-        })
+        this.gs
+          .getParent(this.player)
+          .get(ChatChannel)
+          .event(msg => {
+            this.chatMessage(msg);
+          })
       );
     }
   }
@@ -119,7 +147,7 @@ export class Client {
     // send over connection
     this.connection?.send(JSON.stringify(msg)); // todo: needs to use frames
   }
-  
+
   public entityEnter(id: EntityID) {
     // send over connection
     const name = this.gs.nameOf(id);
@@ -139,11 +167,14 @@ export class Client {
    * @param content the message contents
    */
   public sendChat(entity: EntityID, content: string) {
-    this.gs.entity(entity).get(ChatChannel).event.emit({
-      senderID: this.player,
-      senderName: this.gs.entity(this.player).get(Name).data,
-      content,
-    });
+    this.gs
+      .entity(entity)
+      .get(ChatChannel)
+      .event.emit({
+        senderID: this.player,
+        senderName: this.gs.entity(this.player).get(Name).data,
+        content,
+      });
   }
 
   /**

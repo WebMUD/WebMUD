@@ -37,6 +37,6 @@ export function createElement(
 }
 
 export function roundTo(x: number, places: number) {
-  const r = 10^places;
-  return Math.round(x*r)/r;
+  const r = 10 ^ places;
+  return Math.round(x * r) / r;
 }

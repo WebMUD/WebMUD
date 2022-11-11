@@ -1,5 +1,17 @@
 import _ from 'lodash';
-import { HierarchyChild, HierarchyContainer, Name, Player, Description, Room, Adjacent, Item, Prop, ChatChannel, World } from './components';
+import {
+  HierarchyChild,
+  HierarchyContainer,
+  Name,
+  Player,
+  Description,
+  Room,
+  Adjacent,
+  Item,
+  Prop,
+  ChatChannel,
+  World,
+} from './components';
 import { Entity, EntityID } from './entity';
 import { EntityError } from './entity-error';
 import { Manager } from './manager';
@@ -13,7 +25,8 @@ export class Gamestate extends Manager {
    * @param name
    */
   createPlayer(name: string): EntityID {
-    if (this.findPlayer(name)) throw new Error(`A player by the name ${name} already exists`);
+    if (this.findPlayer(name))
+      throw new Error(`A player by the name ${name} already exists`);
 
     const e = this.createEntity();
     this.entity(e)
@@ -21,7 +34,7 @@ export class Gamestate extends Manager {
       .add(new Player())
       .add(new HierarchyChild())
       .add(new HierarchyContainer())
-      .add(new ChatChannel);
+      .add(new ChatChannel());
     return e;
   }
 
@@ -30,14 +43,15 @@ export class Gamestate extends Manager {
    * @param name
    */
   createWorld(name: string): EntityID {
-    if (this.findWorld(name)) throw new Error(`A world by the name ${name} already exists`);
+    if (this.findWorld(name))
+      throw new Error(`A world by the name ${name} already exists`);
 
     const e = this.createEntity();
     this.entity(e)
       .add(new Name(name))
       .add(new HierarchyContainer())
       .add(new ChatChannel())
-      .add(new World())
+      .add(new World());
     return e;
   }
 
@@ -48,7 +62,8 @@ export class Gamestate extends Manager {
    * @param world the world entity this room belongs to
    */
   createRoom(name: string, description: string, world: EntityID): EntityID {
-    if (this.findRoom(name)) throw new Error(`A room by the name ${name} already exists`);
+    if (this.findRoom(name))
+      throw new Error(`A room by the name ${name} already exists`);
 
     const e = this.createEntity();
     this.entity(e)
@@ -58,7 +73,7 @@ export class Gamestate extends Manager {
       .add(new Adjacent())
       .add(new HierarchyChild())
       .add(new HierarchyContainer())
-      .add(new ChatChannel())
+      .add(new ChatChannel());
     this.move(e, world);
     return e;
   }
@@ -88,7 +103,7 @@ export class Gamestate extends Manager {
   createProp(
     name: string,
     description: string,
-    container: boolean = false,
+    container: boolean = false
   ): EntityID {
     const e = this.createEntity();
     this.entity(e)
@@ -110,7 +125,7 @@ export class Gamestate extends Manager {
   createItem(
     name: string,
     description: string,
-    container: boolean = false,
+    container: boolean = false
   ): EntityID {
     const e = this.createEntity();
     this.entity(e)
@@ -118,7 +133,7 @@ export class Gamestate extends Manager {
       .add(new Description(description))
       .add(new Prop())
       .add(new Item())
-      .add(new HierarchyChild())
+      .add(new HierarchyChild());
     if (container) this.entity(e).add(new HierarchyContainer());
     return e;
   }
@@ -196,10 +211,7 @@ export class Gamestate extends Manager {
   }
 
   worlds(): Iterable<EntityID> {
-    return this.filter(
-      World,
-      Name,
-    );
+    return this.filter(World, Name);
   }
 
   rooms(): Iterable<EntityID> {

@@ -17,7 +17,10 @@ export class ServerView extends View {
     this.server = options.server;
 
     this.server.onReady(() => {
-      this.info(`Ready `, this.formatSmall('@' + new Date().toLocaleTimeString()));
+      this.info(
+        `Ready `,
+        this.formatSmall('@' + new Date().toLocaleTimeString())
+      );
     });
 
     this.onInput(data => {

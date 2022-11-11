@@ -1,5 +1,5 @@
 export { Name } from './name';
-export { HierarchyContainer } from './hierarchy-container'
+export { HierarchyContainer } from './hierarchy-container';
 export { HierarchyChild } from './hierarchy-child';
 export { Adjacent } from './adjacent';
 export { Description } from './description';

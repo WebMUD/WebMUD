@@ -66,12 +66,12 @@ export class EventEmitter<T> {
     result.emit = (data: T) => eventEmitter.emit(data);
     result.clear = () => eventEmitter.clear();
     result.once = (cb: (data: T) => void) => {
-      let stop: ()=>void;
-      stop = result((data)=>{
+      let stop: () => void;
+      stop = result(data => {
         cb(data);
         stop();
       });
-    }
+    };
     return result;
   }
 }
