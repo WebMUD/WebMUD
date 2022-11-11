@@ -1,7 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { ConnectionBase } from '../common/connection/connection-base';
 import { EntityID } from './gamestate/entity';
-import { Gamestate } from './gamestate/gamestate';
 import { frames } from '../common/frames';
 import { EventEmitter } from '../common/event-emitter';
 import { ChatChannel, ChatMessage } from './gamestate/components/chat-channel';

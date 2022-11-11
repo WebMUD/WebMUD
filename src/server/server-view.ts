@@ -1,5 +1,4 @@
 import * as _ from 'lodash';
-import { TextOutput } from '../common/elements/text-output';
 import { View, ViewOptions } from '../common/view';
 import { Server } from './server';
 
@@ -17,14 +16,14 @@ export class ServerView extends View {
     super(options);
     this.server = options.server;
 
-    this.server.useView(this);
-
     this.server.onReady(() => {
-      this.info('Ready');
+      this.info(`Ready `, this.formatSmall('@' + new Date().toLocaleTimeString()));
     });
 
     this.onInput(data => {
-      this.print('Input:', TextOutput.format(data, 'info'));
+      this.print(this.formatSmall('>>> ' + data));
     });
+
+    this.server.useView(this);
   }
 }

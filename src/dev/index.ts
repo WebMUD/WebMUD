@@ -30,6 +30,8 @@ function createClient() {
     `Virtual Client ${id}`,
     client
   );
+
+  // window.server.onConnection(client.connection);
 }
 
 el.create.onclick = createClient;

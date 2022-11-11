@@ -7,10 +7,10 @@ function mock(useConsole: boolean = false) {
     const server = new Server('Server');
     if (useConsole) server.useConsole();
 
-    const world = server.world = server.gamestate.createWorld('Test World');    
-    const startingRoom = server.startingRoom = server.gamestate.createRoom('Starting Room', 'A boring room', world);
+    const world = server.gamestate.createWorld('Test World');    
+    const startingRoom = server.gamestate.createRoom('Starting Room', 'A boring room', world);
 
-    server.init(world);
+    server.init(world, startingRoom);
 
     const [serverConnection2, clientConnection2] = LocalConnection.create()
 
