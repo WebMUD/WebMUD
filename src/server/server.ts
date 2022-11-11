@@ -12,8 +12,11 @@ import { Logger } from '../common/logger';
 import { ChatChannel, Description, HierarchyContainer } from './gamestate/components';
 import { ServerCommands } from './server-commands';
 
+export type ServerSystem = (server: Server, deltaTime: number) => void;
+
 export interface ServerSettings {
   plugins: Array<(server: Server)=>void>;
+  tickRate: number;
 }
 
 /**
@@ -34,6 +37,12 @@ export class Server extends Logger {
   private _discoveryID: string;
   private clients = new Collection<Client>();
   private connection: Peer;
+
+  private lastTick = Date.now();
+  private tickTimer: number;
+  private _tps = 0;
+
+  private systems = new Set<ServerSystem>();
 
   constructor(name: string, settings?: Partial<ServerSettings>) {
     super();
@@ -76,7 +85,7 @@ export class Server extends Logger {
     this.startingRoom = startingRoom;
   }
 
-  public start() {
+  public startDiscovery() {
     this.connection = new Peer();
 
     this.connection.on('connection', (conn: DataConnection) =>
@@ -155,7 +164,45 @@ export class Server extends Logger {
     return this.clients.values();
   }
 
+  public start() {
+    this.info('Starting Simulation');
+    const now = Date.now();
+    this.lastTick = now;
+
+    this.tickTimer = window.setInterval(()=>this.tick(), this.settings.tickRate);
+  }
+
+  public stop() {
+    this.info('Halting Simulation');
+    window.clearInterval(this.tickTimer);
+  }
+
+  private tick() {
+    const now = Date.now();
+    const dt = now - this.lastTick;
+    this._tps = 1000/dt;
+    for (const system of this.systems) system(this, dt);
+    this.lastTick = now;
+  }
+
+  public addSystem(system: ServerSystem) {
+    this.systems.add(system);
+  }
+  
+  public removeSystem(system: ServerSystem) {
+    this.systems.delete(system);
+  }
+
+  get tps() {
+    return this._tps;
+  }
+
+  set tps(x: number) {
+    this.settings.tickRate = 1000/x
+  }
+
   static defaultSettings: ServerSettings = {
     plugins: [],
+    tickRate: 500,
   };
 }

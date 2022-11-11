@@ -1,3 +1,4 @@
+import { roundTo } from "../../common/util";
 import { Adjacent, Description, HierarchyChild, HierarchyContainer, Name, Player, Room, World } from "../gamestate/components";
 import { Entity, EntityID } from "../gamestate/entity";
 import { Server } from "../server";
@@ -15,13 +16,32 @@ export function util(server: Server) {
     });
 
     server.commands.addCommand({
-        command: 'time',
+        command: 'server',
         alias: [],
-        usage: 'time',
-        about: 'get the current time',
+        usage: 'server [start|stop]',
+        about: 'start or stop the game server',
     
         use(argv: string[]) {
-          server.bold(new Date().toLocaleTimeString());
+            const target = argv.shift();
+            if (!target) return server.error('Missing argument [start|stop]');
+            if (target === 'start') {
+                server.start();
+            } else if (target === 'stop') {
+                server.stop();
+            } else {
+                return server.error(`Unkown: ${target}`);
+            }
+        }
+    });
+
+    server.commands.addCommand({
+        command: 'tps',
+        alias: [],
+        usage: 'tps',
+        about: 'view current ticks per second',
+    
+        use(argv: string[]) {
+          server.info(`@${roundTo(server.tps, 5)} tps`);
         }
     });
 

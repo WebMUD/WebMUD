@@ -37,3 +37,5 @@ function createClient() {
 el.create.onclick = createClient;
 
 for (let i = 0; i < NUM_CLIENTS; i++) createClient();
+
+window.server.start();

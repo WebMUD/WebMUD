@@ -5,6 +5,7 @@ import { Server } from './server';
 
 import * as commands from './plugins/commands';
 import { mapEdit } from './plugins/map-edit';
+import { clock } from './plugins/clock/clock';
 
 declare global {
   interface Window {
@@ -24,6 +25,7 @@ const server = (window.server = new Server('my game', {
     commands.util,
     commands.world,
     mapEdit,
+    clock,
   ]
 }));
 
@@ -45,4 +47,4 @@ server.gamestate.connectNorthSouth(rooms.north, rooms.start);
 
 server.init(world, rooms.start);
 
-server.start();
+server.startDiscovery();
