@@ -152,8 +152,10 @@ export class Gamestate extends Manager {
 
     const hasOldParent = this.hasParent(target);
 
-    if (hasOldParent)
+    if (hasOldParent) {
+      if (this.getParentID(target) === parent) return;
       this.getParent(target).get(HierarchyContainer).children.delete(target);
+    }
 
     this.entity(target).get(HierarchyChild).parent = parent;
     this.entity(parent).get(HierarchyContainer).children.add(target);
