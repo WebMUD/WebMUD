@@ -1,7 +1,7 @@
-import { AttributeTag } from "../../gamestate/components/base/attribute-tag";
-import { DataAttribute } from "../../gamestate/components/base/data-attribute";
-import { EntityID } from "../../gamestate/entity";
-import { Server } from "../../server";
+import { AttributeTag } from "../gamestate/components/base/attribute-tag";
+import { DataAttribute } from "../gamestate/components/base/data-attribute";
+import { EntityID } from "../gamestate/entity";
+import { Server } from "../server";
 
 export class Clock extends DataAttribute<number> {}
 export class ServerClock extends AttributeTag {}

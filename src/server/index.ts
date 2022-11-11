@@ -5,7 +5,7 @@ import { Server } from './server';
 
 import * as commands from './plugins/commands';
 import { mapEdit } from './plugins/map-edit';
-import { clock } from './plugins/clock/clock';
+import { clock } from './plugins/clock';
 
 declare global {
   interface Window {
