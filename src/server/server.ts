@@ -39,6 +39,8 @@ export class Server extends Logger {
   public commands = new ServerCommands(this);
 
   public onReady = EventEmitter.channel<void>();
+  public onClientJoin = EventEmitter.channel<Client>();
+  public onClientRejoin = EventEmitter.channel<Client>();
 
   private flags = new Set<string>();
   private options = new Map<string, number>();
@@ -79,27 +81,26 @@ export class Server extends Logger {
    * @param startingRoom id of the room players should be placed in when joining
    */
   public init(world: EntityID, startingRoom: EntityID) {
-    this.info(`Initalizing world: ${this.gamestate.nameOf(world)}`);
-    const prefix = `[${this.gamestate.nameOf(world)}]: `;
+    this.info(`Initalizing world: ${this.gs.nameOf(world)}`);
+    const prefix = `[${this.gs.nameOf(world)}]: `;
 
-    this.gamestate
+    this.gs
       .entity(world)
       .get(ChatChannel)
       .event(msg => {
         this.print(prefix + `[${msg.senderName}]: ${msg.content}`);
       });
 
-    for (const room of this.gamestate.getChildrenIDs(world))
-      this.initRoom(room);
+    for (const room of this.gs.getChildrenIDs(world)) this.initRoom(room);
 
     this.world = world;
     this.startingRoom = startingRoom;
   }
 
   public initRoom(roomID: EntityID) {
-    const room = this.gamestate.entity(roomID);
-    this.debug(`Initalizing room: ${this.gamestate.nameOf(room)}`);
-    const roomPrefix = `[${this.gamestate.nameOf(room)}]: `;
+    const room = this.gs.entity(roomID);
+    this.debug(`Initalizing room: ${this.gs.nameOf(room)}`);
+    const roomPrefix = `[${this.gs.nameOf(room)}]: `;
 
     room.get(ChatChannel).event(msg => {
       if (this.flag(Server.FLAGS.VERBOSE))
@@ -110,8 +111,8 @@ export class Server extends Logger {
       if (this.flag(Server.FLAGS.VERBOSE))
         this.print(
           roomPrefix +
-            `${this.gamestate.nameOf(id)} moved to ${this.gamestate.nameOf(
-              this.gamestate.getParent(id)
+            `${this.gs.nameOf(id)} moved to ${this.gs.nameOf(
+              this.gs.getParent(id)
             )}.`
         );
     });
@@ -142,11 +143,13 @@ export class Server extends Logger {
   public createClient(connection: ConnectionBase, username: string): Client {
     this.info(`${username} joined the game`);
 
-    const player = this.gamestate.createPlayer(username);
+    const player = this.gs.createPlayer(username);
     const client = new Client(this, connection, player);
     this.clients.add(client);
     client.start(this.world);
-    this.gamestate.move(player, this.startingRoom);
+    this.gs.move(player, this.startingRoom);
+
+    this.onClientJoin.emit(client);
 
     return client;
   }
@@ -157,6 +160,8 @@ export class Server extends Logger {
 
     client.useConnection(connection);
     client.start(this.world);
+
+    this.onClientRejoin.emit(client);
 
     return client;
   }
@@ -261,6 +266,10 @@ export class Server extends Logger {
   joinLink() {
     const origin = window.location.origin;
     return `${origin}/client?server=${this.discoveryID}`;
+  }
+
+  get gs() {
+    return this.gamestate;
   }
 
   get tps() {

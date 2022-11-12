@@ -2,7 +2,9 @@ import { FrameConnect } from './frame-connect';
 
 const _frames = {
   FrameConnect,
-};
+} as const;
+
+export type Frame = InstanceType<typeof _frames[keyof typeof _frames]>;
 
 /**
  * validate and parse incoming data

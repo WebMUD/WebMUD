@@ -5,8 +5,15 @@ import { Server } from './server';
 import { ClockPlugin } from './plugins/clock-plugin';
 import { WebMUDServerPlugin } from './webmud-server-plugin';
 import { HelpCommandPluggin } from './plugins/help-command-plugin';
+import { ClientPlugin } from './plugins/client-plugin';
+import { SaveStatePlugin } from './plugins/savestate-plugin';
 
-const PLUGINS = [new HelpCommandPluggin(), new ClockPlugin()];
+const PLUGINS = [
+  new HelpCommandPluggin(),
+  new ClockPlugin(),
+  new ClientPlugin(),
+  new SaveStatePlugin(),
+];
 
 declare global {
   interface Window {

@@ -1,14 +1,16 @@
 import { v4 as uuidv4 } from 'uuid';
-import { ConnectionBase } from '../common/connection/connection-base';
+import {
+  ConnectionBase,
+  ConnectionStatus,
+} from '../common/connection/connection-base';
 import { EntityID } from './gamestate/entity';
-import { frames } from '../common/frames';
+import { Frame, frames } from '../common/frames';
 import { EventEmitter } from '../common/event-emitter';
 import { ChatChannel, ChatMessage } from './gamestate/components/chat-channel';
 import {
   HierarchyChild,
   HierarchyContainer,
   Name,
-  Room,
 } from './gamestate/components';
 import { Server } from './server';
 
@@ -16,6 +18,11 @@ export class Client {
   public readonly id: string = uuidv4();
   public player: EntityID;
   public server: Server;
+
+  public onFrame = EventEmitter.channel<Frame>();
+  public onMessage = EventEmitter.channel<ChatMessage>();
+  public onEntityEnterRoom = EventEmitter.channel<EntityID>();
+  public onEntityExitRoom = EventEmitter.channel<EntityID>();
 
   public onConnectionClose = EventEmitter.channel<void>();
   public onRoomExit = EventEmitter.channel<void>();
@@ -73,8 +80,7 @@ export class Client {
       this.connection.onData(data => {
         const frame = frames.parse(data);
         if (!frame) throw new Error('Unable to parse incoming data: ' + data);
-
-        // handle client requests
+        this.onFrame.emit(frame);
       })
     );
 
@@ -144,21 +150,22 @@ export class Client {
   }
 
   public chatMessage(msg: ChatMessage) {
-    // send over connection
-    this.connection?.send(JSON.stringify(msg)); // todo: needs to use frames
+    this.onMessage.emit(msg);
   }
 
   public entityEnter(id: EntityID) {
-    // send over connection
-    const name = this.gs.nameOf(id);
-    // {name} entered the room
+    this.onEntityEnterRoom.emit(id);
   }
 
   public entityExit(id: EntityID) {
-    // send over connection
-    const name = this.gs.nameOf(id);
-    const parentName = this.gs.nameOf(this.gs.getParent(id));
-    // {name} moved to {parentName}
+    this.onEntityExitRoom.emit(id);
+  }
+
+  public sendFrame(frame: Frame) {
+    const data = frame.serialize();
+    if (!this.connection || this.connection.status !== ConnectionStatus.OK)
+      throw new Error('connection not available');
+    this.connection.send(data);
   }
 
   /**
