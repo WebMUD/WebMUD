@@ -9,6 +9,10 @@ export class TextOutput {
     this.el = el;
   }
 
+  public clear() {
+    this.el.replaceChildren();
+  }
+
   /**
    * Print on the current line
    * @param fields text to print

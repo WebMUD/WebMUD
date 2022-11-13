@@ -7,9 +7,12 @@ export type ClientViewOptions = ViewOptions & {
 };
 
 export class ClientView extends View {
+  public client: Client;
+
   constructor(options: ClientViewOptions) {
     super(options);
+    this.client = options.client;
 
-    this.print('new client');
+    options.client.useView(this);
   }
 }

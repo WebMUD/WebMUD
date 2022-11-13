@@ -1,10 +1,14 @@
 import * as _ from 'lodash';
-import { TextOutput } from '../common/elements/text-output';
 import { View, ViewOptions } from '../common/view';
 import { Server } from './server';
+const PACKAGE = require('../../package.json');
 
 export type ServerViewOptions = ViewOptions & {
+  joinLink?: HTMLElement;
+  joinURL?: HTMLElement;
+
   server: Server;
+  devMode: boolean;
 };
 
 /**
@@ -17,14 +21,32 @@ export class ServerView extends View {
     super(options);
     this.server = options.server;
 
-    this.server.useView(this);
-
-    this.server.onReady(() => {
-      this.info('Ready');
+    this.onInput(data => {
+      this.print(this.formatSmall('>>> ' + data));
     });
 
-    this.onInput(data => {
-      this.print('Input:', TextOutput.format(data, 'info'));
+    this.server.useView(this);
+    this.print('WebMUD Server v', PACKAGE.version);
+
+    if (options.devMode) {
+      this.print('DevMode Enabled');
+      this.server.flag(Server.FLAGS.VERBOSE, true);
+      this.server.flag(Server.FLAGS.DEV_MODE, true);
+    }
+
+    this.server.onReady(() => {
+      this.info(
+        'Ready',
+        ' ',
+        this.formatSmall('@' + new Date().toLocaleTimeString())
+      );
+
+      this.info('Enter "help" for a list of commands.');
+
+      const link = this.server.joinLink();
+
+      if (options.joinURL) options.joinURL.textContent = link;
+      if (options.joinLink) options.joinLink.setAttribute('href', link);
     });
   }
 }

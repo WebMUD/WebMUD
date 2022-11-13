@@ -1,4 +1,4 @@
-import { EntityID } from '../entity';
+import { Entity, EntityID } from '../entity';
 import { Component } from './base/component';
 
 export class Adjacent extends Component {
