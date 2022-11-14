@@ -135,3 +135,12 @@ button.danger {
 
   background-color: rgba(255, 255, 255, 0.1);
 }
+
+.console-playername {
+  font-style: italic;
+  color: var(--color-playername);
+}
+
+.console-playerself {
+  color: var(--color-playerself);
+}
