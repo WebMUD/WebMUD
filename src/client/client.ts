@@ -2,8 +2,9 @@ import Peer from 'peerjs';
 import { Connection } from '../common/connection/connection';
 import { ConnectionBase } from '../common/connection/connection-base';
 import { Logger } from '../common/logger';
-import { frames } from '../common/frames';
+import { FrameMessage, frames } from '../common/frames';
 import { EventEmitter } from '../common/event-emitter';
+import { ClientView } from './client-view';
 
 export class Client extends Logger {
   public connection: ConnectionBase;
@@ -33,9 +34,19 @@ export class Client extends Logger {
 
       // handle incoming data
       console.log(frame);
+
+      if (frame instanceof FrameMessage) return this.message(frame);
+
+      throw `Unexpected ${frame.type} frame`;
     });
 
     this.onReady.emit();
+  }
+
+  message(frame: FrameMessage) {
+    this.printFormat(
+      ...frame.parts.map(part => ClientView.format(part.text, ...part.format))
+    );
   }
 
   join(username: string) {
