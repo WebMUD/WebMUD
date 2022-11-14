@@ -2,19 +2,71 @@
 import {
     MoveCommand,
     Direction,
+    Item,
+    HelpCommand,
+    CommandName,
+    ExitCommand,
+    InventoryCommand,
+    SayCommand,
+    WhisperCommand
     } from './commands';
 ---
 
-start := moveCommand
+start := commands
+
+commands := moveCommand | helpCommand | exitCommand | inventoryCommand | sayCommand | whisperCommand
 
 space := ' '
 
-moveCommand := 'move' space direction=direction
+whisperCommand := whisperKeyword=whisperKeyword .command =  WhisperCommand {return new WhisperCommand();}
+whisperKeyword := '[wW][hH][iI][sS][pP][eE][rR]' | '[wW]'
+
+sayCommand := sayKeyword=sayKeyword .command = SayCommand {return new SayCommand();}
+sayKeyword := '[sS][aA][yY]' | '[sS]'
+
+inventoryCommand := inventoryKeyword=inventoryKeyword .command = InventoryCommand {return new InventoryCommand();}
+inventoryKeyword := '[iI][nN][vV][eE][nN][tT][oO][rR][yY]' | '[iI]'
+
+exitCommand := exitKeyword=exitKeyword .command = ExitCommand {return new ExitCommand();}
+exitKeyword := '[eE][xX][iI][tT]' | '[eE][xX][iI][tT][sS]' | '[eE]'
+
+//helpCommand grammar
+helpKeyword := '[hH][eE][lL][pP]' | '[hH]'
+
+helpCommand := helpKeyword space commandName=commandName
+    .command = HelpCommand {return new HelpCommand(this.commandName.value);}
+
+commandName := move | exit | take | drop | say | inventory | whisper
+
+//name of commands for the help command
+move := text='[mM][oO][vV][eE]' .value = CommandName {return CommandName.MOVE;} | 
+    text='[mM]' .value = CommandName {return CommandName.MOVE;}
+exit := text='[eE][xX][iI][tT]' .value = CommandName {return CommandName.EXIT;} | 
+    text='[eE][xX][iI][tT][sS]' .value = CommandName {return CommandName.EXIT;} |
+    text='[eE]' .value = CommandName {return CommandName.EXIT;}
+take := text='[tT][aA][kK][eE]' .value = CommandName {return CommandName.TAKE;} | 
+    text='[tT]' .value = CommandName {return CommandName.TAKE;}
+drop := text='[dD][rR][oO][pP]' .value = CommandName {return CommandName.DROP;} | 
+    text='[dD]' .value = CommandName {return CommandName.DROP;}
+say := text='[sS][aA][yY]' .value = CommandName {return CommandName.SAY;} | 
+    text='[sS]' .value = CommandName {return CommandName.SAY;}
+inventory := text='[iI][nN][vV][eE][nN][tT][oO][rR][yY]' .value = CommandName {return CommandName.INVENTORY;} | 
+    text='[iI]' .value = CommandName {return CommandName.INVENTORY;}
+whisper := text='[wW][hH][iI][sS][pP][eE][rR]' .value = CommandName {return CommandName.WHISPER;} | 
+    text='[wW]' .value = CommandName {return CommandName.WHISPER;}
+
+
+item :=
+   text='test' .value = Item {return Item.ITEM_TEST;}
+
+moveCommand := moveKeyword space direction=direction
     .command = MoveCommand {return new MoveCommand(this.direction.value);}
+moveKeyword := '[mM][oO][vV][eE]' | '[mM]'
 
 direction := north | south | east | west
 
+
 north := text='north' .value = Direction {return Direction.NORTH;} | text='n' .value = Direction {return Direction.NORTH;}
-south := text='south' .value = Direction {return Direction.NORTH;} | text='s' .value = Direction {return Direction.NORTH;}
-east := text='east' .value = Direction {return Direction.NORTH;} | text='e' .value = Direction {return Direction.NORTH;}
-west := text='west' .value = Direction {return Direction.NORTH;} | text='w' .value = Direction {return Direction.NORTH;}
+south := text='south' .value = Direction {return Direction.SOUTH;} | text='s' .value = Direction {return Direction.SOUTH;}
+east := text='east' .value = Direction {return Direction.EAST;} | text='e' .value = Direction {return Direction.EAST;}
+west := text='west' .value = Direction {return Direction.WEST;} | text='w' .value = Direction {return Direction.WEST;}
