@@ -24,5 +24,7 @@ export class DevModePlugin extends WebMUDServerPlugin {
         window.open(server.joinLink(), '_blank')?.focus();
       },
     });
+
+    server.onReady(()=>server.start());
   }
 }
