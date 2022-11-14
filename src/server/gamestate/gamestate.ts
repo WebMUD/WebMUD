@@ -150,20 +150,21 @@ export class Gamestate extends Manager {
         'cannot move entity to itself'
       );
 
+    let oldParent: EntityID | undefined;
     const hasOldParent = this.hasParent(target);
 
     if (hasOldParent) {
       if (this.getParentID(target) === parent) return;
       this.getParent(target).get(HierarchyContainer).children.delete(target);
+      oldParent = this.getParentID(target);
     }
 
     this.entity(target).get(HierarchyChild).parent = parent;
     this.entity(parent).get(HierarchyContainer).children.add(target);
 
-    if (hasOldParent)
-      this.getParent(target).get(HierarchyContainer).onLeave.emit(target);
+    if (hasOldParent && oldParent)
+      this.entity(oldParent).get(HierarchyContainer).onLeave.emit(target);
     this.entity(parent).get(HierarchyContainer).onJoin.emit(target);
-
     this.entity(target).get(HierarchyChild).onMove.emit();
   }
 
