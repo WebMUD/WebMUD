@@ -1,3 +1,4 @@
+import { TextField } from './elements/text-output';
 import { EventEmitter } from './event-emitter';
 import { View } from './view';
 
@@ -13,6 +14,7 @@ export class Logger {
   public onError = EventEmitter.channel<string[]>();
   public onBold = EventEmitter.channel<string[]>();
   public onSmall = EventEmitter.channel<string[]>();
+  public onFormated = EventEmitter.channel<TextField[]>();
 
   // in
   public onInput = EventEmitter.channel<string>();
@@ -53,6 +55,10 @@ export class Logger {
     this.onInput.emit(data);
   }
 
+  public printFormat(...data: TextField[]) {
+    this.onFormated.emit(data);
+  }
+
   useConsole() {
     this.onClear(_ => console.log());
 
@@ -64,6 +70,8 @@ export class Logger {
 
     this.onBold(data => console.log(...data));
     this.onSmall(data => console.log(...data));
+
+    this.onFormated(data => console.log(...data));
   }
 
   useView(view: View) {
@@ -77,6 +85,8 @@ export class Logger {
 
     this.onBold(data => view.print(view.formatBold(data.join(' '))));
     this.onSmall(data => view.print(view.formatSmall(data.join(' '))));
+
+    this.onFormated(data => view.print(...data));
 
     view.onInput(data => this.input(data));
   }
