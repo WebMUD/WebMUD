@@ -4,7 +4,7 @@ import {
   ConnectionStatus,
 } from '../common/connection/connection-base';
 import { EntityID } from './gamestate/entity';
-import { Frame, frames } from '../common/frames';
+import { Frame, FrameMessage, frames } from '../common/frames';
 import { EventEmitter } from '../common/event-emitter';
 import { ChatChannel, ChatMessage } from './gamestate/components/chat-channel';
 import {
@@ -176,6 +176,10 @@ export class Client {
     if (!this.connection || this.connection.status !== ConnectionStatus.OK)
       throw new Error('connection not available');
     this.connection.send(data);
+  }
+
+  public sendMessageFrame(...parts: { text: string; format: string[] }[]) {
+    this.sendFrame(new FrameMessage(parts));
   }
 
   /**

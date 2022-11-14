@@ -44,24 +44,20 @@ export class ClientBehaviorPlugin extends WebMUDServerPlugin {
       });
 
       client.onEntityEnterRoom(id => {
-        client.sendFrame(
-          new FrameMessage([
-            this.firstPersonName(client, id, 'You'),
-            FrameMessage.field(' entered the room.'),
-          ])
+        client.sendMessageFrame(
+          this.firstPersonName(client, id, 'You'),
+          FrameMessage.field(' entered the room.')
         );
       });
 
       client.onEntityExitRoom(id => {
         const room = server.gs.nameOf(server.gs.getParentID(id));
 
-        client.sendFrame(
-          new FrameMessage([
-            this.firstPersonName(client, id, 'You'),
-            FrameMessage.field(' moved to '),
-            FrameMessage.field(room),
-            FrameMessage.field('.'),
-          ])
+        client.sendMessageFrame(
+          this.firstPersonName(client, id, 'You'),
+          FrameMessage.field(' moved to '),
+          FrameMessage.field(room),
+          FrameMessage.field('.')
         );
       });
 
@@ -70,21 +66,17 @@ export class ClientBehaviorPlugin extends WebMUDServerPlugin {
         const name = msg.senderName;
         const content = msg.content;
 
-        client.sendFrame(
-          new FrameMessage([
-            FrameMessage.field(name, 'console-playername'),
-            FrameMessage.field(` ${verb} `),
-            FrameMessage.field(content),
-          ])
+        client.sendMessageFrame(
+          FrameMessage.field(name, 'console-playername'),
+          FrameMessage.field(` ${verb} `),
+          FrameMessage.field(content)
         );
       });
 
       server.onClientJoin(joinedClient => {
-        client.sendFrame(
-          new FrameMessage([
-            this.firstPersonName(client, joinedClient.player),
-            FrameMessage.field(' joined the game.'),
-          ])
+        client.sendMessageFrame(
+          this.firstPersonName(client, joinedClient.player),
+          FrameMessage.field(' joined the game.')
         );
       });
     });
