@@ -4,34 +4,33 @@ import schemaFactory from './schema-factory';
 const ajv = new Ajv();
 
 type Item = {
-    id: string;
-    name: string;
-}
+  id: string;
+  name: string;
+};
 
 export interface Type {
   type: 'available_entities';
-    items: Item[];
+  items: Item[];
 }
 
 const schema = {
-    type: 'object',
-    properties: {
-        type: { type: 'string' },
-        items: {
-            type: 'array',
-            items: {
-                type: 'object',
-                properties: {
-                    id: { type: 'string' },
-                    name: { type: 'string'},
-                    }
-                }
-            }
+  type: 'object',
+  properties: {
+    type: { type: 'string' },
+    items: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          id: { type: 'string' },
+          name: { type: 'string' },
         },
-    required: ['type', 'items'],
-    additionalProperties: false,
-    }
-
+      },
+    },
+  },
+  required: ['type', 'items'],
+  additionalProperties: false,
+};
 
 export const validate = ajv.compile<Type>(schema);
 
@@ -40,9 +39,9 @@ export const validate = ajv.compile<Type>(schema);
  */
 export class FrameAvailableEntities {
   public readonly type: 'available_entities' = 'available_entities';
-    public readonly items: Item[];
+  public readonly items: Item[];
 
-    public constructor(items: Item[]) {
+  public constructor(items: Item[]) {
     this.items = items;
   }
 

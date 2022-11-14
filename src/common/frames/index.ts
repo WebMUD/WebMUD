@@ -7,15 +7,26 @@ import { FrameAssignToken } from './frame-assign-token';
 import { FrameSendCommand } from './frame-send-command';
 import { FrameRequestCommandList } from './frame-request-command-list';
 
+export {
+  FrameConnect,
+  FrameReconnect,
+  FrameMessage,
+  FrameAvailableEntities,
+  FrameCommandList,
+  FrameAssignToken,
+  FrameSendCommand,
+  FrameRequestCommandList,
+};
+
 const _frames = {
-    FrameConnect,
-    FrameReconnect,
-    FrameMessage,
-    FrameAvailableEntities,
-    FrameCommandList,
-    FrameAssignToken,
-    FrameSendCommand,
-    FrameRequestCommandList,
+  FrameConnect,
+  FrameReconnect,
+  FrameMessage,
+  FrameAvailableEntities,
+  FrameCommandList,
+  FrameAssignToken,
+  FrameSendCommand,
+  FrameRequestCommandList,
 } as const;
 
 export type Frame = InstanceType<typeof _frames[keyof typeof _frames]>;

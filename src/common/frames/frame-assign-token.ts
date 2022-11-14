@@ -30,7 +30,7 @@ export class FrameAssignToken {
   }
 
   public static from(obj: any) {
-      if (validate(obj)) return new FrameAssignToken(obj.token);
+    if (validate(obj)) return new FrameAssignToken(obj.token);
     return false;
   }
 

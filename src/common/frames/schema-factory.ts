@@ -7,10 +7,7 @@ const ajv = new Ajv();
  * @param properties other properties
  * @returns an Ajv schema
  */
-export default function schemaFactory(
-  pattern: string,
-  properties: object
-) {
+export default function schemaFactory(pattern: string, properties: object) {
   return {
     type: 'object',
     properties: {
