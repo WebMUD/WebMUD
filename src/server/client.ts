@@ -20,7 +20,7 @@ export class Client {
   public server: Server;
 
   public onFrame = EventEmitter.channel<Frame>();
-  public onMessage = EventEmitter.channel<ChatMessage>();
+  public onMessage = EventEmitter.channel<{ msg: ChatMessage; verb: string }>();
   public onEntityEnterRoom = EventEmitter.channel<EntityID>();
   public onEntityExitRoom = EventEmitter.channel<EntityID>();
 
@@ -96,7 +96,7 @@ export class Client {
         .entity(world)
         .get(ChatChannel)
         .event(msg => {
-          this.chatMessage(msg);
+          this.chatMessage(msg, 'shouts');
         })
     );
 
@@ -105,7 +105,7 @@ export class Client {
         .entity(this.player)
         .get(ChatChannel)
         .event(data => {
-          this.chatMessage(data);
+          this.chatMessage(data, 'whispers');
         })
     );
   }
@@ -118,6 +118,12 @@ export class Client {
     // the onRoomExit event emitter is used to stop listening for events in the previous room when moving between rooms
     // onRoomExit.once() should be used rather than onRoomExit()
     this.onRoomExit.emit();
+
+    console.log(this.gs.nameOf(this.gs.getParentID(this.player)));
+
+    console.log(
+      this.gs.getParent(this.player).get(HierarchyContainer).onLeave.emitter
+    );
 
     this.onRoomExit.once(
       this.gs
@@ -137,20 +143,24 @@ export class Client {
         })
     );
 
+    console.log(
+      this.gs.getParent(this.player).get(HierarchyContainer).onLeave.emitter
+    );
+
     if (this.gs.getParent(this.player).has(ChatChannel)) {
       this.onRoomExit.once(
         this.gs
           .getParent(this.player)
           .get(ChatChannel)
           .event(msg => {
-            this.chatMessage(msg);
+            this.chatMessage(msg, 'says');
           })
       );
     }
   }
 
-  public chatMessage(msg: ChatMessage) {
-    this.onMessage.emit(msg);
+  public chatMessage(msg: ChatMessage, verb: string = 'says') {
+    this.onMessage.emit({ msg, verb });
   }
 
   public entityEnter(id: EntityID) {

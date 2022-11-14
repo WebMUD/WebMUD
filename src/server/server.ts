@@ -119,7 +119,9 @@ export class Server extends Logger {
   }
 
   public startDiscovery() {
-    this.connection = new Peer();
+    this.connection = new Peer({
+      debug: 0,
+    });
 
     this.connection.on('connection', (conn: DataConnection) =>
       this.onConnection(new Connection(conn))
@@ -147,9 +149,8 @@ export class Server extends Logger {
     const client = new Client(this, connection, player);
     this.clients.add(client);
     client.start(this.world);
-    this.gs.move(player, this.startingRoom);
-
     this.onClientJoin.emit(client);
+    this.gs.move(player, this.startingRoom);
 
     return client;
   }
@@ -160,7 +161,6 @@ export class Server extends Logger {
 
     client.useConnection(connection);
     client.start(this.world);
-
     this.onClientRejoin.emit(client);
 
     return client;
