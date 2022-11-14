@@ -39,7 +39,7 @@ export class VirtualClient {
                   attributes: { for: 'enable-debug' },
                 }),
                 (this.debug = createElement('input', {
-                  attributes: { type: 'checkbox' },
+                  attributes: { type: 'checkbox', checked: 'true' },
                 })),
               ],
             }),

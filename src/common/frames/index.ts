@@ -1,8 +1,35 @@
 import { FrameConnect } from './frame-connect';
+import { FrameReconnect } from './frame-reconnect';
+import { FrameMessage } from './frame-message';
+import { FrameAvailableEntities } from './frame-available-entities';
+import { FrameCommandList } from './frame-command-list';
+import { FrameAssignToken } from './frame-assign-token';
+import { FrameSendCommand } from './frame-send-command';
+import { FrameRequestCommandList } from './frame-request-command-list';
+
+export {
+  FrameConnect,
+  FrameReconnect,
+  FrameMessage,
+  FrameAvailableEntities,
+  FrameCommandList,
+  FrameAssignToken,
+  FrameSendCommand,
+  FrameRequestCommandList,
+};
 
 const _frames = {
   FrameConnect,
-};
+  FrameReconnect,
+  FrameMessage,
+  FrameAvailableEntities,
+  FrameCommandList,
+  FrameAssignToken,
+  FrameSendCommand,
+  FrameRequestCommandList,
+} as const;
+
+export type Frame = InstanceType<typeof _frames[keyof typeof _frames]>;
 
 /**
  * validate and parse incoming data

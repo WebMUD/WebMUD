@@ -7,14 +7,14 @@ function mock() {
   const world = gs.createWorld('World');
   const rooms = {
     r1: gs.createRoom('Room 1', 'The first room.', world),
-    r2: gs.createRoom('Room 1', 'The second room.', world),
+    r2: gs.createRoom('Room 2', 'The second room.', world),
     r3: gs.createRoom('Room 3', 'The third room.', world),
   };
 
   const props = {
-    backpack: gs.createProp('Backpack', 'A backpack', true, true),
-    notebook: gs.createProp('Notebook', 'A notebook', false, true),
-    desk: gs.createProp('Desk', 'Very heavy', true, false),
+    backpack: gs.createItem('Backpack', 'A backpack', true),
+    notebook: gs.createItem('Notebook', 'A notebook', false),
+    desk: gs.createProp('Desk', 'Very heavy', true),
   };
 
   gs.connectEastWest(rooms.r1, rooms.r2);
