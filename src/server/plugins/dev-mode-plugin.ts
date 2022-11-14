@@ -25,6 +25,6 @@ export class DevModePlugin extends WebMUDServerPlugin {
       },
     });
 
-    server.onReady(()=>server.start());
+    server.onReady(() => server.start());
   }
 }
