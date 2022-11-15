@@ -5,16 +5,22 @@ export class LocalConnection extends ConnectionBase {
 
   public connect(other: LocalConnection) {
     this.pair = other;
+    this.status = ConnectionStatus.OK;
   }
 
   public send(data: string): Error | undefined {
-    if (!this.pair) throw new Error('not paired');
+    if (!this.pair) {
+      this.status = ConnectionStatus.ERROR;
+      return new Error('not paired');
+    }
+
     this.pair.onData.emit(data);
     return undefined;
   }
 
   public close() {
     this.pair = null;
+    ConnectionStatus.CLOSE;
   }
 
   /**

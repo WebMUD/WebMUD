@@ -1,11 +1,14 @@
 import * as util from '../common/util';
 
-import '../server/index';
-
+import { createServer } from '../server/main';
 import { ClientView } from '../client/client-view';
 import { Client } from '../client/client';
 import { VirtualClient } from './virtual-client';
-import { create } from 'lodash';
+import { MapEditPlugin } from '../server/plugins/map-edit-plugin';
+import { WorldUtilPlugin } from '../server/plugins/world-util-plugin';
+import { UtilCommandsPlugin } from '../server/plugins/util-commands-plugin';
+import { DevModePlugin } from '../server/plugins/dev-mode-plugin';
+import { LocalConnection } from '../common/connection/local-connection';
 
 const NUM_CLIENTS = 2;
 
@@ -30,8 +33,37 @@ function createClient() {
     `Virtual Client ${id}`,
     client
   );
+
+  const [serverConnection, clientConnection] = LocalConnection.create();
+
+  window.server.onConnection(serverConnection);
+  client.useConnection(clientConnection);
+
+  client.join(`Player${id}`);
 }
 
 el.create.onclick = createClient;
 
-for (let i = 0; i < NUM_CLIENTS; i++) createClient();
+window.setTimeout(() => {
+  const server = createServer(true, [
+    new WorldUtilPlugin(),
+    new MapEditPlugin(),
+    new UtilCommandsPlugin(),
+    new DevModePlugin(),
+  ]);
+
+  const world = server.gamestate.createWorld('TestWorld');
+  const rooms = {
+    start: server.gamestate.createRoom('WelcomeRoom', 'An empty room.', world),
+    north: server.gamestate.createRoom('NorthRoom', 'An empty room.', world),
+  };
+
+  window.server.onReady(() => {
+    window.setTimeout(() => {
+      for (let i = 0; i < NUM_CLIENTS; i++) createClient();
+    });
+  });
+
+  server.gamestate.connectNorthSouth(rooms.north, rooms.start);
+  server.init(world, rooms.start);
+});

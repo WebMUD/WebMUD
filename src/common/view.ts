@@ -20,6 +20,7 @@ export class View {
       this.input = new TextInput(options.input);
     if (options.debug && options.debug instanceof HTMLInputElement) {
       const debugCheckbox = new CheckboxInput(options.debug);
+      if (debugCheckbox.value) this.output?.el.classList.add('debug-enable');
       debugCheckbox.enable.add(() => {
         if (this.output) this.output.el.classList.add('debug-enable');
       });
@@ -59,6 +60,11 @@ export class View {
     ];
   }
 
+  public clear() {
+    if (!this.output) throw new Error('no output channel');
+    this.output.clear();
+  }
+
   public print(...data: TextField[]) {
     return this.write(false, ...data);
   }
@@ -95,4 +101,14 @@ export class View {
     if (!this.input) throw new Error('no input channel');
     this.input.data.add(cb);
   }
+
+  public formatSmall(text: TextField) {
+    return View.format(text, 'small', 'sublte');
+  }
+
+  public formatBold(text: TextField) {
+    return View.format(text, 'bold');
+  }
+
+  static format = TextOutput.format;
 }

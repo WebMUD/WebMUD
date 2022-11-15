@@ -15,6 +15,8 @@ export interface EventChannel<T> {
   clear: () => void;
   /** listen to one event only */
   once: (cb: (data: T) => void) => void;
+  /** the underlaying EventEmitter object */
+  emitter: EventEmitter<T>;
 }
 
 /**
@@ -51,7 +53,8 @@ export class EventEmitter<T> {
    * @param data data to call handlers with
    */
   public emit(data: T): void {
-    for (const handler of this.handlers) handler(data);
+    const _handelrs = [...this.handlers];
+    for (const handler of _handelrs) handler(data);
   }
 
   /**
@@ -66,12 +69,13 @@ export class EventEmitter<T> {
     result.emit = (data: T) => eventEmitter.emit(data);
     result.clear = () => eventEmitter.clear();
     result.once = (cb: (data: T) => void) => {
-      let stop: ()=>void;
-      stop = result((data)=>{
+      let stop: () => void;
+      stop = result(data => {
         cb(data);
         stop();
       });
-    }
+    };
+    result.emitter = eventEmitter;
     return result;
   }
 }

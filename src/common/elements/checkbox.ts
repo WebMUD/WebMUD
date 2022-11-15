@@ -23,4 +23,8 @@ export class CheckboxInput {
     if (this.el.checked) this.enable.emit();
     else this.disable.emit();
   }
+
+  public get value() {
+    return this.el.checked;
+  }
 }

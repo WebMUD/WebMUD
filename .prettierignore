@@ -3,5 +3,6 @@ build
 typedoc
 coverage
 
-# Ignore all HTML files:
-*.html
+# Ignore package.json
+package.json
+package-lock.json

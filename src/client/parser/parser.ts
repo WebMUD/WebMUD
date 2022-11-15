@@ -4,22 +4,69 @@
 * import {
 *     MoveCommand,
 *     Direction,
+*     Item,
+*     HelpCommand,
+*     CommandName,
+*     ExitCommand,
+*     InventoryCommand,
+*     SayCommand,
+*     WhisperCommand
 *     } from './commands';
 * ---
-* start := moveCommand
+* start := commands
+* commands := moveCommand | helpCommand | exitCommand | inventoryCommand | sayCommand | whisperCommand
 * space := ' '
-* moveCommand := 'move' space direction=direction
+* whisperCommand := whisperKeyword=whisperKeyword .command =  WhisperCommand {return new WhisperCommand();}
+* whisperKeyword := '[wW][hH][iI][sS][pP][eE][rR]' | '[wW]'
+* sayCommand := sayKeyword=sayKeyword .command = SayCommand {return new SayCommand();}
+* sayKeyword := '[sS][aA][yY]' | '[sS]'
+* inventoryCommand := inventoryKeyword=inventoryKeyword .command = InventoryCommand {return new InventoryCommand();}
+* inventoryKeyword := '[iI][nN][vV][eE][nN][tT][oO][rR][yY]' | '[iI]'
+* exitCommand := exitKeyword=exitKeyword .command = ExitCommand {return new ExitCommand();}
+* exitKeyword := '[eE][xX][iI][tT]' | '[eE][xX][iI][tT][sS]' | '[eE]'
+* //helpCommand grammar
+* helpKeyword := '[hH][eE][lL][pP]' | '[hH]'
+* helpCommand := helpKeyword space commandName=commandName
+*     .command = HelpCommand {return new HelpCommand(this.commandName.value);}
+* commandName := move | exit | take | drop | say | inventory | whisper
+* //name of commands for the help command
+* move := text='[mM][oO][vV][eE]' .value = CommandName {return CommandName.MOVE;} | 
+*     text='[mM]' .value = CommandName {return CommandName.MOVE;}
+* exit := text='[eE][xX][iI][tT]' .value = CommandName {return CommandName.EXIT;} | 
+*     text='[eE][xX][iI][tT][sS]' .value = CommandName {return CommandName.EXIT;} |
+*     text='[eE]' .value = CommandName {return CommandName.EXIT;}
+* take := text='[tT][aA][kK][eE]' .value = CommandName {return CommandName.TAKE;} | 
+*     text='[tT]' .value = CommandName {return CommandName.TAKE;}
+* drop := text='[dD][rR][oO][pP]' .value = CommandName {return CommandName.DROP;} | 
+*     text='[dD]' .value = CommandName {return CommandName.DROP;}
+* say := text='[sS][aA][yY]' .value = CommandName {return CommandName.SAY;} | 
+*     text='[sS]' .value = CommandName {return CommandName.SAY;}
+* inventory := text='[iI][nN][vV][eE][nN][tT][oO][rR][yY]' .value = CommandName {return CommandName.INVENTORY;} | 
+*     text='[iI]' .value = CommandName {return CommandName.INVENTORY;}
+* whisper := text='[wW][hH][iI][sS][pP][eE][rR]' .value = CommandName {return CommandName.WHISPER;} | 
+*     text='[wW]' .value = CommandName {return CommandName.WHISPER;}
+* item :=
+*    text='test' .value = Item {return Item.ITEM_TEST;}
+* moveCommand := moveKeyword space direction=direction
 *     .command = MoveCommand {return new MoveCommand(this.direction.value);}
+* moveKeyword := '[mM][oO][vV][eE]' | '[mM]'
 * direction := north | south | east | west
 * north := text='north' .value = Direction {return Direction.NORTH;} | text='n' .value = Direction {return Direction.NORTH;}
-* south := text='south' .value = Direction {return Direction.NORTH;} | text='s' .value = Direction {return Direction.NORTH;}
-* east := text='east' .value = Direction {return Direction.NORTH;} | text='e' .value = Direction {return Direction.NORTH;}
-* west := text='west' .value = Direction {return Direction.NORTH;} | text='w' .value = Direction {return Direction.NORTH;}
+* south := text='south' .value = Direction {return Direction.SOUTH;} | text='s' .value = Direction {return Direction.SOUTH;}
+* east := text='east' .value = Direction {return Direction.EAST;} | text='e' .value = Direction {return Direction.EAST;}
+* west := text='west' .value = Direction {return Direction.WEST;} | text='w' .value = Direction {return Direction.WEST;}
 */
 
 import {
     MoveCommand,
     Direction,
+    Item,
+    HelpCommand,
+    CommandName,
+    ExitCommand,
+    InventoryCommand,
+    SayCommand,
+    WhisperCommand
     } from './commands';
 
 type Nullable<T> = T | null;
@@ -29,8 +76,55 @@ export interface ASTNodeIntf {
 }
 export enum ASTKinds {
     start = "start",
+    commands_1 = "commands_1",
+    commands_2 = "commands_2",
+    commands_3 = "commands_3",
+    commands_4 = "commands_4",
+    commands_5 = "commands_5",
+    commands_6 = "commands_6",
     space = "space",
+    whisperCommand = "whisperCommand",
+    whisperKeyword_1 = "whisperKeyword_1",
+    whisperKeyword_2 = "whisperKeyword_2",
+    sayCommand = "sayCommand",
+    sayKeyword_1 = "sayKeyword_1",
+    sayKeyword_2 = "sayKeyword_2",
+    inventoryCommand = "inventoryCommand",
+    inventoryKeyword_1 = "inventoryKeyword_1",
+    inventoryKeyword_2 = "inventoryKeyword_2",
+    exitCommand = "exitCommand",
+    exitKeyword_1 = "exitKeyword_1",
+    exitKeyword_2 = "exitKeyword_2",
+    exitKeyword_3 = "exitKeyword_3",
+    helpKeyword_1 = "helpKeyword_1",
+    helpKeyword_2 = "helpKeyword_2",
+    helpCommand = "helpCommand",
+    commandName_1 = "commandName_1",
+    commandName_2 = "commandName_2",
+    commandName_3 = "commandName_3",
+    commandName_4 = "commandName_4",
+    commandName_5 = "commandName_5",
+    commandName_6 = "commandName_6",
+    commandName_7 = "commandName_7",
+    move_1 = "move_1",
+    move_2 = "move_2",
+    exit_1 = "exit_1",
+    exit_2 = "exit_2",
+    exit_3 = "exit_3",
+    take_1 = "take_1",
+    take_2 = "take_2",
+    drop_1 = "drop_1",
+    drop_2 = "drop_2",
+    say_1 = "say_1",
+    say_2 = "say_2",
+    inventory_1 = "inventory_1",
+    inventory_2 = "inventory_2",
+    whisper_1 = "whisper_1",
+    whisper_2 = "whisper_2",
+    item = "item",
     moveCommand = "moveCommand",
+    moveKeyword_1 = "moveKeyword_1",
+    moveKeyword_2 = "moveKeyword_2",
     direction_1 = "direction_1",
     direction_2 = "direction_2",
     direction_3 = "direction_3",
@@ -44,8 +138,277 @@ export enum ASTKinds {
     west_1 = "west_1",
     west_2 = "west_2",
 }
-export type start = moveCommand;
+export type start = commands;
+export type commands = commands_1 | commands_2 | commands_3 | commands_4 | commands_5 | commands_6;
+export type commands_1 = moveCommand;
+export type commands_2 = helpCommand;
+export type commands_3 = exitCommand;
+export type commands_4 = inventoryCommand;
+export type commands_5 = sayCommand;
+export type commands_6 = whisperCommand;
 export type space = string;
+export class whisperCommand {
+    public kind: ASTKinds.whisperCommand = ASTKinds.whisperCommand;
+    public whisperKeyword: whisperKeyword;
+    public command: WhisperCommand;
+    constructor(whisperKeyword: whisperKeyword){
+        this.whisperKeyword = whisperKeyword;
+        this.command = ((): WhisperCommand => {
+        return new WhisperCommand();
+        })();
+    }
+}
+export type whisperKeyword = whisperKeyword_1 | whisperKeyword_2;
+export type whisperKeyword_1 = string;
+export type whisperKeyword_2 = string;
+export class sayCommand {
+    public kind: ASTKinds.sayCommand = ASTKinds.sayCommand;
+    public sayKeyword: sayKeyword;
+    public command: SayCommand;
+    constructor(sayKeyword: sayKeyword){
+        this.sayKeyword = sayKeyword;
+        this.command = ((): SayCommand => {
+        return new SayCommand();
+        })();
+    }
+}
+export type sayKeyword = sayKeyword_1 | sayKeyword_2;
+export type sayKeyword_1 = string;
+export type sayKeyword_2 = string;
+export class inventoryCommand {
+    public kind: ASTKinds.inventoryCommand = ASTKinds.inventoryCommand;
+    public inventoryKeyword: inventoryKeyword;
+    public command: InventoryCommand;
+    constructor(inventoryKeyword: inventoryKeyword){
+        this.inventoryKeyword = inventoryKeyword;
+        this.command = ((): InventoryCommand => {
+        return new InventoryCommand();
+        })();
+    }
+}
+export type inventoryKeyword = inventoryKeyword_1 | inventoryKeyword_2;
+export type inventoryKeyword_1 = string;
+export type inventoryKeyword_2 = string;
+export class exitCommand {
+    public kind: ASTKinds.exitCommand = ASTKinds.exitCommand;
+    public exitKeyword: exitKeyword;
+    public command: ExitCommand;
+    constructor(exitKeyword: exitKeyword){
+        this.exitKeyword = exitKeyword;
+        this.command = ((): ExitCommand => {
+        return new ExitCommand();
+        })();
+    }
+}
+export type exitKeyword = exitKeyword_1 | exitKeyword_2 | exitKeyword_3;
+export type exitKeyword_1 = string;
+export type exitKeyword_2 = string;
+export type exitKeyword_3 = string;
+export type helpKeyword = helpKeyword_1 | helpKeyword_2;
+export type helpKeyword_1 = string;
+export type helpKeyword_2 = string;
+export class helpCommand {
+    public kind: ASTKinds.helpCommand = ASTKinds.helpCommand;
+    public commandName: commandName;
+    public command: HelpCommand;
+    constructor(commandName: commandName){
+        this.commandName = commandName;
+        this.command = ((): HelpCommand => {
+        return new HelpCommand(this.commandName.value);
+        })();
+    }
+}
+export type commandName = commandName_1 | commandName_2 | commandName_3 | commandName_4 | commandName_5 | commandName_6 | commandName_7;
+export type commandName_1 = move;
+export type commandName_2 = exit;
+export type commandName_3 = take;
+export type commandName_4 = drop;
+export type commandName_5 = say;
+export type commandName_6 = inventory;
+export type commandName_7 = whisper;
+export type move = move_1 | move_2;
+export class move_1 {
+    public kind: ASTKinds.move_1 = ASTKinds.move_1;
+    public text: string;
+    public value: CommandName;
+    constructor(text: string){
+        this.text = text;
+        this.value = ((): CommandName => {
+        return CommandName.MOVE;
+        })();
+    }
+}
+export class move_2 {
+    public kind: ASTKinds.move_2 = ASTKinds.move_2;
+    public text: string;
+    public value: CommandName;
+    constructor(text: string){
+        this.text = text;
+        this.value = ((): CommandName => {
+        return CommandName.MOVE;
+        })();
+    }
+}
+export type exit = exit_1 | exit_2 | exit_3;
+export class exit_1 {
+    public kind: ASTKinds.exit_1 = ASTKinds.exit_1;
+    public text: string;
+    public value: CommandName;
+    constructor(text: string){
+        this.text = text;
+        this.value = ((): CommandName => {
+        return CommandName.EXIT;
+        })();
+    }
+}
+export class exit_2 {
+    public kind: ASTKinds.exit_2 = ASTKinds.exit_2;
+    public text: string;
+    public value: CommandName;
+    constructor(text: string){
+        this.text = text;
+        this.value = ((): CommandName => {
+        return CommandName.EXIT;
+        })();
+    }
+}
+export class exit_3 {
+    public kind: ASTKinds.exit_3 = ASTKinds.exit_3;
+    public text: string;
+    public value: CommandName;
+    constructor(text: string){
+        this.text = text;
+        this.value = ((): CommandName => {
+        return CommandName.EXIT;
+        })();
+    }
+}
+export type take = take_1 | take_2;
+export class take_1 {
+    public kind: ASTKinds.take_1 = ASTKinds.take_1;
+    public text: string;
+    public value: CommandName;
+    constructor(text: string){
+        this.text = text;
+        this.value = ((): CommandName => {
+        return CommandName.TAKE;
+        })();
+    }
+}
+export class take_2 {
+    public kind: ASTKinds.take_2 = ASTKinds.take_2;
+    public text: string;
+    public value: CommandName;
+    constructor(text: string){
+        this.text = text;
+        this.value = ((): CommandName => {
+        return CommandName.TAKE;
+        })();
+    }
+}
+export type drop = drop_1 | drop_2;
+export class drop_1 {
+    public kind: ASTKinds.drop_1 = ASTKinds.drop_1;
+    public text: string;
+    public value: CommandName;
+    constructor(text: string){
+        this.text = text;
+        this.value = ((): CommandName => {
+        return CommandName.DROP;
+        })();
+    }
+}
+export class drop_2 {
+    public kind: ASTKinds.drop_2 = ASTKinds.drop_2;
+    public text: string;
+    public value: CommandName;
+    constructor(text: string){
+        this.text = text;
+        this.value = ((): CommandName => {
+        return CommandName.DROP;
+        })();
+    }
+}
+export type say = say_1 | say_2;
+export class say_1 {
+    public kind: ASTKinds.say_1 = ASTKinds.say_1;
+    public text: string;
+    public value: CommandName;
+    constructor(text: string){
+        this.text = text;
+        this.value = ((): CommandName => {
+        return CommandName.SAY;
+        })();
+    }
+}
+export class say_2 {
+    public kind: ASTKinds.say_2 = ASTKinds.say_2;
+    public text: string;
+    public value: CommandName;
+    constructor(text: string){
+        this.text = text;
+        this.value = ((): CommandName => {
+        return CommandName.SAY;
+        })();
+    }
+}
+export type inventory = inventory_1 | inventory_2;
+export class inventory_1 {
+    public kind: ASTKinds.inventory_1 = ASTKinds.inventory_1;
+    public text: string;
+    public value: CommandName;
+    constructor(text: string){
+        this.text = text;
+        this.value = ((): CommandName => {
+        return CommandName.INVENTORY;
+        })();
+    }
+}
+export class inventory_2 {
+    public kind: ASTKinds.inventory_2 = ASTKinds.inventory_2;
+    public text: string;
+    public value: CommandName;
+    constructor(text: string){
+        this.text = text;
+        this.value = ((): CommandName => {
+        return CommandName.INVENTORY;
+        })();
+    }
+}
+export type whisper = whisper_1 | whisper_2;
+export class whisper_1 {
+    public kind: ASTKinds.whisper_1 = ASTKinds.whisper_1;
+    public text: string;
+    public value: CommandName;
+    constructor(text: string){
+        this.text = text;
+        this.value = ((): CommandName => {
+        return CommandName.WHISPER;
+        })();
+    }
+}
+export class whisper_2 {
+    public kind: ASTKinds.whisper_2 = ASTKinds.whisper_2;
+    public text: string;
+    public value: CommandName;
+    constructor(text: string){
+        this.text = text;
+        this.value = ((): CommandName => {
+        return CommandName.WHISPER;
+        })();
+    }
+}
+export class item {
+    public kind: ASTKinds.item = ASTKinds.item;
+    public text: string;
+    public value: Item;
+    constructor(text: string){
+        this.text = text;
+        this.value = ((): Item => {
+        return Item.ITEM_TEST;
+        })();
+    }
+}
 export class moveCommand {
     public kind: ASTKinds.moveCommand = ASTKinds.moveCommand;
     public direction: direction;
@@ -57,6 +420,9 @@ export class moveCommand {
         })();
     }
 }
+export type moveKeyword = moveKeyword_1 | moveKeyword_2;
+export type moveKeyword_1 = string;
+export type moveKeyword_2 = string;
 export type direction = direction_1 | direction_2 | direction_3 | direction_4;
 export type direction_1 = north;
 export type direction_2 = south;
@@ -93,7 +459,7 @@ export class south_1 {
     constructor(text: string){
         this.text = text;
         this.value = ((): Direction => {
-        return Direction.NORTH;
+        return Direction.SOUTH;
         })();
     }
 }
@@ -104,7 +470,7 @@ export class south_2 {
     constructor(text: string){
         this.text = text;
         this.value = ((): Direction => {
-        return Direction.NORTH;
+        return Direction.SOUTH;
         })();
     }
 }
@@ -116,7 +482,7 @@ export class east_1 {
     constructor(text: string){
         this.text = text;
         this.value = ((): Direction => {
-        return Direction.NORTH;
+        return Direction.EAST;
         })();
     }
 }
@@ -127,7 +493,7 @@ export class east_2 {
     constructor(text: string){
         this.text = text;
         this.value = ((): Direction => {
-        return Direction.NORTH;
+        return Direction.EAST;
         })();
     }
 }
@@ -139,7 +505,7 @@ export class west_1 {
     constructor(text: string){
         this.text = text;
         this.value = ((): Direction => {
-        return Direction.NORTH;
+        return Direction.WEST;
         })();
     }
 }
@@ -150,7 +516,7 @@ export class west_2 {
     constructor(text: string){
         this.text = text;
         this.value = ((): Direction => {
-        return Direction.NORTH;
+        return Direction.WEST;
         })();
     }
 }
@@ -172,10 +538,452 @@ export class Parser {
     public clearMemos(): void {
     }
     public matchstart($$dpth: number, $$cr?: ErrorTracker): Nullable<start> {
+        return this.matchcommands($$dpth + 1, $$cr);
+    }
+    public matchcommands($$dpth: number, $$cr?: ErrorTracker): Nullable<commands> {
+        return this.choice<commands>([
+            () => this.matchcommands_1($$dpth + 1, $$cr),
+            () => this.matchcommands_2($$dpth + 1, $$cr),
+            () => this.matchcommands_3($$dpth + 1, $$cr),
+            () => this.matchcommands_4($$dpth + 1, $$cr),
+            () => this.matchcommands_5($$dpth + 1, $$cr),
+            () => this.matchcommands_6($$dpth + 1, $$cr),
+        ]);
+    }
+    public matchcommands_1($$dpth: number, $$cr?: ErrorTracker): Nullable<commands_1> {
         return this.matchmoveCommand($$dpth + 1, $$cr);
+    }
+    public matchcommands_2($$dpth: number, $$cr?: ErrorTracker): Nullable<commands_2> {
+        return this.matchhelpCommand($$dpth + 1, $$cr);
+    }
+    public matchcommands_3($$dpth: number, $$cr?: ErrorTracker): Nullable<commands_3> {
+        return this.matchexitCommand($$dpth + 1, $$cr);
+    }
+    public matchcommands_4($$dpth: number, $$cr?: ErrorTracker): Nullable<commands_4> {
+        return this.matchinventoryCommand($$dpth + 1, $$cr);
+    }
+    public matchcommands_5($$dpth: number, $$cr?: ErrorTracker): Nullable<commands_5> {
+        return this.matchsayCommand($$dpth + 1, $$cr);
+    }
+    public matchcommands_6($$dpth: number, $$cr?: ErrorTracker): Nullable<commands_6> {
+        return this.matchwhisperCommand($$dpth + 1, $$cr);
     }
     public matchspace($$dpth: number, $$cr?: ErrorTracker): Nullable<space> {
         return this.regexAccept(String.raw`(?: )`, $$dpth + 1, $$cr);
+    }
+    public matchwhisperCommand($$dpth: number, $$cr?: ErrorTracker): Nullable<whisperCommand> {
+        return this.run<whisperCommand>($$dpth,
+            () => {
+                let $scope$whisperKeyword: Nullable<whisperKeyword>;
+                let $$res: Nullable<whisperCommand> = null;
+                if (true
+                    && ($scope$whisperKeyword = this.matchwhisperKeyword($$dpth + 1, $$cr)) !== null
+                ) {
+                    $$res = new whisperCommand($scope$whisperKeyword);
+                }
+                return $$res;
+            });
+    }
+    public matchwhisperKeyword($$dpth: number, $$cr?: ErrorTracker): Nullable<whisperKeyword> {
+        return this.choice<whisperKeyword>([
+            () => this.matchwhisperKeyword_1($$dpth + 1, $$cr),
+            () => this.matchwhisperKeyword_2($$dpth + 1, $$cr),
+        ]);
+    }
+    public matchwhisperKeyword_1($$dpth: number, $$cr?: ErrorTracker): Nullable<whisperKeyword_1> {
+        return this.regexAccept(String.raw`(?:[wW][hH][iI][sS][pP][eE][rR])`, $$dpth + 1, $$cr);
+    }
+    public matchwhisperKeyword_2($$dpth: number, $$cr?: ErrorTracker): Nullable<whisperKeyword_2> {
+        return this.regexAccept(String.raw`(?:[wW])`, $$dpth + 1, $$cr);
+    }
+    public matchsayCommand($$dpth: number, $$cr?: ErrorTracker): Nullable<sayCommand> {
+        return this.run<sayCommand>($$dpth,
+            () => {
+                let $scope$sayKeyword: Nullable<sayKeyword>;
+                let $$res: Nullable<sayCommand> = null;
+                if (true
+                    && ($scope$sayKeyword = this.matchsayKeyword($$dpth + 1, $$cr)) !== null
+                ) {
+                    $$res = new sayCommand($scope$sayKeyword);
+                }
+                return $$res;
+            });
+    }
+    public matchsayKeyword($$dpth: number, $$cr?: ErrorTracker): Nullable<sayKeyword> {
+        return this.choice<sayKeyword>([
+            () => this.matchsayKeyword_1($$dpth + 1, $$cr),
+            () => this.matchsayKeyword_2($$dpth + 1, $$cr),
+        ]);
+    }
+    public matchsayKeyword_1($$dpth: number, $$cr?: ErrorTracker): Nullable<sayKeyword_1> {
+        return this.regexAccept(String.raw`(?:[sS][aA][yY])`, $$dpth + 1, $$cr);
+    }
+    public matchsayKeyword_2($$dpth: number, $$cr?: ErrorTracker): Nullable<sayKeyword_2> {
+        return this.regexAccept(String.raw`(?:[sS])`, $$dpth + 1, $$cr);
+    }
+    public matchinventoryCommand($$dpth: number, $$cr?: ErrorTracker): Nullable<inventoryCommand> {
+        return this.run<inventoryCommand>($$dpth,
+            () => {
+                let $scope$inventoryKeyword: Nullable<inventoryKeyword>;
+                let $$res: Nullable<inventoryCommand> = null;
+                if (true
+                    && ($scope$inventoryKeyword = this.matchinventoryKeyword($$dpth + 1, $$cr)) !== null
+                ) {
+                    $$res = new inventoryCommand($scope$inventoryKeyword);
+                }
+                return $$res;
+            });
+    }
+    public matchinventoryKeyword($$dpth: number, $$cr?: ErrorTracker): Nullable<inventoryKeyword> {
+        return this.choice<inventoryKeyword>([
+            () => this.matchinventoryKeyword_1($$dpth + 1, $$cr),
+            () => this.matchinventoryKeyword_2($$dpth + 1, $$cr),
+        ]);
+    }
+    public matchinventoryKeyword_1($$dpth: number, $$cr?: ErrorTracker): Nullable<inventoryKeyword_1> {
+        return this.regexAccept(String.raw`(?:[iI][nN][vV][eE][nN][tT][oO][rR][yY])`, $$dpth + 1, $$cr);
+    }
+    public matchinventoryKeyword_2($$dpth: number, $$cr?: ErrorTracker): Nullable<inventoryKeyword_2> {
+        return this.regexAccept(String.raw`(?:[iI])`, $$dpth + 1, $$cr);
+    }
+    public matchexitCommand($$dpth: number, $$cr?: ErrorTracker): Nullable<exitCommand> {
+        return this.run<exitCommand>($$dpth,
+            () => {
+                let $scope$exitKeyword: Nullable<exitKeyword>;
+                let $$res: Nullable<exitCommand> = null;
+                if (true
+                    && ($scope$exitKeyword = this.matchexitKeyword($$dpth + 1, $$cr)) !== null
+                ) {
+                    $$res = new exitCommand($scope$exitKeyword);
+                }
+                return $$res;
+            });
+    }
+    public matchexitKeyword($$dpth: number, $$cr?: ErrorTracker): Nullable<exitKeyword> {
+        return this.choice<exitKeyword>([
+            () => this.matchexitKeyword_1($$dpth + 1, $$cr),
+            () => this.matchexitKeyword_2($$dpth + 1, $$cr),
+            () => this.matchexitKeyword_3($$dpth + 1, $$cr),
+        ]);
+    }
+    public matchexitKeyword_1($$dpth: number, $$cr?: ErrorTracker): Nullable<exitKeyword_1> {
+        return this.regexAccept(String.raw`(?:[eE][xX][iI][tT])`, $$dpth + 1, $$cr);
+    }
+    public matchexitKeyword_2($$dpth: number, $$cr?: ErrorTracker): Nullable<exitKeyword_2> {
+        return this.regexAccept(String.raw`(?:[eE][xX][iI][tT][sS])`, $$dpth + 1, $$cr);
+    }
+    public matchexitKeyword_3($$dpth: number, $$cr?: ErrorTracker): Nullable<exitKeyword_3> {
+        return this.regexAccept(String.raw`(?:[eE])`, $$dpth + 1, $$cr);
+    }
+    public matchhelpKeyword($$dpth: number, $$cr?: ErrorTracker): Nullable<helpKeyword> {
+        return this.choice<helpKeyword>([
+            () => this.matchhelpKeyword_1($$dpth + 1, $$cr),
+            () => this.matchhelpKeyword_2($$dpth + 1, $$cr),
+        ]);
+    }
+    public matchhelpKeyword_1($$dpth: number, $$cr?: ErrorTracker): Nullable<helpKeyword_1> {
+        return this.regexAccept(String.raw`(?:[hH][eE][lL][pP])`, $$dpth + 1, $$cr);
+    }
+    public matchhelpKeyword_2($$dpth: number, $$cr?: ErrorTracker): Nullable<helpKeyword_2> {
+        return this.regexAccept(String.raw`(?:[hH])`, $$dpth + 1, $$cr);
+    }
+    public matchhelpCommand($$dpth: number, $$cr?: ErrorTracker): Nullable<helpCommand> {
+        return this.run<helpCommand>($$dpth,
+            () => {
+                let $scope$commandName: Nullable<commandName>;
+                let $$res: Nullable<helpCommand> = null;
+                if (true
+                    && this.matchhelpKeyword($$dpth + 1, $$cr) !== null
+                    && this.matchspace($$dpth + 1, $$cr) !== null
+                    && ($scope$commandName = this.matchcommandName($$dpth + 1, $$cr)) !== null
+                ) {
+                    $$res = new helpCommand($scope$commandName);
+                }
+                return $$res;
+            });
+    }
+    public matchcommandName($$dpth: number, $$cr?: ErrorTracker): Nullable<commandName> {
+        return this.choice<commandName>([
+            () => this.matchcommandName_1($$dpth + 1, $$cr),
+            () => this.matchcommandName_2($$dpth + 1, $$cr),
+            () => this.matchcommandName_3($$dpth + 1, $$cr),
+            () => this.matchcommandName_4($$dpth + 1, $$cr),
+            () => this.matchcommandName_5($$dpth + 1, $$cr),
+            () => this.matchcommandName_6($$dpth + 1, $$cr),
+            () => this.matchcommandName_7($$dpth + 1, $$cr),
+        ]);
+    }
+    public matchcommandName_1($$dpth: number, $$cr?: ErrorTracker): Nullable<commandName_1> {
+        return this.matchmove($$dpth + 1, $$cr);
+    }
+    public matchcommandName_2($$dpth: number, $$cr?: ErrorTracker): Nullable<commandName_2> {
+        return this.matchexit($$dpth + 1, $$cr);
+    }
+    public matchcommandName_3($$dpth: number, $$cr?: ErrorTracker): Nullable<commandName_3> {
+        return this.matchtake($$dpth + 1, $$cr);
+    }
+    public matchcommandName_4($$dpth: number, $$cr?: ErrorTracker): Nullable<commandName_4> {
+        return this.matchdrop($$dpth + 1, $$cr);
+    }
+    public matchcommandName_5($$dpth: number, $$cr?: ErrorTracker): Nullable<commandName_5> {
+        return this.matchsay($$dpth + 1, $$cr);
+    }
+    public matchcommandName_6($$dpth: number, $$cr?: ErrorTracker): Nullable<commandName_6> {
+        return this.matchinventory($$dpth + 1, $$cr);
+    }
+    public matchcommandName_7($$dpth: number, $$cr?: ErrorTracker): Nullable<commandName_7> {
+        return this.matchwhisper($$dpth + 1, $$cr);
+    }
+    public matchmove($$dpth: number, $$cr?: ErrorTracker): Nullable<move> {
+        return this.choice<move>([
+            () => this.matchmove_1($$dpth + 1, $$cr),
+            () => this.matchmove_2($$dpth + 1, $$cr),
+        ]);
+    }
+    public matchmove_1($$dpth: number, $$cr?: ErrorTracker): Nullable<move_1> {
+        return this.run<move_1>($$dpth,
+            () => {
+                let $scope$text: Nullable<string>;
+                let $$res: Nullable<move_1> = null;
+                if (true
+                    && ($scope$text = this.regexAccept(String.raw`(?:[mM][oO][vV][eE])`, $$dpth + 1, $$cr)) !== null
+                ) {
+                    $$res = new move_1($scope$text);
+                }
+                return $$res;
+            });
+    }
+    public matchmove_2($$dpth: number, $$cr?: ErrorTracker): Nullable<move_2> {
+        return this.run<move_2>($$dpth,
+            () => {
+                let $scope$text: Nullable<string>;
+                let $$res: Nullable<move_2> = null;
+                if (true
+                    && ($scope$text = this.regexAccept(String.raw`(?:[mM])`, $$dpth + 1, $$cr)) !== null
+                ) {
+                    $$res = new move_2($scope$text);
+                }
+                return $$res;
+            });
+    }
+    public matchexit($$dpth: number, $$cr?: ErrorTracker): Nullable<exit> {
+        return this.choice<exit>([
+            () => this.matchexit_1($$dpth + 1, $$cr),
+            () => this.matchexit_2($$dpth + 1, $$cr),
+            () => this.matchexit_3($$dpth + 1, $$cr),
+        ]);
+    }
+    public matchexit_1($$dpth: number, $$cr?: ErrorTracker): Nullable<exit_1> {
+        return this.run<exit_1>($$dpth,
+            () => {
+                let $scope$text: Nullable<string>;
+                let $$res: Nullable<exit_1> = null;
+                if (true
+                    && ($scope$text = this.regexAccept(String.raw`(?:[eE][xX][iI][tT])`, $$dpth + 1, $$cr)) !== null
+                ) {
+                    $$res = new exit_1($scope$text);
+                }
+                return $$res;
+            });
+    }
+    public matchexit_2($$dpth: number, $$cr?: ErrorTracker): Nullable<exit_2> {
+        return this.run<exit_2>($$dpth,
+            () => {
+                let $scope$text: Nullable<string>;
+                let $$res: Nullable<exit_2> = null;
+                if (true
+                    && ($scope$text = this.regexAccept(String.raw`(?:[eE][xX][iI][tT][sS])`, $$dpth + 1, $$cr)) !== null
+                ) {
+                    $$res = new exit_2($scope$text);
+                }
+                return $$res;
+            });
+    }
+    public matchexit_3($$dpth: number, $$cr?: ErrorTracker): Nullable<exit_3> {
+        return this.run<exit_3>($$dpth,
+            () => {
+                let $scope$text: Nullable<string>;
+                let $$res: Nullable<exit_3> = null;
+                if (true
+                    && ($scope$text = this.regexAccept(String.raw`(?:[eE])`, $$dpth + 1, $$cr)) !== null
+                ) {
+                    $$res = new exit_3($scope$text);
+                }
+                return $$res;
+            });
+    }
+    public matchtake($$dpth: number, $$cr?: ErrorTracker): Nullable<take> {
+        return this.choice<take>([
+            () => this.matchtake_1($$dpth + 1, $$cr),
+            () => this.matchtake_2($$dpth + 1, $$cr),
+        ]);
+    }
+    public matchtake_1($$dpth: number, $$cr?: ErrorTracker): Nullable<take_1> {
+        return this.run<take_1>($$dpth,
+            () => {
+                let $scope$text: Nullable<string>;
+                let $$res: Nullable<take_1> = null;
+                if (true
+                    && ($scope$text = this.regexAccept(String.raw`(?:[tT][aA][kK][eE])`, $$dpth + 1, $$cr)) !== null
+                ) {
+                    $$res = new take_1($scope$text);
+                }
+                return $$res;
+            });
+    }
+    public matchtake_2($$dpth: number, $$cr?: ErrorTracker): Nullable<take_2> {
+        return this.run<take_2>($$dpth,
+            () => {
+                let $scope$text: Nullable<string>;
+                let $$res: Nullable<take_2> = null;
+                if (true
+                    && ($scope$text = this.regexAccept(String.raw`(?:[tT])`, $$dpth + 1, $$cr)) !== null
+                ) {
+                    $$res = new take_2($scope$text);
+                }
+                return $$res;
+            });
+    }
+    public matchdrop($$dpth: number, $$cr?: ErrorTracker): Nullable<drop> {
+        return this.choice<drop>([
+            () => this.matchdrop_1($$dpth + 1, $$cr),
+            () => this.matchdrop_2($$dpth + 1, $$cr),
+        ]);
+    }
+    public matchdrop_1($$dpth: number, $$cr?: ErrorTracker): Nullable<drop_1> {
+        return this.run<drop_1>($$dpth,
+            () => {
+                let $scope$text: Nullable<string>;
+                let $$res: Nullable<drop_1> = null;
+                if (true
+                    && ($scope$text = this.regexAccept(String.raw`(?:[dD][rR][oO][pP])`, $$dpth + 1, $$cr)) !== null
+                ) {
+                    $$res = new drop_1($scope$text);
+                }
+                return $$res;
+            });
+    }
+    public matchdrop_2($$dpth: number, $$cr?: ErrorTracker): Nullable<drop_2> {
+        return this.run<drop_2>($$dpth,
+            () => {
+                let $scope$text: Nullable<string>;
+                let $$res: Nullable<drop_2> = null;
+                if (true
+                    && ($scope$text = this.regexAccept(String.raw`(?:[dD])`, $$dpth + 1, $$cr)) !== null
+                ) {
+                    $$res = new drop_2($scope$text);
+                }
+                return $$res;
+            });
+    }
+    public matchsay($$dpth: number, $$cr?: ErrorTracker): Nullable<say> {
+        return this.choice<say>([
+            () => this.matchsay_1($$dpth + 1, $$cr),
+            () => this.matchsay_2($$dpth + 1, $$cr),
+        ]);
+    }
+    public matchsay_1($$dpth: number, $$cr?: ErrorTracker): Nullable<say_1> {
+        return this.run<say_1>($$dpth,
+            () => {
+                let $scope$text: Nullable<string>;
+                let $$res: Nullable<say_1> = null;
+                if (true
+                    && ($scope$text = this.regexAccept(String.raw`(?:[sS][aA][yY])`, $$dpth + 1, $$cr)) !== null
+                ) {
+                    $$res = new say_1($scope$text);
+                }
+                return $$res;
+            });
+    }
+    public matchsay_2($$dpth: number, $$cr?: ErrorTracker): Nullable<say_2> {
+        return this.run<say_2>($$dpth,
+            () => {
+                let $scope$text: Nullable<string>;
+                let $$res: Nullable<say_2> = null;
+                if (true
+                    && ($scope$text = this.regexAccept(String.raw`(?:[sS])`, $$dpth + 1, $$cr)) !== null
+                ) {
+                    $$res = new say_2($scope$text);
+                }
+                return $$res;
+            });
+    }
+    public matchinventory($$dpth: number, $$cr?: ErrorTracker): Nullable<inventory> {
+        return this.choice<inventory>([
+            () => this.matchinventory_1($$dpth + 1, $$cr),
+            () => this.matchinventory_2($$dpth + 1, $$cr),
+        ]);
+    }
+    public matchinventory_1($$dpth: number, $$cr?: ErrorTracker): Nullable<inventory_1> {
+        return this.run<inventory_1>($$dpth,
+            () => {
+                let $scope$text: Nullable<string>;
+                let $$res: Nullable<inventory_1> = null;
+                if (true
+                    && ($scope$text = this.regexAccept(String.raw`(?:[iI][nN][vV][eE][nN][tT][oO][rR][yY])`, $$dpth + 1, $$cr)) !== null
+                ) {
+                    $$res = new inventory_1($scope$text);
+                }
+                return $$res;
+            });
+    }
+    public matchinventory_2($$dpth: number, $$cr?: ErrorTracker): Nullable<inventory_2> {
+        return this.run<inventory_2>($$dpth,
+            () => {
+                let $scope$text: Nullable<string>;
+                let $$res: Nullable<inventory_2> = null;
+                if (true
+                    && ($scope$text = this.regexAccept(String.raw`(?:[iI])`, $$dpth + 1, $$cr)) !== null
+                ) {
+                    $$res = new inventory_2($scope$text);
+                }
+                return $$res;
+            });
+    }
+    public matchwhisper($$dpth: number, $$cr?: ErrorTracker): Nullable<whisper> {
+        return this.choice<whisper>([
+            () => this.matchwhisper_1($$dpth + 1, $$cr),
+            () => this.matchwhisper_2($$dpth + 1, $$cr),
+        ]);
+    }
+    public matchwhisper_1($$dpth: number, $$cr?: ErrorTracker): Nullable<whisper_1> {
+        return this.run<whisper_1>($$dpth,
+            () => {
+                let $scope$text: Nullable<string>;
+                let $$res: Nullable<whisper_1> = null;
+                if (true
+                    && ($scope$text = this.regexAccept(String.raw`(?:[wW][hH][iI][sS][pP][eE][rR])`, $$dpth + 1, $$cr)) !== null
+                ) {
+                    $$res = new whisper_1($scope$text);
+                }
+                return $$res;
+            });
+    }
+    public matchwhisper_2($$dpth: number, $$cr?: ErrorTracker): Nullable<whisper_2> {
+        return this.run<whisper_2>($$dpth,
+            () => {
+                let $scope$text: Nullable<string>;
+                let $$res: Nullable<whisper_2> = null;
+                if (true
+                    && ($scope$text = this.regexAccept(String.raw`(?:[wW])`, $$dpth + 1, $$cr)) !== null
+                ) {
+                    $$res = new whisper_2($scope$text);
+                }
+                return $$res;
+            });
+    }
+    public matchitem($$dpth: number, $$cr?: ErrorTracker): Nullable<item> {
+        return this.run<item>($$dpth,
+            () => {
+                let $scope$text: Nullable<string>;
+                let $$res: Nullable<item> = null;
+                if (true
+                    && ($scope$text = this.regexAccept(String.raw`(?:test)`, $$dpth + 1, $$cr)) !== null
+                ) {
+                    $$res = new item($scope$text);
+                }
+                return $$res;
+            });
     }
     public matchmoveCommand($$dpth: number, $$cr?: ErrorTracker): Nullable<moveCommand> {
         return this.run<moveCommand>($$dpth,
@@ -183,7 +991,7 @@ export class Parser {
                 let $scope$direction: Nullable<direction>;
                 let $$res: Nullable<moveCommand> = null;
                 if (true
-                    && this.regexAccept(String.raw`(?:move)`, $$dpth + 1, $$cr) !== null
+                    && this.matchmoveKeyword($$dpth + 1, $$cr) !== null
                     && this.matchspace($$dpth + 1, $$cr) !== null
                     && ($scope$direction = this.matchdirection($$dpth + 1, $$cr)) !== null
                 ) {
@@ -191,6 +999,18 @@ export class Parser {
                 }
                 return $$res;
             });
+    }
+    public matchmoveKeyword($$dpth: number, $$cr?: ErrorTracker): Nullable<moveKeyword> {
+        return this.choice<moveKeyword>([
+            () => this.matchmoveKeyword_1($$dpth + 1, $$cr),
+            () => this.matchmoveKeyword_2($$dpth + 1, $$cr),
+        ]);
+    }
+    public matchmoveKeyword_1($$dpth: number, $$cr?: ErrorTracker): Nullable<moveKeyword_1> {
+        return this.regexAccept(String.raw`(?:[mM][oO][vV][eE])`, $$dpth + 1, $$cr);
+    }
+    public matchmoveKeyword_2($$dpth: number, $$cr?: ErrorTracker): Nullable<moveKeyword_2> {
+        return this.regexAccept(String.raw`(?:[mM])`, $$dpth + 1, $$cr);
     }
     public matchdirection($$dpth: number, $$cr?: ErrorTracker): Nullable<direction> {
         return this.choice<direction>([

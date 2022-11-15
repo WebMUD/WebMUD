@@ -1,28 +1,23 @@
-import * as util from '../common/util';
+import { createServer } from './main';
 
-import { ServerView } from './server-view';
-import { Server } from './server';
+window.setTimeout(() => {
+  const server = createServer(false, []);
 
-declare global {
-  interface Window {
-    serverView: ServerView;
-    server: Server;
-  }
-}
+  const world = server.gamestate.createWorld('World');
+  const rooms = {
+    start: server.gamestate.createRoom(
+      'Welcome Room',
+      'Nothing to see here.',
+      world
+    ),
+    north: server.gamestate.createRoom(
+      'North Room',
+      'A room to the north.',
+      world
+    ),
+  };
 
-const el = util.getElements({
-  output: 'console-output',
-  input: 'console-input',
-  debug: 'enable-debug',
+  server.gamestate.connectNorthSouth(rooms.north, rooms.start);
+
+  server.init(world, rooms.start);
 });
-
-const server = (window.server = new Server('my game', {}));
-
-window.serverView = new ServerView({
-  output: el.output,
-  input: el.input,
-  debug: el.debug,
-  server,
-});
-
-server.init();

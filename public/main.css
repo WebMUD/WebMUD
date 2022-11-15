@@ -1,6 +1,7 @@
 body {
   color: var(--color-main);
   background-color: var(--color-main-bg);
+  padding: 12px;
 }
 
 a {
@@ -115,4 +116,31 @@ button.warning {
 button.danger {
   background-color: var(--color-danger);
   color: white;
+}
+
+.joinlink {
+  padding: 8px;
+
+  border-radius: 4px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: var(--color-console-border);
+
+  color: var(--color-info);
+  font-weight: bold;
+  user-select: all;
+  font-style: italic;
+
+  margin: 12px;
+
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.console-playername {
+  font-style: italic;
+  color: var(--color-playername);
+}
+
+.console-playerself {
+  color: var(--color-playerself);
 }
