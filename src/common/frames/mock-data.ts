@@ -1,3 +1,4 @@
+import { FrameUsernameTaken } from "./frame-username-taken";
 
 const username = 'data';
 const token = 'data';
@@ -74,5 +75,9 @@ export const data = {
     },
     frameRequestCommandList: {
         type: 'request_command_list'
-    }
+    },
+    frameUsernameTaken: {
+        type: 'username_taken',
+        username,
+    },
 };

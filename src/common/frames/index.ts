@@ -6,6 +6,7 @@ import { FrameCommandList } from './frame-command-list';
 import { FrameAssignToken } from './frame-assign-token';
 import { FrameSendCommand } from './frame-send-command';
 import { FrameRequestCommandList } from './frame-request-command-list';
+import { FrameUsernameTaken } from './frame-username-taken';
 
 const _frames = {
     FrameConnect,
@@ -16,6 +17,7 @@ const _frames = {
     FrameAssignToken,
     FrameSendCommand,
     FrameRequestCommandList,
+    FrameUsernameTaken,
 } as const;
 
 export type Frame = InstanceType<typeof _frames[keyof typeof _frames]>;
