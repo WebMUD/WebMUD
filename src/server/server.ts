@@ -106,6 +106,9 @@ export class Server extends Logger {
     this.startingRoom = startingRoom;
   }
 
+  /**
+   * Initalize a room
+   */
   public initRoom(roomID: EntityID) {
     const room = this.gs.entity(roomID);
     this.debug(`Initalizing room: ${this.gs.nameOf(room)}`);
@@ -127,6 +130,9 @@ export class Server extends Logger {
     });
   }
 
+  /**
+   * Start listining for incoming connections
+   */
   public startDiscovery() {
     this.connection = new Peer({
       debug: 0,
@@ -151,6 +157,9 @@ export class Server extends Logger {
     this._discoveryID = value;
   }
 
+  /**
+   * create a new client
+   */
   public createClient(connection: ConnectionBase, username: string): Client {
     this.info(`${username} joined the game`);
 
@@ -164,6 +173,10 @@ export class Server extends Logger {
     return client;
   }
 
+  /**
+   * reconnect an existing client
+   * TODO: test
+   */
   public reconnectClient(connection: ConnectionBase, token: string) {
     const client = this.clients.get(token);
     if (!client) throw new Error(`Unknown token ${token}`);
@@ -175,6 +188,9 @@ export class Server extends Logger {
     return client;
   }
 
+  /**
+   * Start listening to an incoming connection and handle the handshake process
+   */
   public onConnection(connection: ConnectionBase) {
     if (this.flag(Server.FLAGS.VERBOSE)) this.debug('connection opened');
 
@@ -198,22 +214,13 @@ export class Server extends Logger {
     });
   }
 
-  private handlePings(connection: ConnectionBase) {
-    connection.onData(data => {
-      const frame = frames.parse(data);
-      if (!frame) throw new Error('Unable to parse incoming data: ' + data);
-
-      if (frame instanceof frames.FrameConnect) {
-      }
-
-      throw new Error(`Unexpected frame: ${data}`);
-    });
-  }
-
   public getClients() {
     return this.clients.values();
   }
 
+  /**
+   * Start processing game ticks
+   */
   public start() {
     if (this._tickTimer !== null) return;
     this.info('Starting Simulation');
@@ -226,6 +233,9 @@ export class Server extends Logger {
     );
   }
 
+  /**
+   * Stop processing game ticks
+   */
   public stop() {
     if (this._tickTimer === null) return;
     this.info('Halting Simulation');
@@ -250,14 +260,24 @@ export class Server extends Logger {
     this._lastTick = now;
   }
 
+  /**
+   * Add a system to be processed each tick
+   */
   public addSystem(system: ServerSystem) {
     this.systems.add(system);
   }
 
+  /**
+   * remove a system
+   */
   public removeSystem(system: ServerSystem) {
     this.systems.delete(system);
   }
 
+  /**
+   * Get the value of a server setting
+   * Enable / disable server settings
+   */
   flag(flag: string, set?: boolean) {
     if (!(flag in Server.FLAGS)) throw new Error(`unkown flag ${flag}`);
 
@@ -266,17 +286,27 @@ export class Server extends Logger {
     return this.flags.has(flag);
   }
 
+  /**
+   * Get the value of a server setting
+   * Set the numeric value for server settings
+   */
   option(option: string, set?: number) {
     if (!(option in Server.OPTIONS)) throw new Error(`unkown option ${option}`);
     if (set !== undefined) this.options.set(option, set);
     return this.options.get(option);
   }
 
+  /**
+   * Get the URL to join the server
+   */
   joinLink() {
     const origin = window.location.origin;
     return `${origin}/client?server=${this.discoveryID}`;
   }
 
+  /**
+   * Retrive a plugin instance
+   */
   getPlugin<T extends WebMUDServerPlugin>(pluginClass: PluginClass<T>): T {
     const result = this.plugins.get(pluginClass);
     if (!result) throw new Error(`cannot get plugin`);
