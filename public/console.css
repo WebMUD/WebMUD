@@ -64,6 +64,10 @@
   color: var(--color-npcname);
 }
 
+.console-entityname {
+  color: var(--color-entityname);
+}
+
 .small {
   font-weight: lighter;
 }
