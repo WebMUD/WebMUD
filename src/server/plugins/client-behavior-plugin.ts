@@ -111,15 +111,25 @@ export class ClientBehaviorPlugin extends WebMUDServerPlugin {
     if (client.player === id) return true;
   }
 
+  /**
+   * Format an entity name to be send in a server message frame
+   */
   formatName(client: Client, id: EntityID, you: string = 'you') {
     const name = client.gs.nameOf(id);
+
     if (client.gs.entity(id).has(NPCComponent))
       return FrameMessage.field(name, 'console-npcname');
     if (this.isFirstPerson(client, id))
       return FrameMessage.field(you, 'console-playerself');
-    return FrameMessage.field(name, 'console-playername');
+    if (client.gs.entity(id).has(Player))
+      return FrameMessage.field(name, 'console-playername');
+
+    return FrameMessage.field(name, 'console-entityname');
   }
 
+  /**
+   * Add a callback to handle a specific type of frame
+   */
   addHandler<T extends Frame>(
     t: FrameClass<T>,
     fn: (frame: T, client: Client, server: Server) => void
@@ -127,6 +137,9 @@ export class ClientBehaviorPlugin extends WebMUDServerPlugin {
     this.handlers.set(t, fn);
   }
 
+  /**
+   * Submit an incoming frame to be handled
+   */
   incoming<T extends Frame>(frame: T, client: Client, server: Server) {
     const result = this.handlers.get(frame.constructor);
     if (!result) throw new Error(`cannot handle ${frame.type} frame`);
