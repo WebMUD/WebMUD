@@ -15,7 +15,4 @@ export class ClientView extends View {
 
     options.client.useView(this);
   }
-  
-  
-  
 }

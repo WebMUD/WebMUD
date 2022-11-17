@@ -54,21 +54,21 @@ test('Chat', () => {
     content: 'test',
   };
 
-  let msg: {msg: ChatMessage, verb: string} | null = null;
+  let msg: { msg: ChatMessage; verb: string } | null = null;
   player2.client.onMessage(data => (msg = data));
 
   // test room chat
   msg = null;
   player1.client.sendChat(startingRoom, 'test');
-  expect(msg).toStrictEqual({msg: msgData, verb: 'says'});
+  expect(msg).toStrictEqual({ msg: msgData, verb: 'says' });
 
   // test whisper chat
   msg = null;
   player1.client.sendChat(player2.client.player, 'test');
-  expect(msg).toStrictEqual({msg: msgData, verb: 'whispers'});
+  expect(msg).toStrictEqual({ msg: msgData, verb: 'whispers' });
 
   // test world chat
   msg = null;
   player1.client.sendChat(world, 'test');
-  expect(msg).toStrictEqual({msg: msgData, verb: 'shouts'});
+  expect(msg).toStrictEqual({ msg: msgData, verb: 'shouts' });
 });

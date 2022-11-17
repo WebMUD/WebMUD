@@ -26,6 +26,10 @@ export interface ServerSettings {
   SPEED: number;
 }
 
+export type PluginClass<T extends WebMUDServerPlugin> = new (
+  ...args: any[]
+) => T;
+
 /**
  * Encapsulates the game server
  */
@@ -56,6 +60,8 @@ export class Server extends Logger {
 
   private systems = new Set<ServerSystem>();
 
+  private plugins = new Map<Function, WebMUDServerPlugin>();
+
   constructor(
     name: string,
     settings?: Partial<ServerSettings>,
@@ -70,7 +76,10 @@ export class Server extends Logger {
     this.option(Server.OPTIONS.SPEED, _settings.SPEED);
 
     if (flags) for (const flag of flags) this.flags.add(flag);
-    for (const plugin of _settings.plugins) plugin.init(this);
+    for (const plugin of _settings.plugins) {
+      this.plugins.set(Object.getPrototypeOf(plugin).constructor, plugin);
+      plugin.init(this);
+    }
 
     this.onInput(data => this.commands.parse(data));
   }
@@ -266,6 +275,12 @@ export class Server extends Logger {
   joinLink() {
     const origin = window.location.origin;
     return `${origin}/client?server=${this.discoveryID}`;
+  }
+
+  getPlugin<T extends WebMUDServerPlugin>(pluginClass: PluginClass<T>): T {
+    const result = this.plugins.get(pluginClass);
+    if (!result) throw new Error(`cannot get plugin`);
+    return result as T;
   }
 
   get gs() {

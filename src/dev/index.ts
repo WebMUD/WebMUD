@@ -9,6 +9,7 @@ import { WorldUtilPlugin } from '../server/plugins/world-util-plugin';
 import { UtilCommandsPlugin } from '../server/plugins/util-commands-plugin';
 import { DevModePlugin } from '../server/plugins/dev-mode-plugin';
 import { LocalConnection } from '../common/connection/local-connection';
+import { NPCGreeterPlugin } from '../server/plugins/npc-greeter-plugin';
 
 const NUM_CLIENTS = 2;
 
@@ -54,16 +55,42 @@ window.setTimeout(() => {
 
   const world = server.gamestate.createWorld('TestWorld');
   const rooms = {
-    start: server.gamestate.createRoom('WelcomeRoom', 'An empty room.', world),
-    north: server.gamestate.createRoom('NorthRoom', 'An empty room.', world),
+    lobby: server.gamestate.createRoom('Lobby', 'Welcome.', world),
+    shop: server.gamestate.createRoom('Shop', 'A small store.', world),
+    town_square: server.gamestate.createRoom('Town Square', '', world),
+    road: server.gamestate.createRoom('Road', 'A very long road.', world),
   };
 
   window.server.onReady(() => {
     window.setTimeout(() => {
       for (let i = 0; i < NUM_CLIENTS; i++) createClient();
+
+      setTimeout(() => {
+        const clients = Array.from(server.getClients());
+        server.gs.move(clients[1].player, rooms.town_square);
+      }, 1000);
     });
   });
 
-  server.gamestate.connectNorthSouth(rooms.north, rooms.start);
-  server.init(world, rooms.start);
+  server.gamestate.connectEastWest(rooms.town_square, rooms.shop);
+  server.gamestate.connectNorthSouth(rooms.road, rooms.town_square);
+
+  server.gamestate.adjacent(rooms.lobby).down = rooms.town_square;
+
+  server.gamestate.adjacent(rooms.road).north = rooms.road;
+
+  server.gs.move(
+    server
+      .getPlugin(NPCGreeterPlugin)
+      .create('Guide', 'Welcome to the development server, %p.'),
+    rooms.lobby
+  );
+  server.gs.move(
+    server
+      .getPlugin(NPCGreeterPlugin)
+      .create('Shop Keeper', 'Welcome to the shop.'),
+    rooms.shop
+  );
+
+  server.init(world, rooms.lobby);
 });

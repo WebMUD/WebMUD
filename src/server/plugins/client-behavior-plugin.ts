@@ -5,9 +5,11 @@ import {
   FrameSendCommand,
 } from '../../common/frames';
 import { Client } from '../client';
+import { Adjacent, Player } from '../gamestate/components';
 import { Entity, EntityID } from '../gamestate/entity';
 import { Server } from '../server';
 import { WebMUDServerPlugin } from '../webmud-server-plugin';
+import { NPCComponent } from './npc-plugin';
 
 export type FrameClass<T extends Frame> = new (...args: any[]) => T;
 type Handler<T extends Frame> = (
@@ -45,20 +47,43 @@ export class ClientBehaviorPlugin extends WebMUDServerPlugin {
 
       client.onEntityEnterRoom(id => {
         client.sendMessageFrame(
-          this.firstPersonName(client, id, 'You'),
-          FrameMessage.field(' entered the room.')
+          this.formatName(client, id, 'You'),
+          FrameMessage.field(' entered.')
         );
       });
 
       client.onEntityExitRoom(id => {
-        const room = server.gs.nameOf(server.gs.getParentID(id));
+        const currentRoom = server.gs.getParent(client.player);
+        const adjacent = currentRoom.get(Adjacent);
 
-        client.sendMessageFrame(
-          this.firstPersonName(client, id, 'You'),
-          FrameMessage.field(' moved to '),
-          FrameMessage.field(room),
-          FrameMessage.field('.')
-        );
+        const roomID = server.gs.getParentID(id);
+        const room = server.gs.nameOf(roomID);
+
+        let directionMessage: string | null = null;
+        if (adjacent.north === roomID) directionMessage = 'left to the north';
+        if (adjacent.south === roomID) directionMessage = 'left to the south';
+        if (adjacent.east === roomID) directionMessage = 'left to the east';
+        if (adjacent.west === roomID) directionMessage = 'left to the west';
+        if (adjacent.down === roomID) directionMessage = 'moved down';
+        if (adjacent.up === roomID) directionMessage = 'moved up';
+
+        if (directionMessage)
+          client.sendMessageFrame(
+            this.formatName(client, id, 'You'),
+            FrameMessage.field(' ' + directionMessage)
+          );
+        else if (client.player === id)
+          client.sendMessageFrame(
+            this.formatName(client, id, 'You'),
+            FrameMessage.field(' teleported to '),
+            FrameMessage.field(room),
+            FrameMessage.field('.')
+          );
+        else
+          client.sendMessageFrame(
+            this.formatName(client, id, 'You'),
+            FrameMessage.field(' vanished.')
+          );
       });
 
       client.onMessage(({ msg, verb }) => {
@@ -67,15 +92,15 @@ export class ClientBehaviorPlugin extends WebMUDServerPlugin {
         const content = msg.content;
 
         client.sendMessageFrame(
-          FrameMessage.field(name, 'console-playername'),
+          this.formatName(client, id),
           FrameMessage.field(` ${verb} `),
-          FrameMessage.field(content)
+          FrameMessage.field(`"${content}"`)
         );
       });
 
       server.onClientJoin(joinedClient => {
         client.sendMessageFrame(
-          this.firstPersonName(client, joinedClient.player),
+          this.formatName(client, joinedClient.player),
           FrameMessage.field(' joined the game.')
         );
       });
@@ -86,10 +111,13 @@ export class ClientBehaviorPlugin extends WebMUDServerPlugin {
     if (client.player === id) return true;
   }
 
-  firstPersonName(client: Client, id: EntityID, you: string = 'you') {
+  formatName(client: Client, id: EntityID, you: string = 'you') {
+    const name = client.gs.nameOf(id);
+    if (client.gs.entity(id).has(NPCComponent))
+      return FrameMessage.field(name, 'console-npcname');
     if (this.isFirstPerson(client, id))
       return FrameMessage.field(you, 'console-playerself');
-    return FrameMessage.field(client.gs.nameOf(id), 'console-playername');
+    return FrameMessage.field(name, 'console-playername');
   }
 
   addHandler<T extends Frame>(

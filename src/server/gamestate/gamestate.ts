@@ -93,6 +93,9 @@ export class Gamestate extends Manager {
     this.entity(down).get(Adjacent).up = up;
   }
 
+  adjacent(e: EntityID) {
+    return this.entity(e).get(Adjacent);
+  }
   /**
    * Create a static prop entity
    * Props cannot be picked up
