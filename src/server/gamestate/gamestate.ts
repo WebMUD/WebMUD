@@ -232,7 +232,7 @@ export class Gamestate extends Manager {
   }
 
   nameEqual(a: string, b: string) {
-    return a.toLowerCase() === b.toLocaleLowerCase();
+    return a.toLowerCase().replace(/\ /g, '-') === b.toLocaleLowerCase().replace(/\ /g, '-');
   }
 
   findByName(entities: Iterable<EntityID>, name: string) {
