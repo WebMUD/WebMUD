@@ -79,5 +79,5 @@ export const data = {
     frameUsernameTaken: {
         type: 'username_taken',
         username,
-    },
+    }
 };
