@@ -53,19 +53,15 @@ export class Client {
   }
 
   public freeConnection() {
-    this.close();
+    this.onRoomExit.emit();
+    this.onRoomExit.clear();
+    this.onConnectionClose.emit();
+    this.onConnectionClose.clear();
 
     if (this.connection) {
       this.connection.close();
       this.connection = null;
     }
-  }
-
-  public close() {
-    this.onRoomExit.emit();
-    this.onRoomExit.clear();
-    this.onConnectionClose.emit();
-    this.onConnectionClose.clear();
   }
 
   /**
@@ -112,18 +108,11 @@ export class Client {
 
   /**
    * Handle player movement events
-   * @param gamestate
    */
   public onMove() {
     // the onRoomExit event emitter is used to stop listening for events in the previous room when moving between rooms
     // onRoomExit.once() should be used rather than onRoomExit()
     this.onRoomExit.emit();
-
-    console.log(this.gs.nameOf(this.gs.getParentID(this.player)));
-
-    console.log(
-      this.gs.getParent(this.player).get(HierarchyContainer).onLeave.emitter
-    );
 
     this.onRoomExit.once(
       this.gs
@@ -141,10 +130,6 @@ export class Client {
         .onLeave(id => {
           this.entityExit(id);
         })
-    );
-
-    console.log(
-      this.gs.getParent(this.player).get(HierarchyContainer).onLeave.emitter
     );
 
     if (this.gs.getParent(this.player).has(ChatChannel)) {
