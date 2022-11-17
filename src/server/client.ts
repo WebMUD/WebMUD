@@ -53,19 +53,15 @@ export class Client {
   }
 
   public freeConnection() {
-    this.close();
+    this.onRoomExit.emit();
+    this.onRoomExit.clear();
+    this.onConnectionClose.emit();
+    this.onConnectionClose.clear();
 
     if (this.connection) {
       this.connection.close();
       this.connection = null;
     }
-  }
-
-  public close() {
-    this.onRoomExit.emit();
-    this.onRoomExit.clear();
-    this.onConnectionClose.emit();
-    this.onConnectionClose.clear();
   }
 
   /**
@@ -112,7 +108,6 @@ export class Client {
 
   /**
    * Handle player movement events
-   * @param gamestate
    */
   public onMove() {
     // the onRoomExit event emitter is used to stop listening for events in the previous room when moving between rooms
