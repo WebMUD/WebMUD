@@ -1,9 +1,9 @@
-import { add } from "lodash";
 import { ChatChannel, HierarchyChild, HierarchyContainer, Name, Player } from "../gamestate/components";
 import { Component } from "../gamestate/components/base/component";
 import { Entity, EntityID } from "../gamestate/entity";
 import { Server } from "../server";
 import { WebMUDServerPlugin } from "../webmud-server-plugin"
+import { NPCComponent } from "./npc-plugin";
 
 
 export class NPCGreeterComponent extends Component {
@@ -16,7 +16,6 @@ export class NPCGreeterComponent extends Component {
         super();
         this.message=message;
     }
-
 }
 
 export class NPCGreeterPlugin extends WebMUDServerPlugin {
@@ -48,13 +47,13 @@ export class NPCGreeterPlugin extends WebMUDServerPlugin {
         const e = this.server.gs.createEntity();
         this.server.gs.entity(e)
           .add(new Name(name))
+          .add(new NPCComponent())
           .add(new HierarchyChild())
           .add(new HierarchyContainer())
           .add(new NPCGreeterComponent(message));
 
         this.server.gs.entity(e).get(HierarchyChild).onMove(() => this.onNPCMove(e));
         return e;
-        // listen to parent changing event
     }
 
     onNPCMove(e: EntityID) {
@@ -72,5 +71,4 @@ export class NPCGreeterPlugin extends WebMUDServerPlugin {
         });
         this.server.gs.entity(e).get(HierarchyChild).onMove.once(stop);
     }
-
 }

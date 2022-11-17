@@ -119,12 +119,6 @@ export class Client {
     // onRoomExit.once() should be used rather than onRoomExit()
     this.onRoomExit.emit();
 
-    console.log(this.gs.nameOf(this.gs.getParentID(this.player)));
-
-    console.log(
-      this.gs.getParent(this.player).get(HierarchyContainer).onLeave.emitter
-    );
-
     this.onRoomExit.once(
       this.gs
         .getParent(this.player)
@@ -141,10 +135,6 @@ export class Client {
         .onLeave(id => {
           this.entityExit(id);
         })
-    );
-
-    console.log(
-      this.gs.getParent(this.player).get(HierarchyContainer).onLeave.emitter
     );
 
     if (this.gs.getParent(this.player).has(ChatChannel)) {

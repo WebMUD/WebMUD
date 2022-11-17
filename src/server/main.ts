@@ -8,12 +8,14 @@ import { HelpCommandPluggin } from './plugins/help-command-plugin';
 import { ClientBehaviorPlugin } from './plugins/client-behavior-plugin';
 import { SaveStatePlugin } from './plugins/savestate-plugin';
 import { NPCGreeterPlugin } from './plugins/npc-greeter-plugin';
+import { NPCPlugin } from './plugins/npc-plugin';
 
 const PLUGINS = [
   new ClientBehaviorPlugin(),
   new HelpCommandPluggin(),
   new ClockPlugin(),
   new SaveStatePlugin(),
+  new NPCPlugin(),
   new NPCGreeterPlugin(),
 ];
 

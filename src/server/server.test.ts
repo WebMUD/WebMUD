@@ -2,6 +2,8 @@ import { ChatChannel, Name } from './gamestate/components';
 import { LocalConnection } from '../common/connection/local-connection';
 import { Server } from './server';
 import { Gamestate } from './gamestate/gamestate';
+import { ChatMessage } from './gamestate/components/chat-channel';
+import { stringify } from 'querystring';
 
 function mock(useConsole: boolean = false) {
   const server = new Server('Server');
@@ -52,21 +54,21 @@ test('Chat', () => {
     content: 'test',
   };
 
-  let msg: string = '';
-  player2.clientConnection.onData(data => (msg = data));
+  let msg: {msg: ChatMessage, verb: string} | null = null;
+  player2.client.onMessage(data => (msg = data));
 
   // test room chat
-  msg = '';
+  msg = null;
   player1.client.sendChat(startingRoom, 'test');
-  expect(JSON.parse(msg)).toStrictEqual(msgData);
+  expect(msg).toStrictEqual({msg: msgData, verb: 'says'});
 
   // test whisper chat
-  msg = '';
+  msg = null;
   player1.client.sendChat(player2.client.player, 'test');
-  expect(JSON.parse(msg)).toStrictEqual(msgData);
+  expect(msg).toStrictEqual({msg: msgData, verb: 'whispers'});
 
   // test world chat
-  msg = '';
+  msg = null;
   player1.client.sendChat(world, 'test');
-  expect(JSON.parse(msg)).toStrictEqual(msgData);
+  expect(msg).toStrictEqual({msg: msgData, verb: 'shouts'});
 });
