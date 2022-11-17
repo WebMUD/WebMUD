@@ -70,7 +70,7 @@ export class ClientBehaviorPlugin extends WebMUDServerPlugin {
         if (directionMessage)
           client.sendMessageFrame(
             this.formatName(client, id, 'You'),
-            FrameMessage.field(' ' + directionMessage)
+            FrameMessage.field(' ' + directionMessage + '.')
           );
         else if (client.player === id)
           client.sendMessageFrame(
