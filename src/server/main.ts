@@ -7,12 +7,14 @@ import { WebMUDServerPlugin } from './webmud-server-plugin';
 import { HelpCommandPluggin } from './plugins/help-command-plugin';
 import { ClientBehaviorPlugin } from './plugins/client-behavior-plugin';
 import { SaveStatePlugin } from './plugins/savestate-plugin';
+import { NPCGreeterPlugin } from './plugins/npc-greeter-plugin';
 
 const PLUGINS = [
   new ClientBehaviorPlugin(),
   new HelpCommandPluggin(),
   new ClockPlugin(),
   new SaveStatePlugin(),
+  new NPCGreeterPlugin(),
 ];
 
 declare global {
