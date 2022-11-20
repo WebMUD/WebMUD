@@ -132,8 +132,6 @@ dist
 # build
 build
 typedoc
+
 # visual studio
 .vs/
-package-lock.json
-package-lock.json
-

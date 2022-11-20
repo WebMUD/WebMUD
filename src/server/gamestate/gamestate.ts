@@ -93,6 +93,9 @@ export class Gamestate extends Manager {
     this.entity(down).get(Adjacent).up = up;
   }
 
+  adjacent(e: EntityID) {
+    return this.entity(e).get(Adjacent);
+  }
   /**
    * Create a static prop entity
    * Props cannot be picked up
@@ -229,7 +232,7 @@ export class Gamestate extends Manager {
   }
 
   nameEqual(a: string, b: string) {
-    return a.toLowerCase() === b.toLocaleLowerCase();
+    return a.toLowerCase().replace(/\ /g, '-') === b.toLocaleLowerCase().replace(/\ /g, '-');
   }
 
   findByName(entities: Iterable<EntityID>, name: string) {

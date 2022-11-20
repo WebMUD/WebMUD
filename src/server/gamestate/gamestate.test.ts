@@ -1,3 +1,4 @@
+import { HierarchyChild } from './components';
 import { HierarchyContainer } from './components/hierarchy-container';
 import { Gamestate } from './gamestate';
 
@@ -56,15 +57,29 @@ test('Gamestate#hierarchy', () => {
 test('Gamestate#events', () => {
   const { gs, world, player, rooms, props } = mock();
 
-  let run = false;
+  let run = 0;
 
   gs.entity(player)
     .get(HierarchyContainer)
     .onJoin(entity => {
-      run = true;
+      expect(entity).toBe(props.notebook);
+      run++;
+    });
+
+  gs.entity(props.backpack)
+    .get(HierarchyContainer)
+    .onLeave(entity => {
+      expect(entity).toBe(props.notebook);
+      run++;
+    });
+
+  gs.entity(props.notebook)
+    .get(HierarchyChild)
+    .onMove(_ => {
+      run++;
     });
 
   gs.pickUp(player, props.notebook);
 
-  expect(run).toBe(true);
+  expect(run).toBe(3);
 });
