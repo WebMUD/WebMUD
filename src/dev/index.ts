@@ -95,8 +95,3 @@ window.setTimeout(() => {
 
   server.init(world, rooms.lobby);
 });
-
-// for testing
-function getSaveStatePlugin() {
-  return window.server.getPlugin(SaveStatePlugin);
-}
