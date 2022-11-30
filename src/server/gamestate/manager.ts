@@ -39,4 +39,8 @@ export class Manager {
       if (entity.has(...components)) yield entity.id;
     }
   }
+
+  public all() {
+    return this.entities.members()
+  }
 }
