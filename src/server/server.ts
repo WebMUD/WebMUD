@@ -16,6 +16,7 @@ import {
 } from './gamestate/components';
 import { ServerCommands } from './server-commands';
 import { WebMUDServerPlugin } from './webmud-server-plugin';
+import { SaveStatePlugin } from './plugins/savestate-plugin';
 
 export type ServerSystem = (server: Server, deltaTime: number) => void;
 
@@ -311,6 +312,11 @@ export class Server extends Logger {
     const result = this.plugins.get(pluginClass);
     if (!result) throw new Error(`cannot get plugin`);
     return result as T;
+  }
+
+  // for testing
+  getSaveStatePlugin() {
+    return this.getPlugin(SaveStatePlugin);
   }
 
   get gs() {
