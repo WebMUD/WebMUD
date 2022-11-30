@@ -40,7 +40,9 @@ export class Manager {
     }
   }
 
-  public all() {
-    return this.entities.members()
+  public *all(): Iterable<EntityID> {
+    for (const entity of this.entities.members()) {
+      yield entity.id;
+    }
   }
 }
