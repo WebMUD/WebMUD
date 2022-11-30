@@ -10,6 +10,7 @@ import { UtilCommandsPlugin } from '../server/plugins/util-commands-plugin';
 import { DevModePlugin } from '../server/plugins/dev-mode-plugin';
 import { LocalConnection } from '../common/connection/local-connection';
 import { NPCGreeterPlugin } from '../server/plugins/npc-greeter-plugin';
+import { SaveStatePlugin } from '../server/plugins/savestate-plugin';
 
 const NUM_CLIENTS = 2;
 
@@ -94,3 +95,8 @@ window.setTimeout(() => {
 
   server.init(world, rooms.lobby);
 });
+
+// for testing
+function getSaveStatePlugin() {
+  return window.server.getPlugin(SaveStatePlugin);
+}
