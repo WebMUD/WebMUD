@@ -1,3 +1,21 @@
-import { AttributeTag } from './base/attribute-tag';
+import { AttributeTag, SerializedAttributeTag } from './base/attribute-tag';
 
-export class Prop extends AttributeTag {}
+export type SerializedProp =  SerializedAttributeTag & {
+    type: "component-prop"
+   }
+
+export class Prop extends AttributeTag {
+    static deserialize(data: unknown):Prop | false {
+        if (Prop.validate(data))return new Prop();
+        return false;
+    }
+
+    static validate(data:any):data is SerializedProp {
+        if (AttributeTag.validate(data)){
+            if (data.type === Prop.type ) return true;
+            
+        }
+        return false;
+      }
+    static type = "component-prop";
+}
