@@ -1,23 +1,24 @@
-import { AttributeTag, SerializedAttributeTag } from './base/attribute-tag';
 import { SerializedComponent } from './base/component';
-import { DataAttribute } from './base/data-attribute';
-
+import { DataAttributeString } from './base/data-attribute-string';
 
 export type SerializedDesciption = SerializedComponent & {
-    type: "component-description";
-    data:string;
-}
-   
-export class Description extends DataAttribute<string> {
-    static deserialize(data: unknown):Description | false {
-        if (Description.validate(data))return new Description(data.data);
-        return false;
-    }
+  type: 'component-description';
+  data: string;
+};
 
-    static validate(data:any):data is SerializedDesciption {
-        return false;//where AJV will come into play
-       
-      }
-    static type = "component-description";
+export class Description extends DataAttributeString {
+  static deserialize(data: unknown): Description | false {
+    if (Description.validate(data)) return new Description(data.data);
+    return false;
+  }
 
+  static validate(data: any): data is SerializedDesciption {
+    return false; //where AJV will come into play
+  }
+
+  serialize() {
+    return super.serialize(Description.type);
+  }
+  
+  static type = 'component-description';
 }

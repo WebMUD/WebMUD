@@ -7,4 +7,10 @@ export class EventChannelComponent<T> extends Component {
   constructor() {
     super();
   }
+
+  serialize(type: string) {
+    return {
+      type,
+    }
+  }
 }

@@ -1,7 +1,3 @@
-import { json } from 'stream/consumers';
-import { item } from '../../client/parser/parser';
-import { Description, Item, Name, Player, Prop, Room, World } from '../gamestate/components';
-import { SerializableComponentClass } from '../gamestate/components/base/component';
 import { Server } from '../server';
 import { WebMUDServerPlugin } from '../webmud-server-plugin';
 
@@ -10,24 +6,43 @@ export class SaveStatePlugin extends WebMUDServerPlugin {
 
   init(server: Server) {
     this.server = server;
-    // add commands for saving and loading states
+    const self = this;
+
+    server.commands.addCommand({
+      command: 'dump-savestate',
+      alias: ['dump'],
+      usage: 'dump-savestate',
+      about: 'dump the curent gamestate',
+
+      use(argv: string[]) {
+        server.info(self.serializeState());
+      },
+    });
   }
 
   serializeState(): string {
-    const result:any = {};
+    const entities: any = {};
+    const clients: any = {};
+
+    // seralize entites
     for (const entity of this.server.gs.all()) {
-      console.log(entity)
-      const serialized = {};
+      const serialized = [];
       for (const component of this.server.gs.entity(entity)) {
-        console.log(component)
+        serialized.push(component.serialize());
       }
-      result[entity] =  serialized;
+      entities[entity] = serialized;
     }
-    return JSON.stringify(result);
+
+    // seralize clients
+    for (const client of this.server.getClients()) {
+      clients[client.id] = client.serialize();
+    }
+
+    return JSON.stringify({entities, clients});
   }
 
   deserializeState(data: string) {
-    //parse the string 
+    //parse the string
     //loop over all the components
     //try to deserialize the component by looping through all the component classes
   }
@@ -51,16 +66,4 @@ export class SaveStatePlugin extends WebMUDServerPlugin {
   saveToDisk() {}
 
   loadFromDisk() {}
-
-  static componentClasses: SerializableComponentClass[]=[ 
-    World,
-    Name,
-    Room,
-    Prop,
-    Player,
-    Item,
-    Description,
-    
-  ]
 }
-

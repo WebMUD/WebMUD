@@ -4,7 +4,13 @@ import { EntityID } from '../gamestate/entity';
 import { WebMUDServerPlugin } from '../webmud-server-plugin';
 import { Server } from '../server';
 
-export class Clock extends DataAttribute<number> {}
+export class Clock extends DataAttribute<number> {
+  serialize() {
+    return super.serialize(Clock.type);
+  }
+
+  static type = 'component-clock';
+}
 export class GameClock extends AttributeTag {}
 
 export class ClockPlugin extends WebMUDServerPlugin {

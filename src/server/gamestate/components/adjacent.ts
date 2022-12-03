@@ -1,3 +1,4 @@
+import { serialize } from 'v8';
 import { Entity, EntityID } from '../entity';
 import { Component } from './base/component';
 
@@ -12,4 +13,12 @@ export class Adjacent extends Component {
   constructor() {
     super();
   }
+
+  serialize() {
+    return {
+      type: Adjacent.type,
+    }
+  }
+
+  static type = 'component-adjacent';
 }

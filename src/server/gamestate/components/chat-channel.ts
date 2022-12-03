@@ -7,4 +7,10 @@ export interface ChatMessage {
   content: string;
 }
 
-export class ChatChannel extends EventChannelComponent<ChatMessage> {}
+export class ChatChannel extends EventChannelComponent<ChatMessage> {
+  serialize() {
+    return super.serialize(ChatChannel.type);
+  }
+
+  static type = 'component-chat-channel';
+}

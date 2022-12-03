@@ -11,4 +11,13 @@ export class HierarchyChild extends Component {
     super();
     if (parent) this.parent = parent;
   }
+
+  serialize() {
+    return {
+      type: HierarchyChild.type,
+      parent: this.parent,
+    }
+  }
+
+  static type = 'component-hierarchy-child';
 }

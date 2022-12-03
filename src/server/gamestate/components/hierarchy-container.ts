@@ -11,4 +11,13 @@ export class HierarchyContainer extends Component {
   constructor() {
     super();
   }
+
+  serialize() {
+    return {
+      type: HierarchyContainer.type,
+      children: this.children.keys(),
+    }
+  }
+
+  static type = 'component-hierarchy-container';
 }

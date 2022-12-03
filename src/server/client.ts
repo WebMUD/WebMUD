@@ -190,4 +190,11 @@ export class Client {
     const room = this.gs.getParentID(this.player);
     return room;
   }
+
+  serialize() {
+    return {
+      type: 'client',
+      player: this.player,
+    }
+  }
 }

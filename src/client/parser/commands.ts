@@ -1,4 +1,4 @@
-import { commandName } from "./parser";
+import { commandName } from './parser';
 
 export enum Direction {
   NORTH = 'NORTH',
@@ -8,70 +8,48 @@ export enum Direction {
 }
 
 export enum Item {
-    ITEM_TEST = 'ITEM_TEST',
+  ITEM_TEST = 'ITEM_TEST',
 }
 
 export enum CommandName {
-    MOVE = 'MOVE',
-    EXAMINE = 'EXAMINE',
-    HELP = 'HELP',
-    EXIT = 'EXIT',
-    INVENTORY = 'INVENTORY',
-    TAKE = 'TAKE',
-    DROP = 'DROP',
-    SAY = 'SAY',
-    WHISPER = 'WHISPER',   
+  MOVE = 'MOVE',
+  EXAMINE = 'EXAMINE',
+  HELP = 'HELP',
+  EXIT = 'EXIT',
+  INVENTORY = 'INVENTORY',
+  TAKE = 'TAKE',
+  DROP = 'DROP',
+  SAY = 'SAY',
+  WHISPER = 'WHISPER',
 }
 export class MoveCommand {
   direction: Direction;
-
 
   constructor(direction: Direction) {
     this.direction = direction;
   }
 }
 
- 
-
-
-
 export class HelpCommand {
-    commandName : CommandName;
-    
-    constructor(commandName : CommandName)
-    {
-        this.commandName = commandName;
-    }
+  commandName: CommandName;
+
+  constructor(commandName: CommandName) {
+    this.commandName = commandName;
+  }
 }
 
 export class ExitCommand {
-    
-    
-    constructor()
-    {
-      
-    }
+  constructor() {}
 }
 
 export class InventoryCommand {
-    constructor()
-    {
-
-    }
+  constructor() {}
 }
 
 export class SayCommand {
-    constructor()
-    {
-        
-    }
+  constructor() {}
 }
-
 
 export class WhisperCommand {
-    constructor()
-    {
-        
-    }
+  constructor() {}
 }
-
