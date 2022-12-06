@@ -9,7 +9,14 @@ import { Collection } from '../common/collection';
 import { frames } from '../common/frames';
 import { EntityID } from './gamestate/entity';
 import { Logger } from '../common/logger';
-import { ChatChannel, EntryRoom, HierarchyContainer, Player, Room, World } from './gamestate/components';
+import {
+  ChatChannel,
+  EntryRoom,
+  HierarchyContainer,
+  Player,
+  Room,
+  World,
+} from './gamestate/components';
 import { ServerCommands } from './server-commands';
 import { WebMUDServerPlugin } from './webmud-server-plugin';
 import { SaveStatePlugin } from './plugins/savestate-plugin';
@@ -90,7 +97,7 @@ export class Server extends Logger {
       const data = await fetch(url);
       const text = await data.text();
       this.loadGamestate(text);
-    } catch(err) {
+    } catch (err) {
       this.error(`failed to load level data from ${url}`);
       throw err;
     }
@@ -104,15 +111,18 @@ export class Server extends Logger {
     try {
       const data = await fetch('/levels/index.json');
       const json = await data.json();
-      return Object.entries(json).map(([name, location]: [string,string]) => ({name, location}))
-    } catch(err) {
+      return Object.entries(json).map(([name, location]: [string, string]) => ({
+        name,
+        location,
+      }));
+    } catch (err) {
       console.log(err);
       return [];
     }
   }
 
   loadGamestate(data: unknown) {
-    this.broadcast({text: `Server changing levels.`, format: []});
+    this.broadcast({ text: `Server changing levels.`, format: [] });
     this.stopClients();
     this.onReset.emit();
     this.gamestate.deseralize(data);
@@ -122,12 +132,12 @@ export class Server extends Logger {
   }
 
   public init() {
-    let worlds = Array.from(this.gamestate.filter(World))
+    let worlds = Array.from(this.gamestate.filter(World));
     if (worlds.length === 1) {
       this.initWorld(worlds[0]);
     } else {
-      if (worlds.length > 1) this.error('Found more than one world.')
-      else this.error('Missing world entity.')
+      if (worlds.length > 1) this.error('Found more than one world.');
+      else this.error('Missing world entity.');
       const voidWorld = this.gamestate.createWorld('_voidworld');
       const voidRoom = this.gamestate.createRoom('Void', '', voidWorld);
       this.setting(Server.SETTINGS.ENTRY_ROOM, voidRoom);
@@ -139,8 +149,7 @@ export class Server extends Logger {
     if (entryRooms.length < 1) {
       this.error('Missing Entry Room');
       const rooms = Array.from(this.gamestate.filter(Room));
-      if (rooms.length > 0)
-        entryRooms = [rooms[0]];
+      if (rooms.length > 0) entryRooms = [rooms[0]];
     }
 
     if (entryRooms.length === 1) {
@@ -149,7 +158,7 @@ export class Server extends Logger {
     } else {
       throw new Error('no rooms');
     }
-    
+
     for (const client of this.getClients()) client.remakePlayer();
   }
 
@@ -160,11 +169,11 @@ export class Server extends Logger {
   public initWorld(world: EntityID) {
     this.info(`Initalizing world: ${this.gs.nameOf(world)}`);
     this.broadcast(
-      {text: '---', format: []},
-      {text: ` Welcome to `, format: []},
-      {text: this.gamestate.nameOf(world), format: ['bold']},
-      {text: ' ', format: []},
-      {text: '---', format: []},
+      { text: '---', format: [] },
+      { text: ` Welcome to `, format: [] },
+      { text: this.gamestate.nameOf(world), format: ['bold'] },
+      { text: ' ', format: [] },
+      { text: '---', format: [] }
     );
     const prefix = `[${this.gs.nameOf(world)}]: `;
 
@@ -188,20 +197,24 @@ export class Server extends Logger {
     this.debug(`Initalizing room: ${this.gs.nameOf(room)}`);
     const roomPrefix = `[${this.gs.nameOf(room)}]: `;
 
-    this.onReset.once(room.get(ChatChannel).event(msg => {
-      if (this.flag(Server.FLAGS.VERBOSE))
-        this.print(roomPrefix + `[${msg.senderName}]: ${msg.content}`);
-    }));
+    this.onReset.once(
+      room.get(ChatChannel).event(msg => {
+        if (this.flag(Server.FLAGS.VERBOSE))
+          this.print(roomPrefix + `[${msg.senderName}]: ${msg.content}`);
+      })
+    );
 
-    this.onReset.once(room.get(HierarchyContainer).onLeave(id => {
-      if (this.flag(Server.FLAGS.VERBOSE))
-        this.print(
-          roomPrefix +
-            `${this.gs.nameOf(id)} moved to ${this.gs.nameOf(
-              this.gs.getParent(id)
-            )}.`
-        );
-    }));
+    this.onReset.once(
+      room.get(HierarchyContainer).onLeave(id => {
+        if (this.flag(Server.FLAGS.VERBOSE))
+          this.print(
+            roomPrefix +
+              `${this.gs.nameOf(id)} moved to ${this.gs.nameOf(
+                this.gs.getParent(id)
+              )}.`
+          );
+      })
+    );
   }
 
   /**
@@ -238,13 +251,16 @@ export class Server extends Logger {
   }
 
   startClients() {
-    for (const client of this.getClients()) {   
+    for (const client of this.getClients()) {
       if (client.isActive()) this.startClient(client);
     }
   }
 
   public startClient(client: Client) {
-    if (this.settings.has(Server.SETTINGS.WORLD) && this.settings.has(Server.SETTINGS.ENTRY_ROOM)) {
+    if (
+      this.settings.has(Server.SETTINGS.WORLD) &&
+      this.settings.has(Server.SETTINGS.ENTRY_ROOM)
+    ) {
       client.start(this.setting(Server.SETTINGS.WORLD));
       this.gs.move(client.player, this.setting(Server.SETTINGS.ENTRY_ROOM));
     } else {
@@ -399,7 +415,7 @@ export class Server extends Logger {
     if (!(option in Server.OPTIONS)) throw new Error(`unkown option ${option}`);
     if (set !== undefined) this.options.set(option, set);
     const value = this.options.get(option);
-    if (!value) throw new Error(`OPTIONS.${option} is not set`)
+    if (!value) throw new Error(`OPTIONS.${option} is not set`);
     return value;
   }
 
@@ -408,7 +424,7 @@ export class Server extends Logger {
       throw new Error(`unkown setting ${setting}`);
     if (set !== undefined) this.settings.set(setting, set);
     const value = this.settings.get(setting);
-    if (!value) throw new Error(`SETTINGS.${setting} is not set`)
+    if (!value) throw new Error(`SETTINGS.${setting} is not set`);
     return value;
   }
 
@@ -450,7 +466,7 @@ export class Server extends Logger {
     this.clients.clear();
   }
 
-  broadcast(...parts: {text: string, format: string[]}[]) {
+  broadcast(...parts: { text: string; format: string[] }[]) {
     for (const client of this.getClients()) {
       if (client.isActive()) client.sendMessageFrame(...parts);
     }
@@ -461,7 +477,7 @@ export class Server extends Logger {
       flags: Array.from(this.flags.values()),
       options: Array.from(this.options.entries()),
       settings: Array.from(this.settings.entries()),
-    }
+    };
   }
 
   deseralizeConfig(data: any) {

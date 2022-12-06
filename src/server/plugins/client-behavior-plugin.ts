@@ -5,7 +5,13 @@ import {
   FrameSendCommand,
 } from '../../common/frames';
 import { Client } from '../client';
-import { Adjacent, Description, HierarchyChild, HierarchyContainer, Player } from '../gamestate/components';
+import {
+  Adjacent,
+  Description,
+  HierarchyChild,
+  HierarchyContainer,
+  Player,
+} from '../gamestate/components';
 import { Entity, EntityID } from '../gamestate/entity';
 import { Server } from '../server';
 import { WebMUDServerPlugin } from '../webmud-server-plugin';
@@ -47,18 +53,17 @@ export class ClientBehaviorPlugin extends WebMUDServerPlugin {
     client.sendMessageFrame(
       FrameMessage.field('...['),
       FrameMessage.field(roomName, 'room'),
-      FrameMessage.field(']...'),
+      FrameMessage.field(']...')
     );
 
-    client.sendMessageFrame(
-      FrameMessage.field(room.get(Description).data),
-    );
+    client.sendMessageFrame(FrameMessage.field(room.get(Description).data));
 
     const players: string[] = [];
     const npcs: string[] = [];
 
     for (const child of room.get(HierarchyContainer).children) {
-      if (client.gs.entity(child).has(Player) && child !== client.player) players.push(child);
+      if (client.gs.entity(child).has(Player) && child !== client.player)
+        players.push(child);
       if (client.gs.entity(child).has(NPCComponent)) npcs.push(child);
     }
 
@@ -76,9 +81,7 @@ export class ClientBehaviorPlugin extends WebMUDServerPlugin {
         FrameMessage.field(' is here.')
       );
 
-    client.sendMessageFrame(
-      FrameMessage.field('exits:'),
-    );
+    client.sendMessageFrame(FrameMessage.field('exits:'));
 
     for (const direction of Adjacent.directions) {
       const value = (adjacent as any)[direction];
@@ -87,13 +90,13 @@ export class ClientBehaviorPlugin extends WebMUDServerPlugin {
           FrameMessage.field(' * '),
           FrameMessage.field(direction),
           FrameMessage.field(': '),
-          FrameMessage.field(client.gs.nameOf(value)),
+          FrameMessage.field(client.gs.nameOf(value))
         );
       }
     }
 
     client.sendMessageFrame(
-      FrameMessage.field('.'.repeat(8+roomName.length)),
+      FrameMessage.field('.'.repeat(8 + roomName.length))
     );
   }
 
@@ -103,7 +106,7 @@ export class ClientBehaviorPlugin extends WebMUDServerPlugin {
         this.incoming(frame, client, server);
       });
 
-      client.onChangeRooms(()=>{
+      client.onChangeRooms(() => {
         this.describeRoom(client);
       });
 
@@ -137,9 +140,9 @@ export class ClientBehaviorPlugin extends WebMUDServerPlugin {
         for (const direction of Adjacent.directions) {
           if ((adjacent as any)[direction] === room)
             return client.sendMessageFrame(
-                this.formatName(client, id, 'You'),
-                FrameMessage.field(' moved '),
-                FrameMessage.field(direction),
+              this.formatName(client, id, 'You'),
+              FrameMessage.field(' moved '),
+              FrameMessage.field(direction)
             );
         }
 

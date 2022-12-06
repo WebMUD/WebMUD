@@ -59,7 +59,7 @@ export class NPCGreeterComponent extends Component {
     };
   }
 
-  start(entity: string, gs: Manager|Gamestate) {
+  start(entity: string, gs: Manager | Gamestate) {
     if (gs instanceof Gamestate) {
       NPCGreeterPlugin.onNPCMove(gs, entity);
     }
@@ -109,7 +109,7 @@ export class NPCGreeterPlugin extends WebMUDServerPlugin {
       .get(HierarchyChild)
       .onMove(() => NPCGreeterPlugin.onNPCMove(this.server.gs, e));
 
-      NPCGreeterPlugin.onNPCMove(this.server.gs, e);
+    NPCGreeterPlugin.onNPCMove(this.server.gs, e);
 
     return e;
   }
@@ -117,32 +117,23 @@ export class NPCGreeterPlugin extends WebMUDServerPlugin {
   static onNPCMove(gs: Gamestate, e: EntityID) {
     if (!gs.hasParent(e)) return;
     const parent = gs.getParent(e);
-    
+
     const stop = parent.get(HierarchyContainer).onJoin((target: EntityID) => {
       if (
-        !(
-          gs.entity(target).has(Player) &&
-          gs.entity(target).has(ChatChannel)
-        )
+        !(gs.entity(target).has(Player) && gs.entity(target).has(ChatChannel))
       )
         return;
-      const greeterComponent = gs
-        .entity(e)
-        .get(NPCGreeterComponent);
+      const greeterComponent = gs.entity(e).get(NPCGreeterComponent);
       if (greeterComponent.greeted.has(target)) return;
       greeterComponent.greeted.add(target);
-      setTimeout(()=>{
-        gs
-        .entity(target)
-        .get(ChatChannel)
-        .event.emit({
-          senderID: e,
-          senderName: gs.nameOf(e),
-          content: greeterComponent.message.replace(
-            '%p',
-            gs.nameOf(target)
-          ),
-        });
+      setTimeout(() => {
+        gs.entity(target)
+          .get(ChatChannel)
+          .event.emit({
+            senderID: e,
+            senderName: gs.nameOf(e),
+            content: greeterComponent.message.replace('%p', gs.nameOf(target)),
+          });
       }, 1000);
     });
     gs.entity(e).get(HierarchyChild).onMove.once(stop);

@@ -28,11 +28,11 @@ export class SaveStatePlugin extends WebMUDServerPlugin {
       about: 'load the curent gamestate',
 
       use(argv: string[]) {
-        setTimeout(()=>{
+        setTimeout(() => {
           const data = prompt('Enter gamestate data');
-        if (!data) return;
-        console.log(JSON.parse(data));
-        self.deserializeState(data);
+          if (!data) return;
+          console.log(JSON.parse(data));
+          self.deserializeState(data);
         }, 100);
       },
     });
@@ -65,13 +65,13 @@ export class SaveStatePlugin extends WebMUDServerPlugin {
     if (!entities || typeof entities !== 'object' || entities === null)
       throw new Error('invalid data');
     if (!config || typeof config !== 'object' || config === null)
-    throw new Error('invalid data');
+      throw new Error('invalid data');
 
     this.server.gamestate.deseralize(entities);
     this.server.deseralizeConfig(config);
 
     this.server.init();
-    
+
     for (const client of Object.values(clients)) {
       this.server.loadClient(client);
     }

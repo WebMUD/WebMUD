@@ -131,10 +131,12 @@ export class MapEditPlugin extends WebMUDServerPlugin {
           return server.error(`Could not find entity by the name of ${name}`);
         if (!server.gs.entity(room).has(Room))
           return server.error(`${name} must be a room`);
-        
+
         for (const entity of server.gs.filter(EntryRoom)) {
           server.gs.entity(entity).delete(EntryRoom);
-          server.warn(`${server.gs.nameOf(entity)} is no longer the entry room`);
+          server.warn(
+            `${server.gs.nameOf(entity)} is no longer the entry room`
+          );
         }
 
         server.gs.entity(room).add(new EntryRoom());

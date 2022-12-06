@@ -187,8 +187,7 @@ export class Gamestate extends Manager {
 
     if (hasOldParent && oldParent)
       this.entity(oldParent).get(HierarchyContainer).onLeave.emit(target);
-    if (parent)
-      this.entity(parent).get(HierarchyContainer).onJoin.emit(target);
+    if (parent) this.entity(parent).get(HierarchyContainer).onJoin.emit(target);
     this.entity(target).get(HierarchyChild).onMove.emit();
   }
 
@@ -290,10 +289,14 @@ export class Gamestate extends Manager {
       const children = this.entity(entity).get(HierarchyContainer).children;
       for (const child of children) {
         if (!this.entityExists(child)) {
-          console.warn(`scrubbing reference to ${child} in ${entity} (${this.nameOf(entity)})`);
+          console.warn(
+            `scrubbing reference to ${child} in ${entity} (${this.nameOf(
+              entity
+            )})`
+          );
           children.delete(child);
           console.log(children);
-        };
+        }
       }
     }
 
@@ -301,7 +304,11 @@ export class Gamestate extends Manager {
       const parent = this.entity(entity).get(HierarchyChild).parent;
       if (parent) {
         if (!this.entityExists(parent)) {
-          console.warn(`scrubbing reference to ${parent} in ${entity} (${this.nameOf(entity)})`);
+          console.warn(
+            `scrubbing reference to ${parent} in ${entity} (${this.nameOf(
+              entity
+            )})`
+          );
           this.entity(entity).get(HierarchyChild).parent = undefined;
         }
       }

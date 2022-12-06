@@ -17,7 +17,7 @@ export class Entity {
   private map = new Map<Function, Component>();
 
   public constructor(id?: string) {
-    this.id = id ?? 'e-'+uuidv4();
+    this.id = id ?? 'e-' + uuidv4();
   }
 
   public add(component: Component): this {

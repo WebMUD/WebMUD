@@ -142,7 +142,7 @@ export class Client {
           this.chatMessage(data, 'whispers');
         })
     );
-    
+
     if (this.gs.hasParent(this.player)) this.onMove();
   }
 

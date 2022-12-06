@@ -1,196 +1,175 @@
 {
-    "e-2": [
-      {
-        "type": "component-name",
-        "data": "TestWorld"
-      },
-      {
-        "type": "component-hierarchy-container",
-        "children": [
-          "e-3",
-          "e-4",
-          "e-5",
-          "e-6"
-        ]
-      },
-      {
-        "type": "component-chat-channel"
-      },
-      {
-        "type": "component-world"
-      }
-    ],
-    "e-3": [
-      {
-        "type": "component-name",
-        "data": "Lobby"
-      },
-      {
-        "type": "component-description",
-        "data": "Welcome."
-      },
-      {
-        "type": "component-room"
-      },
-      {
-        "type": "component-adjacent",
-        "down": "e-5"
-      },
-      {
-        "type": "component-hierarchy-child"
-      },
-      {
-        "type": "component-hierarchy-container",
-        "children": [
-          "e-7"
-        ]
-      },
-      {
-        "type": "component-chat-channel"
-      },
-      {
-        "type": "component-entry-room"
-      }
-    ],
-    "e-4": [
-      {
-        "type": "component-name",
-        "data": "Shop"
-      },
-      {
-        "type": "component-description",
-        "data": "A small store."
-      },
-      {
-        "type": "component-room"
-      },
-      {
-        "type": "component-adjacent",
-        "east": "e-5"
-      },
-      {
-        "type": "component-hierarchy-child"
-      },
-      {
-        "type": "component-hierarchy-container",
-        "children": [
-          "e-8"
-        ]
-      },
-      {
-        "type": "component-chat-channel"
-      }
-    ],
-    "e-5": [
-      {
-        "type": "component-name",
-        "data": "Town Square"
-      },
-      {
-        "type": "component-description",
-        "data": ""
-      },
-      {
-        "type": "component-room"
-      },
-      {
-        "type": "component-adjacent",
-        "north": "e-6",
-        "west": "e-4"
-      },
-      {
-        "type": "component-hierarchy-child"
-      },
-      {
-        "type": "component-hierarchy-container",
-        "children": [
-  
-        ]
-      },
-      {
-        "type": "component-chat-channel"
-      }
-    ],
-    "e-6": [
-      {
-        "type": "component-name",
-        "data": "Road"
-      },
-      {
-        "type": "component-description",
-        "data": "A very long road."
-      },
-      {
-        "type": "component-room"
-      },
-      {
-        "type": "component-adjacent",
-        "north": "e-6",
-        "south": "e-5"
-      },
-      {
-        "type": "component-hierarchy-child"
-      },
-      {
-        "type": "component-hierarchy-container",
-        "children": [
-  
-        ]
-      },
-      {
-        "type": "component-chat-channel"
-      }
-    ],
-    "e-7": [
-      {
-        "type": "component-name",
-        "data": "Guide"
-      },
-      {
-        "type": "component-npc"
-      },
-      {
-        "type": "component-hierarchy-child",
-        "parent": "e-3"
-      },
-      {
-        "type": "component-hierarchy-container",
-        "children": [
-  
-        ]
-      },
-      {
-        "type": "component-npc-greeter",
-        "message": "Welcome to the development server, %p.",
-        "greeted": [
-  
-        ]
-      }
-    ],
-    "e-8": [
-      {
-        "type": "component-name",
-        "data": "Shop Keeper"
-      },
-      {
-        "type": "component-npc"
-      },
-      {
-        "type": "component-hierarchy-child",
-        "parent": "e-4"
-      },
-      {
-        "type": "component-hierarchy-container",
-        "children": [
-  
-        ]
-      },
-      {
-        "type": "component-npc-greeter",
-        "message": "Welcome to the shop.",
-        "greeted": [
-  
-        ]
-      }
-    ]
-  }
+  "e-2": [
+    {
+      "type": "component-name",
+      "data": "TestWorld"
+    },
+    {
+      "type": "component-hierarchy-container",
+      "children": ["e-3", "e-4", "e-5", "e-6"]
+    },
+    {
+      "type": "component-chat-channel"
+    },
+    {
+      "type": "component-world"
+    }
+  ],
+  "e-3": [
+    {
+      "type": "component-name",
+      "data": "Lobby"
+    },
+    {
+      "type": "component-description",
+      "data": "Welcome."
+    },
+    {
+      "type": "component-room"
+    },
+    {
+      "type": "component-adjacent",
+      "down": "e-5"
+    },
+    {
+      "type": "component-hierarchy-child"
+    },
+    {
+      "type": "component-hierarchy-container",
+      "children": ["e-7"]
+    },
+    {
+      "type": "component-chat-channel"
+    },
+    {
+      "type": "component-entry-room"
+    }
+  ],
+  "e-4": [
+    {
+      "type": "component-name",
+      "data": "Shop"
+    },
+    {
+      "type": "component-description",
+      "data": "A small store."
+    },
+    {
+      "type": "component-room"
+    },
+    {
+      "type": "component-adjacent",
+      "east": "e-5"
+    },
+    {
+      "type": "component-hierarchy-child"
+    },
+    {
+      "type": "component-hierarchy-container",
+      "children": ["e-8"]
+    },
+    {
+      "type": "component-chat-channel"
+    }
+  ],
+  "e-5": [
+    {
+      "type": "component-name",
+      "data": "Town Square"
+    },
+    {
+      "type": "component-description",
+      "data": ""
+    },
+    {
+      "type": "component-room"
+    },
+    {
+      "type": "component-adjacent",
+      "north": "e-6",
+      "west": "e-4"
+    },
+    {
+      "type": "component-hierarchy-child"
+    },
+    {
+      "type": "component-hierarchy-container",
+      "children": []
+    },
+    {
+      "type": "component-chat-channel"
+    }
+  ],
+  "e-6": [
+    {
+      "type": "component-name",
+      "data": "Road"
+    },
+    {
+      "type": "component-description",
+      "data": "A very long road."
+    },
+    {
+      "type": "component-room"
+    },
+    {
+      "type": "component-adjacent",
+      "north": "e-6",
+      "south": "e-5"
+    },
+    {
+      "type": "component-hierarchy-child"
+    },
+    {
+      "type": "component-hierarchy-container",
+      "children": []
+    },
+    {
+      "type": "component-chat-channel"
+    }
+  ],
+  "e-7": [
+    {
+      "type": "component-name",
+      "data": "Guide"
+    },
+    {
+      "type": "component-npc"
+    },
+    {
+      "type": "component-hierarchy-child",
+      "parent": "e-3"
+    },
+    {
+      "type": "component-hierarchy-container",
+      "children": []
+    },
+    {
+      "type": "component-npc-greeter",
+      "message": "Welcome to the development server, %p.",
+      "greeted": []
+    }
+  ],
+  "e-8": [
+    {
+      "type": "component-name",
+      "data": "Shop Keeper"
+    },
+    {
+      "type": "component-npc"
+    },
+    {
+      "type": "component-hierarchy-child",
+      "parent": "e-4"
+    },
+    {
+      "type": "component-hierarchy-container",
+      "children": []
+    },
+    {
+      "type": "component-npc-greeter",
+      "message": "Welcome to the shop.",
+      "greeted": []
+    }
+  ]
+}
