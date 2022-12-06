@@ -1,4 +1,5 @@
 import { EntityID } from "../../entity";
+import { Gamestate } from "../../gamestate";
 import { Manager } from "../../manager";
 
 export interface SerializedComponent {
@@ -16,7 +17,8 @@ export interface SerializableComponentClass {
 
 export abstract class Component {
   abstract serialize(type?: string): SerializedComponent;
-  public free(entity: EntityID, gs: Manager) {}
+  public free(entity: EntityID, gs: Manager|Gamestate) {}
+  public start(entity: EntityID, gs: Manager|Gamestate) {}
 
   static validateType(type: string, data: any): boolean {
     if (typeof data !== 'object' || data === null) return false;

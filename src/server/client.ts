@@ -154,6 +154,8 @@ export class Client {
     // onRoomExit.once() should be used rather than onRoomExit()
     this.onRoomExit.emit();
 
+    this.onChangeRooms.emit();
+
     this.onRoomExit.once(
       this.gs
         .getParent(this.player)
@@ -182,8 +184,6 @@ export class Client {
           })
       );
     }
-
-    this.onChangeRooms.emit();
   }
 
   public chatMessage(msg: ChatMessage, verb: string = 'says') {

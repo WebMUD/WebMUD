@@ -10,6 +10,8 @@ import {
   SerializedComponent,
 } from '../gamestate/components/base/component';
 import { Entity, EntityID } from '../gamestate/entity';
+import { Gamestate } from '../gamestate/gamestate';
+import { Manager } from '../gamestate/manager';
 import { Server } from '../server';
 import { WebMUDServerPlugin } from '../webmud-server-plugin';
 import { NPCComponent } from './npc-plugin';
@@ -57,6 +59,12 @@ export class NPCGreeterComponent extends Component {
     };
   }
 
+  start(entity: string, gs: Manager|Gamestate) {
+    if (gs instanceof Gamestate) {
+      NPCGreeterPlugin.onNPCMove(gs, entity);
+    }
+  }
+
   static type = 'component-npc-greeter';
 }
 
@@ -99,37 +107,44 @@ export class NPCGreeterPlugin extends WebMUDServerPlugin {
     this.server.gs
       .entity(e)
       .get(HierarchyChild)
-      .onMove(() => this.onNPCMove(e));
+      .onMove(() => NPCGreeterPlugin.onNPCMove(this.server.gs, e));
+
+      NPCGreeterPlugin.onNPCMove(this.server.gs, e);
+
     return e;
   }
 
-  onNPCMove(e: EntityID) {
-    const parent = this.server.gs.getParent(e);
+  static onNPCMove(gs: Gamestate, e: EntityID) {
+    if (!gs.hasParent(e)) return;
+    const parent = gs.getParent(e);
+    
     const stop = parent.get(HierarchyContainer).onJoin((target: EntityID) => {
       if (
         !(
-          this.server.gs.entity(target).has(Player) &&
-          this.server.gs.entity(target).has(ChatChannel)
+          gs.entity(target).has(Player) &&
+          gs.entity(target).has(ChatChannel)
         )
       )
         return;
-      const greeterComponent = this.server.gs
+      const greeterComponent = gs
         .entity(e)
         .get(NPCGreeterComponent);
       if (greeterComponent.greeted.has(target)) return;
       greeterComponent.greeted.add(target);
-      this.server.gs
+      setTimeout(()=>{
+        gs
         .entity(target)
         .get(ChatChannel)
         .event.emit({
           senderID: e,
-          senderName: this.server.gs.nameOf(e),
+          senderName: gs.nameOf(e),
           content: greeterComponent.message.replace(
             '%p',
-            this.server.gs.nameOf(target)
+            gs.nameOf(target)
           ),
         });
+      }, 1000);
     });
-    this.server.gs.entity(e).get(HierarchyChild).onMove.once(stop);
+    gs.entity(e).get(HierarchyChild).onMove.once(stop);
   }
 }

@@ -100,6 +100,10 @@ export class Manager {
       }
 
       this.entities.add(e);
+
+      for (const component of e) {
+        component.start(entity, this);
+      }
     }
   }
 
