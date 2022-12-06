@@ -1,4 +1,5 @@
 import { AttributeTag, SerializedAttributeTag } from './base/attribute-tag';
+import { Component } from './base/component';
 
 export type SerializedWorld = SerializedAttributeTag & {
   type: 'component-world';
@@ -11,10 +12,7 @@ export class World extends AttributeTag {
   }
 
   static validate(data: any): data is SerializedWorld {
-    if (AttributeTag.validate(data)) {
-      if (data.type === World.type) return true;
-    }
-    return false;
+    return Component.validateType(World.type, data);
   }
 
   serialize() {

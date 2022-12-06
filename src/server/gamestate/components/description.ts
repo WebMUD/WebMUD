@@ -1,4 +1,4 @@
-import { SerializedComponent } from './base/component';
+import { Component, SerializedComponent } from './base/component';
 import { DataAttributeString } from './base/data-attribute-string';
 
 export type SerializedDesciption = SerializedComponent & {
@@ -13,12 +13,15 @@ export class Description extends DataAttributeString {
   }
 
   static validate(data: any): data is SerializedDesciption {
-    return false; //where AJV will come into play
+    return DataAttributeString.validateDataAttributeType(
+      Description.type,
+      data
+    );
   }
 
   serialize() {
     return super.serialize(Description.type);
   }
-  
+
   static type = 'component-description';
 }

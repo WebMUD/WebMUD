@@ -1,4 +1,5 @@
 import { AttributeTag, SerializedAttributeTag } from './base/attribute-tag';
+import { Component } from './base/component';
 
 export type SerializedProp = SerializedAttributeTag & {
   type: 'component-prop';
@@ -11,15 +12,12 @@ export class Prop extends AttributeTag {
   }
 
   static validate(data: any): data is SerializedProp {
-    if (AttributeTag.validate(data)) {
-      if (data.type === Prop.type) return true;
-    }
-    return false;
+    return Component.validateType(Prop.type, data);
   }
 
   serialize() {
     return super.serialize(Prop.type);
   }
-  
+
   static type = 'component-prop';
 }

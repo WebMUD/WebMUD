@@ -1,4 +1,5 @@
 import { AttributeTag, SerializedAttributeTag } from './base/attribute-tag';
+import { Component } from './base/component';
 
 export type SerializedItem = SerializedAttributeTag & {
   type: 'component-item';
@@ -11,15 +12,12 @@ export class Item extends AttributeTag {
   }
 
   static validate(data: any): data is SerializedItem {
-    if (AttributeTag.validate(data)) {
-      if (data.type === Item.type) return true;
-    }
-    return false;
+    return Component.validateType(Item.type, data);
   }
 
   serialize() {
     return super.serialize(Item.type);
   }
-  
+
   static type = 'component-item';
 }

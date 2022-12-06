@@ -13,6 +13,6 @@ export class DataAttribute<T> extends Component {
     return {
       type,
       data: this.data,
-    }
+    };
   }
 }

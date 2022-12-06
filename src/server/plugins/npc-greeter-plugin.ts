@@ -5,11 +5,20 @@ import {
   Name,
   Player,
 } from '../gamestate/components';
-import { Component, SerializedComponent } from '../gamestate/components/base/component';
+import {
+  Component,
+  SerializedComponent,
+} from '../gamestate/components/base/component';
 import { Entity, EntityID } from '../gamestate/entity';
 import { Server } from '../server';
 import { WebMUDServerPlugin } from '../webmud-server-plugin';
 import { NPCComponent } from './npc-plugin';
+
+export type SerializedNPCGreeter = SerializedComponent & {
+  type: 'component-npc-greeter';
+  message: string;
+  greeted: string[];
+};
 
 export class NPCGreeterComponent extends Component {
   // "%p" replaced with player name
@@ -22,10 +31,30 @@ export class NPCGreeterComponent extends Component {
     this.message = message;
   }
 
+  static deserialize(data: unknown): NPCGreeterComponent | false {
+    if (NPCGreeterComponent.validate(data)) {
+      const c = new NPCGreeterComponent(data.message);
+      for (const greeted of data.greeted) c.greeted.add(greeted);
+      return c;
+    }
+    return false;
+  }
+
+  static validate(data: any): data is SerializedNPCGreeter {
+    if (!Component.validateType(NPCGreeterComponent.type, data)) return false;
+    if (!(data.parent === undefined || typeof data.parent === 'string'))
+      return false;
+    if (!Array.isArray(data.greeted)) return false;
+    for (const x of data.greeted) if (typeof x !== 'string') return false;
+    return true;
+  }
+
   serialize() {
     return {
       type: NPCGreeterComponent.type,
-    }
+      message: this.message,
+      greeted: Array.from(this.greeted.keys()),
+    };
   }
 
   static type = 'component-npc-greeter';
@@ -37,7 +66,9 @@ export class NPCGreeterPlugin extends WebMUDServerPlugin {
   init(server: Server) {
     this.server = server;
     const self = this;
-    // add create-npc-greeter command
+
+    server.gamestate.defineComponent(NPCGreeterComponent);
+
     server.commands.addCommand({
       command: 'create-npc-greeter',
       alias: ['cnpc-greeter'],
@@ -56,7 +87,6 @@ export class NPCGreeterPlugin extends WebMUDServerPlugin {
   }
 
   create(name: string, message: string) {
-    // create entity
     const e = this.server.gs.createEntity();
     this.server.gs
       .entity(e)

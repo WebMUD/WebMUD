@@ -11,6 +11,7 @@ import {
   Prop,
   ChatChannel,
   World,
+  EntryRoom,
 } from './components';
 import { Entity, EntityID } from './entity';
 import { EntityError } from './entity-error';
@@ -20,6 +21,24 @@ import { Manager } from './manager';
  * Holds and manipulates the current game state
  */
 export class Gamestate extends Manager {
+  public constructor() {
+    super();
+    this.defineComponent(
+      HierarchyChild,
+      HierarchyContainer,
+      Name,
+      Player,
+      Description,
+      Room,
+      EntryRoom,
+      Adjacent,
+      Item,
+      Prop,
+      ChatChannel,
+      World
+    );
+  }
+
   /**
    * Create a player entity
    * @param name
@@ -146,7 +165,7 @@ export class Gamestate extends Manager {
    * @param target the entity to move
    * @param parent the container to move it to
    */
-  move(target: EntityID, parent: EntityID) {
+  move(target: EntityID, parent: EntityID | undefined) {
     if (target === parent)
       throw new EntityError(
         this.entity(target),
@@ -163,11 +182,13 @@ export class Gamestate extends Manager {
     }
 
     this.entity(target).get(HierarchyChild).parent = parent;
-    this.entity(parent).get(HierarchyContainer).children.add(target);
+    if (parent)
+      this.entity(parent).get(HierarchyContainer).children.add(target);
 
     if (hasOldParent && oldParent)
       this.entity(oldParent).get(HierarchyContainer).onLeave.emit(target);
-    this.entity(parent).get(HierarchyContainer).onJoin.emit(target);
+    if (parent)
+      this.entity(parent).get(HierarchyContainer).onJoin.emit(target);
     this.entity(target).get(HierarchyChild).onMove.emit();
   }
 
@@ -260,6 +281,33 @@ export class Gamestate extends Manager {
     return this.findByName(this.filter(Name), name);
   }
 
+  scrub() {
+    for (const e of this.all()) this._scrub(e);
+  }
+
+  _scrub(entity: EntityID) {
+    if (this.entity(entity).has(HierarchyContainer)) {
+      const children = this.entity(entity).get(HierarchyContainer).children;
+      for (const child of children) {
+        if (!this.entityExists(child)) {
+          console.warn(`scrubbing reference to ${child} in ${entity} (${this.nameOf(entity)})`);
+          children.delete(child);
+          console.log(children);
+        };
+      }
+    }
+
+    if (this.entity(entity).has(HierarchyChild)) {
+      const parent = this.entity(entity).get(HierarchyChild).parent;
+      if (parent) {
+        if (!this.entityExists(parent)) {
+          console.warn(`scrubbing reference to ${parent} in ${entity} (${this.nameOf(entity)})`);
+          this.entity(entity).get(HierarchyChild).parent = undefined;
+        }
+      }
+    }
+  }
+
   /**
    * Find by name or ID
    */
@@ -268,5 +316,11 @@ export class Gamestate extends Manager {
     const e = this.getByName(x);
     if (e) return e;
     return false;
+  }
+
+  moveAllPlayers(target: EntityID | undefined) {
+    for (const player of this.filter(Player)) {
+      this.move(player, target);
+    }
   }
 }

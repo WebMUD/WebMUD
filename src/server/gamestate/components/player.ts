@@ -1,4 +1,5 @@
 import { AttributeTag, SerializedAttributeTag } from './base/attribute-tag';
+import { Component } from './base/component';
 
 export type SerializedPlayer = SerializedAttributeTag & {
   type: 'component-player';
@@ -11,15 +12,12 @@ export class Player extends AttributeTag {
   }
 
   static validate(data: any): data is SerializedPlayer {
-    if (AttributeTag.validate(data)) {
-      if (data.type === Player.type) return true;
-    }
-    return false;
+    return Component.validateType(Player.type, data);
   }
 
   serialize() {
     return super.serialize(Player.type);
   }
-  
+
   static type = 'component-player';
 }

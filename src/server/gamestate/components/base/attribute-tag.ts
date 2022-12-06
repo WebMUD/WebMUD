@@ -6,7 +6,7 @@ export class AttributeTag extends Component {
   constructor() {
     super();
   }
-  
+
   static validate(data: any): data is SerializedAttributeTag {
     if (typeof data !== 'object' || data === null) return false;
     if (typeof data.type !== 'string') return false;
@@ -16,6 +16,6 @@ export class AttributeTag extends Component {
   serialize(type: string) {
     return {
       type,
-    }
+    };
   }
 }

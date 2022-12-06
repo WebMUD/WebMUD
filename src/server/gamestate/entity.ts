@@ -1,4 +1,4 @@
-import { uniqueId } from 'lodash';
+import { v4 as uuidv4 } from 'uuid';
 import { Component } from './components/base/component';
 import { EntityError } from './entity-error';
 
@@ -13,8 +13,12 @@ export type ComponentClass<T extends Component> = new (...args: any[]) => T;
  * Contains the components for an entity
  */
 export class Entity {
-  public readonly id: string = uniqueId('e-');
+  public readonly id: string;
   private map = new Map<Function, Component>();
+
+  public constructor(id?: string) {
+    this.id = id ?? 'e-'+uuidv4();
+  }
 
   public add(component: Component): this {
     this.map.set(component.constructor, component);

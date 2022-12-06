@@ -1,3 +1,6 @@
+import { EntityID } from "../../entity";
+import { Manager } from "../../manager";
+
 export interface SerializedComponent {
   type: string;
 }
@@ -13,6 +16,12 @@ export interface SerializableComponentClass {
 
 export abstract class Component {
   abstract serialize(type?: string): SerializedComponent;
-  public free() {
+  public free(entity: EntityID, gs: Manager) {}
+
+  static validateType(type: string, data: any): boolean {
+    if (typeof data !== 'object' || data === null) return false;
+    if (typeof data.type !== 'string') return false;
+    if (data.type === type) return true;
+    return false;
   }
 }

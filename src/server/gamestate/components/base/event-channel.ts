@@ -11,6 +11,6 @@ export class EventChannelComponent<T> extends Component {
   serialize(type: string) {
     return {
       type,
-    }
+    };
   }
 }
