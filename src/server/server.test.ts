@@ -16,7 +16,8 @@ function mock(useConsole: boolean = false) {
     world
   );
 
-  server.init(world, startingRoom);
+  server.initWorld(world);
+  server.setting(Server.SETTINGS.ENTRY_ROOM, startingRoom);
 
   const [serverConnection2, clientConnection2] = LocalConnection.create();
 

@@ -11,11 +11,15 @@ import { EntityID } from './gamestate/entity';
 import { Logger } from '../common/logger';
 import {
   ChatChannel,
-  Description,
+  EntryRoom,
   HierarchyContainer,
+  Player,
+  Room,
+  World,
 } from './gamestate/components';
 import { ServerCommands } from './server-commands';
 import { WebMUDServerPlugin } from './webmud-server-plugin';
+import { SaveStatePlugin } from './plugins/savestate-plugin';
 
 export type ServerSystem = (server: Server, deltaTime: number) => void;
 
@@ -37,17 +41,17 @@ export class Server extends Logger {
   public name: string;
 
   public gamestate: Gamestate;
-  public world: EntityID;
-  public startingRoom: EntityID;
 
   public commands = new ServerCommands(this);
 
   public onReady = EventEmitter.channel<void>();
+  public onReset = EventEmitter.channel<void>();
   public onClientJoin = EventEmitter.channel<Client>();
   public onClientRejoin = EventEmitter.channel<Client>();
 
   private flags = new Set<string>();
   private options = new Map<string, number>();
+  private settings = new Map<string, string>();
 
   private _discoveryID: string;
   private clients = new Collection<Client>();
@@ -85,12 +89,92 @@ export class Server extends Logger {
   }
 
   /**
+   * load a level
+   * @param url location of level data to load
+   */
+  async loadLevel(url: string) {
+    try {
+      const data = await fetch(url);
+      const text = await data.text();
+      this.loadGamestate(text);
+    } catch (err) {
+      this.error(`failed to load level data from ${url}`);
+      throw err;
+    }
+  }
+
+  /**
+   * return a list of levels
+   * @returns {name: string, location: string}[]
+   */
+  async enumerateLevels() {
+    try {
+      const data = await fetch('/levels/index.json');
+      const json = await data.json();
+      return Object.entries(json).map(([name, location]: [string, string]) => ({
+        name,
+        location,
+      }));
+    } catch (err) {
+      console.log(err);
+      return [];
+    }
+  }
+
+  loadGamestate(data: unknown) {
+    this.broadcast({ text: `Server changing levels.`, format: [] });
+    this.stopClients();
+    this.onReset.emit();
+    this.gamestate.deseralize(data);
+    this.gamestate.scrub();
+    this.init();
+    this.startClients();
+  }
+
+  public init() {
+    let worlds = Array.from(this.gamestate.filter(World));
+    if (worlds.length === 1) {
+      this.initWorld(worlds[0]);
+    } else {
+      if (worlds.length > 1) this.error('Found more than one world.');
+      else this.error('Missing world entity.');
+      const voidWorld = this.gamestate.createWorld('_voidworld');
+      const voidRoom = this.gamestate.createRoom('Void', '', voidWorld);
+      this.setting(Server.SETTINGS.ENTRY_ROOM, voidRoom);
+      this.initWorld(voidWorld);
+    }
+
+    let entryRooms: string[] = Array.from(this.gs.filter(EntryRoom));
+
+    if (entryRooms.length < 1) {
+      this.error('Missing Entry Room');
+      const rooms = Array.from(this.gamestate.filter(Room));
+      if (rooms.length > 0) entryRooms = [rooms[0]];
+    }
+
+    if (entryRooms.length === 1) {
+      this.gs.entity(entryRooms[0]).add(new EntryRoom());
+      this.setting(Server.SETTINGS.ENTRY_ROOM, entryRooms[0]);
+    } else {
+      throw new Error('no rooms');
+    }
+
+    for (const client of this.getClients()) client.remakePlayer();
+  }
+
+  /**
    * Initialize a world
    * @param world id of the world entity
-   * @param startingRoom id of the room players should be placed in when joining
    */
-  public init(world: EntityID, startingRoom: EntityID) {
+  public initWorld(world: EntityID) {
     this.info(`Initalizing world: ${this.gs.nameOf(world)}`);
+    this.broadcast(
+      { text: '---', format: [] },
+      { text: ` Welcome to `, format: [] },
+      { text: this.gamestate.nameOf(world), format: ['bold'] },
+      { text: ' ', format: [] },
+      { text: '---', format: [] }
+    );
     const prefix = `[${this.gs.nameOf(world)}]: `;
 
     this.gs
@@ -102,8 +186,7 @@ export class Server extends Logger {
 
     for (const room of this.gs.getChildrenIDs(world)) this.initRoom(room);
 
-    this.world = world;
-    this.startingRoom = startingRoom;
+    this.setting(Server.SETTINGS.WORLD, world);
   }
 
   /**
@@ -114,20 +197,24 @@ export class Server extends Logger {
     this.debug(`Initalizing room: ${this.gs.nameOf(room)}`);
     const roomPrefix = `[${this.gs.nameOf(room)}]: `;
 
-    room.get(ChatChannel).event(msg => {
-      if (this.flag(Server.FLAGS.VERBOSE))
-        this.print(roomPrefix + `[${msg.senderName}]: ${msg.content}`);
-    });
+    this.onReset.once(
+      room.get(ChatChannel).event(msg => {
+        if (this.flag(Server.FLAGS.VERBOSE))
+          this.print(roomPrefix + `[${msg.senderName}]: ${msg.content}`);
+      })
+    );
 
-    room.get(HierarchyContainer).onLeave(id => {
-      if (this.flag(Server.FLAGS.VERBOSE))
-        this.print(
-          roomPrefix +
-            `${this.gs.nameOf(id)} moved to ${this.gs.nameOf(
-              this.gs.getParent(id)
-            )}.`
-        );
-    });
+    this.onReset.once(
+      room.get(HierarchyContainer).onLeave(id => {
+        if (this.flag(Server.FLAGS.VERBOSE))
+          this.print(
+            roomPrefix +
+              `${this.gs.nameOf(id)} moved to ${this.gs.nameOf(
+                this.gs.getParent(id)
+              )}.`
+          );
+      })
+    );
   }
 
   /**
@@ -157,6 +244,30 @@ export class Server extends Logger {
     this._discoveryID = value;
   }
 
+  stopClients() {
+    for (const client of this.getClients()) {
+      if (client.isActive()) client.stop();
+    }
+  }
+
+  startClients() {
+    for (const client of this.getClients()) {
+      if (client.isActive()) this.startClient(client);
+    }
+  }
+
+  public startClient(client: Client) {
+    if (
+      this.settings.has(Server.SETTINGS.WORLD) &&
+      this.settings.has(Server.SETTINGS.ENTRY_ROOM)
+    ) {
+      client.start(this.setting(Server.SETTINGS.WORLD));
+      this.gs.move(client.player, this.setting(Server.SETTINGS.ENTRY_ROOM));
+    } else {
+      this.error(`Failed to start client ${client.name}`);
+    }
+  }
+
   /**
    * create a new client
    */
@@ -165,11 +276,19 @@ export class Server extends Logger {
 
     const player = this.gs.createPlayer(username);
     const client = new Client(this, connection, player);
-    this.clients.add(client);
-    client.start(this.world);
-    this.onClientJoin.emit(client);
-    this.gs.move(player, this.startingRoom);
 
+    this.clients.add(client);
+    this.onClientJoin.emit(client);
+
+    this.startClient(client);
+
+    return client;
+  }
+
+  public loadClient(data: unknown): Client {
+    const client = Client.deseralize(this, data);
+    if (!client) throw new Error('invalid client data');
+    this.clients.add(client);
     return client;
   }
 
@@ -182,7 +301,9 @@ export class Server extends Logger {
     if (!client) throw new Error(`Unknown token ${token}`);
 
     client.useConnection(connection);
-    client.start(this.world);
+    const world = this.setting(Server.SETTINGS.WORLD);
+    if (!world) throw new Error('SETTINGS.WORLD is not set');
+    client.start(world);
     this.onClientRejoin.emit(client);
 
     return client;
@@ -290,10 +411,21 @@ export class Server extends Logger {
    * Get the value of a server setting
    * Set the numeric value for server settings
    */
-  option(option: string, set?: number) {
+  option(option: string, set?: number): number {
     if (!(option in Server.OPTIONS)) throw new Error(`unkown option ${option}`);
     if (set !== undefined) this.options.set(option, set);
-    return this.options.get(option);
+    const value = this.options.get(option);
+    if (!value) throw new Error(`OPTIONS.${option} is not set`);
+    return value;
+  }
+
+  setting(setting: string, set?: string): string {
+    if (!(setting in Server.SETTINGS))
+      throw new Error(`unkown setting ${setting}`);
+    if (set !== undefined) this.settings.set(setting, set);
+    const value = this.settings.get(setting);
+    if (!value) throw new Error(`SETTINGS.${setting} is not set`);
+    return value;
   }
 
   /**
@@ -311,6 +443,67 @@ export class Server extends Logger {
     const result = this.plugins.get(pluginClass);
     if (!result) throw new Error(`cannot get plugin`);
     return result as T;
+  }
+
+  // for testing
+  getSaveStatePlugin() {
+    return this.getPlugin(SaveStatePlugin);
+  }
+
+  kick(id: string, reason: string): boolean {
+    const client = this.clients.get(id);
+    if (!client) return false;
+    client.disconnect(reason);
+    this.clients.remove(client);
+    return true;
+  }
+
+  purgeClients() {
+    for (const client of this.getClients()) {
+      this.gs.destroyEntity(client.player);
+      this.kick(client.id, 'server closing');
+    }
+    this.clients.clear();
+  }
+
+  broadcast(...parts: { text: string; format: string[] }[]) {
+    for (const client of this.getClients()) {
+      if (client.isActive()) client.sendMessageFrame(...parts);
+    }
+  }
+
+  serializeConfig() {
+    return {
+      flags: Array.from(this.flags.values()),
+      options: Array.from(this.options.entries()),
+      settings: Array.from(this.settings.entries()),
+    };
+  }
+
+  deseralizeConfig(data: any) {
+    if ('flags' in data) this._deseralizeFlags(data.flags);
+    if ('options' in data) this._deseralizeOptions(data.options);
+    if ('settings' in data) this._deseralizeSettings(data.settings);
+  }
+
+  private _deseralizeFlags(data: any) {
+    if (!Array.isArray(data)) throw new Error('invalid flags data');
+    this.flags.clear();
+    for (const x of data) this.flag(x, true);
+  }
+
+  private _deseralizeOptions(data: any) {
+    if (!Array.isArray(data)) throw new Error('invalid options data');
+    for (const [key, value] of data) {
+      this.option(key, value);
+    }
+  }
+
+  private _deseralizeSettings(data: any) {
+    if (!Array.isArray(data)) throw new Error('invalid settings data');
+    for (const [key, value] of data) {
+      this.setting(key, value);
+    }
   }
 
   get gs() {
@@ -343,5 +536,10 @@ export class Server extends Logger {
   static OPTIONS = {
     TICK_RATE: 'TICK_RATE',
     SPEED: 'SPEED',
+  };
+
+  static SETTINGS = {
+    WORLD: 'WORLD',
+    ENTRY_ROOM: 'ENTRY_ROOM',
   };
 }

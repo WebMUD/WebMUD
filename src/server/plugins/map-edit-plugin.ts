@@ -1,12 +1,77 @@
 import { WebMUDServerPlugin } from '../webmud-server-plugin';
 import { Server } from '../server';
+import { EntryRoom, Player, Room } from '../gamestate/components';
 
 export class MapEditPlugin extends WebMUDServerPlugin {
   init(server: Server) {
     server.commands.addCommand({
+      command: 'build-level',
+      alias: ['bl'],
+      usage: 'build-level',
+      about: 'print level data',
+
+      use(argv: string[]) {
+        server.purgeClients();
+        for (const entity of server.gs.filter(Player)) {
+          server.gs.destroyEntity(entity);
+        }
+        const result = JSON.stringify(server.gamestate.seralize());
+        navigator.clipboard.writeText(result);
+        server.print('level data copied to clipboard.');
+      },
+    });
+
+    server.commands.addCommand({
+      command: 'load-level',
+      alias: ['ll'],
+      usage: 'load-level',
+      about: 'load level data',
+
+      use(argv: string[]) {
+        server.info('waiting for level data...');
+
+        setTimeout(() => {
+          const data = prompt('Enter level data');
+          if (!data) return;
+          console.log(JSON.parse(data));
+          server.loadGamestate(data);
+        }, 100);
+      },
+    });
+
+    server.commands.addCommand({
+      command: 'test-save-load',
+      alias: ['sll'],
+      usage: 'sll',
+      about: 'save the gamestate and reload it',
+
+      use(argv: string[]) {
+        server.loadGamestate(server.gamestate.seralize());
+      },
+    });
+
+    server.commands.addCommand({
+      command: 'purge',
+      alias: [],
+      usage: 'purge [<name of new world>]',
+      about: 'load level data',
+
+      use(argv: string[]) {
+        server.warn('Kicking Clients');
+        server.purgeClients();
+        server.warn('Reseting Gamestate');
+        server.gamestate.reset();
+
+        const name = argv.shift() || 'World';
+        const world = server.gamestate.createWorld(name);
+        server.initWorld(world);
+      },
+    });
+
+    server.commands.addCommand({
       command: 'createworld',
       alias: ['cw'],
-      usage: 'cworld <name>',
+      usage: 'cw <name>',
       about: 'create a world',
 
       use(argv: string[]) {
@@ -23,7 +88,7 @@ export class MapEditPlugin extends WebMUDServerPlugin {
     server.commands.addCommand({
       command: 'createroom',
       alias: ['cr'],
-      usage: 'croom <name> <description> [<world>]',
+      usage: 'cr <name> <description> [<world>]',
       about: 'create a room',
 
       use(argv: string[]) {
@@ -34,15 +99,48 @@ export class MapEditPlugin extends WebMUDServerPlugin {
 
         if (!name) return server.error(`Missing value for name`);
 
-        if (!_world) world = server.world;
+        if (!_world)
+          world =
+            server.setting(Server.SETTINGS.WORLD) ||
+            new Error('SETTINGS.WORLD is not set');
         else {
           world = server.gamestate.findWorld(_world);
           if (!world) return server.error(`World ${_world} does not exist`);
         }
 
+        if (world instanceof Error) throw world;
+
         server.initRoom(server.gamestate.createRoom(name, description, world));
 
         server.info(`Created room: ${server.gamestate.nameOf(world)}/${name}`);
+      },
+    });
+
+    server.commands.addCommand({
+      command: 'entryroom',
+      alias: ['er'],
+      usage: 'er <name>',
+      about: 'select an entry room',
+
+      use(argv: string[]) {
+        const name = argv.shift();
+
+        if (!name) return server.error(`Missing value for name`);
+        const room = server.gs.find(name);
+        if (!room)
+          return server.error(`Could not find entity by the name of ${name}`);
+        if (!server.gs.entity(room).has(Room))
+          return server.error(`${name} must be a room`);
+
+        for (const entity of server.gs.filter(EntryRoom)) {
+          server.gs.entity(entity).delete(EntryRoom);
+          server.warn(
+            `${server.gs.nameOf(entity)} is no longer the entry room`
+          );
+        }
+
+        server.gs.entity(room).add(new EntryRoom());
+        server.info(`${server.gs.nameOf(room)} is now the entry room`);
       },
     });
 
