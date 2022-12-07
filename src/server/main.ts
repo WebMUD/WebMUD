@@ -18,7 +18,7 @@ declare global {
 
 export function createServer(
   devMode: boolean = false,
-  plugins: WebMUDServerPlugin[] = []
+    plugins: WebMUDServerPlugin[] = [],
 ) {
   const PLUGINS = [
     new ClientBehaviorPlugin(),
@@ -31,17 +31,19 @@ export function createServer(
   const el = util.getElements({
     output: 'console-output',
     input: 'console-input',
-    debug: 'enable-debug',
+      debug: 'enable-debug',
+    clientList: 'client-list',
   });
 
-  const server = (window.server = new Server('my game', {
-    plugins: [...PLUGINS, ...plugins],
+    const server = (window.server = new Server('my game', {
+        plugins: [...PLUGINS, ...plugins],
   }));
 
   window.serverView = new ServerView({
     output: el.output,
     input: el.input,
     debug: el.debug,
+    clientList: el.clientList,
     joinURL: document.getElementById('joinURL') ?? undefined,
     joinLink: document.getElementById('joinLink') ?? undefined,
     server,
