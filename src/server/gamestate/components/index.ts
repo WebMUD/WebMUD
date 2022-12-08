@@ -6,6 +6,7 @@ export { Description } from './description';
 export { World } from './world';
 export { Player } from './player';
 export { Room } from './room';
+export { EntryRoom } from './entry-room';
 export { Prop } from './prop';
 export { Item } from './item';
 export { ChatChannel } from './chat-channel';

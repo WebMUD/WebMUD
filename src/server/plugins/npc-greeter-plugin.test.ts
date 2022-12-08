@@ -42,21 +42,23 @@ test('NpcGreeterPlugin', () => {
         room2,
     } = mock();
 
-    const npc = greeterPlugin.create('test', 'testmessage');
-    const arrayNpc = greeterPlugin.create('test', ['test','message'])
+    const messageArray = ['testmessage', 'test2'];
+
+    const npc = greeterPlugin.create('test', 1, messageArray);
     const player = gs.createPlayer('test');
     const player2 = gs.createPlayer('test2');
 
     gs.entity(player).get(ChatChannel).event((msg)=>{
-        expect(msg.content).toBe('testmessage');
+        expect(messageArray).toContain(msg.content);
+        // expect(msg.content).toBe('testmessage');
     });
 
     gs.entity(player2).get(ChatChannel).event((msg)=>{
-        expect(msg.content).toBe('message');
+        expect(messageArray).toContain(msg.content);
+        // expect(msg.content).toBe('message');
     });
 
     gs.move(npc, room1);
-    gs.move(arrayNpc, room2);
     gs.move(player, room1);
     expect(server.gs.entity(npc).get(NPCGreeterComponent).greeted.has(server.gs.entity(player).id)).toBe(true); 
     gs.move(player2, room2);

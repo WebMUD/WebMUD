@@ -7,4 +7,12 @@ export class DataAttribute<T> extends Component {
     super();
     this.data = data;
   }
+
+  serialize(type: string) {
+    if (!type) throw new Error('missing type');
+    return {
+      type,
+      data: this.data,
+    };
+  }
 }

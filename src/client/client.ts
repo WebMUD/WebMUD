@@ -33,7 +33,7 @@ export class Client extends Logger {
       if (!frame) throw new Error('Unable to parse incoming data: ' + data);
 
       // handle incoming data
-      console.log(frame);
+      // console.log(frame);
 
       if (frame instanceof FrameMessage) return this.message(frame);
 

@@ -14,8 +14,14 @@ import {
 } from './gamestate/components';
 import { Server } from './server';
 
+export interface SeralizedClient {
+  type: 'client';
+  id: string;
+  player: string;
+}
+
 export class Client {
-  public readonly id: string = uuidv4();
+  public readonly id: string; // client secret
   public player: EntityID;
   public server: Server;
 
@@ -23,19 +29,24 @@ export class Client {
   public onMessage = EventEmitter.channel<{ msg: ChatMessage; verb: string }>();
   public onEntityEnterRoom = EventEmitter.channel<EntityID>();
   public onEntityExitRoom = EventEmitter.channel<EntityID>();
+  public onChangeRooms = EventEmitter.channel<void>();
 
   public onConnectionClose = EventEmitter.channel<void>();
   public onRoomExit = EventEmitter.channel<void>();
 
   private connection: ConnectionBase | null;
+  private _name: string;
 
   constructor(
     server: Server,
     connection: ConnectionBase | null,
-    player: EntityID
+    player: EntityID,
+    id?: string
   ) {
+    this.id = id ?? uuidv4();
     this.server = server;
     this.player = player;
+    this._name = this.name;
     this.useConnection(connection);
   }
 
@@ -52,6 +63,12 @@ export class Client {
     this.connection = connection;
   }
 
+  public disconnect(reason: string) {
+    this.sendMessageFrame({ text: reason, format: [] });
+    this.connection?.close();
+    this.freeConnection();
+  }
+
   public freeConnection() {
     this.onRoomExit.emit();
     this.onRoomExit.clear();
@@ -62,6 +79,27 @@ export class Client {
       this.connection.close();
       this.connection = null;
     }
+  }
+
+  public isActive() {
+    return this.connection !== null;
+  }
+
+  public stop() {
+    this.onRoomExit.emit();
+    this.onConnectionClose.emit();
+  }
+
+  public destroyPlayer() {
+    this.gs.destroyEntity(this.player);
+  }
+
+  public remakePlayer() {
+    const old = this.gs.findPlayer(this._name);
+    if (old) this.gs.destroyEntity(old);
+
+    const player = this.gs.createPlayer(this._name);
+    this.player = player;
   }
 
   /**
@@ -104,6 +142,8 @@ export class Client {
           this.chatMessage(data, 'whispers');
         })
     );
+
+    if (this.gs.hasParent(this.player)) this.onMove();
   }
 
   /**
@@ -113,6 +153,8 @@ export class Client {
     // the onRoomExit event emitter is used to stop listening for events in the previous room when moving between rooms
     // onRoomExit.once() should be used rather than onRoomExit()
     this.onRoomExit.emit();
+
+    this.onChangeRooms.emit();
 
     this.onRoomExit.once(
       this.gs
@@ -189,5 +231,29 @@ export class Client {
   public getRoom(): EntityID {
     const room = this.gs.getParentID(this.player);
     return room;
+  }
+
+  public serialize(): SeralizedClient {
+    return {
+      type: 'client',
+      id: this.id,
+      player: this.player,
+    };
+  }
+
+  public static validate(data: any): data is SeralizedClient {
+    if (typeof data !== 'object' || data === null) return false;
+    if (typeof data.type !== 'string') return false;
+    if (data.type !== 'client') return false;
+    if (typeof data.player !== 'string') return false;
+    if (typeof data.id !== 'string') return false;
+    return true;
+  }
+
+  public static deseralize(server: Server, data: unknown): Client | false {
+    if (Client.validate(data)) {
+      return new Client(server, null, data.player, data.id);
+    }
+    return false;
   }
 }
