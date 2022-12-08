@@ -178,7 +178,7 @@ export class MapEditPlugin extends WebMUDServerPlugin {
     server.commands.addCommand({
       command: 'link',
       alias: ['ln'],
-      usage: 'link <first> [n|s|e|w] [of] <second>',
+      usage: 'link <first> [n|s|e|w|u|d] [of] <second>',
       about: 'link rooms',
 
       use(argv: string[]) {
@@ -215,6 +215,14 @@ export class MapEditPlugin extends WebMUDServerPlugin {
         if (directionOf?.startsWith('w')) {
           server.gamestate.connectEastWest(secondID, firstID);
           server.info(`made ${firstName} west of ${secondName}`);
+        }
+        if (directionOf?.startsWith('u')) {
+          server.gamestate.connectUpDown(firstID, secondID);
+          server.info(`made ${firstName} above ${secondName}`);
+        }
+        if (directionOf?.startsWith('d')) {
+          server.gamestate.connectUpDown(secondID, firstID);
+          server.info(`made ${firstName} below ${secondName}`);
         }
       },
     });
