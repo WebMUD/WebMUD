@@ -2,22 +2,12 @@ import * as util from '../common/util';
 
 import { ServerView } from './server-view';
 import { Server } from './server';
-import { ClockPlugin } from './plugins/clock-plugin';
 import { WebMUDServerPlugin } from './webmud-server-plugin';
 import { HelpCommandPluggin } from './plugins/help-command-plugin';
 import { ClientBehaviorPlugin } from './plugins/client-behavior-plugin';
 import { SaveStatePlugin } from './plugins/savestate-plugin';
 import { NPCGreeterPlugin } from './plugins/npc-greeter-plugin';
 import { NPCPlugin } from './plugins/npc-plugin';
-
-const PLUGINS = [
-  new ClientBehaviorPlugin(),
-  new HelpCommandPluggin(),
-  new ClockPlugin(),
-  new SaveStatePlugin(),
-  new NPCPlugin(),
-  new NPCGreeterPlugin(),
-];
 
 declare global {
   interface Window {
@@ -30,6 +20,14 @@ export function createServer(
   devMode: boolean = false,
   plugins: WebMUDServerPlugin[] = []
 ) {
+  const PLUGINS = [
+    new ClientBehaviorPlugin(),
+    new HelpCommandPluggin(),
+    new SaveStatePlugin(),
+    new NPCPlugin(),
+    new NPCGreeterPlugin(),
+  ];
+
   const el = util.getElements({
     output: 'console-output',
     input: 'console-input',
@@ -50,6 +48,5 @@ export function createServer(
     devMode,
   });
 
-  server.startDiscovery();
   return server;
 }

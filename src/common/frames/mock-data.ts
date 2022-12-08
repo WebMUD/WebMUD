@@ -80,4 +80,8 @@ export const data = {
   frameRequestCommandList: {
     type: 'request_command_list',
   },
+    frameUsernameTaken: {
+    type: 'username_taken',
+    username: 'username',
+  }
 };
