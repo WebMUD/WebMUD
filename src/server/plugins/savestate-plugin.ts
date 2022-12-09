@@ -45,7 +45,7 @@ export class SaveStatePlugin extends WebMUDServerPlugin {
 
     // seralize clients
     for (const client of this.server.getClients()) {
-      clients[client.id] = client.serialize();
+      //clients[client.id] = client.serialize();
     }
 
     return JSON.stringify({ entities, clients, config });
@@ -73,7 +73,7 @@ export class SaveStatePlugin extends WebMUDServerPlugin {
     this.server.init();
 
     for (const client of Object.values(clients)) {
-      this.server.loadClient(client);
+      //this.server.loadClient(client);
     }
   }
 

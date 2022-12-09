@@ -1,4 +1,9 @@
-import { commandName } from './parser';
+import { commandName } from "./parser";
+import {Client} from "../../server/client"
+import { CodeKeywordDefinition } from "ajv";
+import { Server } from "../../server/server";
+import { Connection } from "../../common/connection/connection";
+import { Player } from "../../server/gamestate/components";
 
 export enum Direction {
   NORTH = 'NORTH',
@@ -28,14 +33,20 @@ export class MoveCommand {
   constructor(direction: Direction) {
     this.direction = direction;
   }
+
+  getDirection()
+  {
+    return this.direction;
+  }
 }
 
 export class HelpCommand {
-  commandName: CommandName;
-
-  constructor(commandName: CommandName) {
-    this.commandName = commandName;
-  }
+    commandName : CommandName;
+    
+    constructor(commandName : CommandName)
+    {
+        this.commandName = commandName;
+    }
 }
 
 export class ExitCommand {
@@ -48,8 +59,24 @@ export class InventoryCommand {
 
 export class SayCommand {
   constructor() {}
+  
 }
 
 export class WhisperCommand {
   constructor() {}
 }
+
+export class ExamineCommand {
+  constructor() {}
+}
+
+export class TakeCommand {
+  constructor() {}
+}
+
+
+export class DropCommand {
+  constructor() {}
+}
+
+
