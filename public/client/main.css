@@ -81,6 +81,10 @@ header {
     background-color: black;
 }
 
+.navT:hover .navT-items {
+    display: flex;
+}
+
 .navT-items a {
     font-size: 14px;
 }
