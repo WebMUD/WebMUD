@@ -9,7 +9,7 @@ import {
     InventoryCommand,
     SayCommand,
     WhisperCommand,
-    ExamineCommand,
+    LookCommand,
     TakeCommand,
     DropCommand
     } from './commands';
@@ -18,24 +18,25 @@ import {
 start := commands
 
 commands := moveCommand | helpCommand | exitCommand | inventoryCommand | sayCommand | whisperCommand | 
-examineCommand | takeCommand | dropCommand
+lookCommand | takeCommand | dropCommand
 
 space := ' '
 
-dropCommand := dropKeyword=dropKeyword .command =  DropCommand {return new DropCommand();}
+dropCommand := dropKeyword=dropKeyword space text=word .command =  DropCommand {return new DropCommand(text);}
 dropKeyword := 'drop'
 
 
-takeCommand := takeKeyword=takeKeyword .command =  TakeCommand {return new TakeCommand();}
+takeCommand := takeKeyword=takeKeyword space text=word .command =  TakeCommand {return new TakeCommand(text);}
 takeKeyword := 'take'
 
-examineCommand := examineKeyword=examineKeyword .command =  ExamineCommand {return new ExamineCommand();}
-examineKeyword := 'examine'
+lookCommand := lookKeyword=lookCommand .command =  LookCommand {return new LookCommand();}
+lookKeyword := 'look'
 
-whisperCommand := whisperKeyword=whisperKeyword .command =  WhisperCommand {return new WhisperCommand();}
+whisperCommand := whisperKeyword=whisperKeyword space text=word .command =  WhisperCommand {return new WhisperCommand(text);}
 whisperKeyword := 'whisper' | 'w'
 
-sayCommand := sayKeyword=sayKeyword .command = SayCommand {return new SayCommand();}
+word:='.+'
+sayCommand := sayKeyword=sayKeyword space text=word .command = SayCommand {return new SayCommand(text);}
 sayKeyword := 'say' | 's'
 
 inventoryCommand := inventoryKeyword=inventoryKeyword .command = InventoryCommand {return new InventoryCommand();}
@@ -70,6 +71,7 @@ inventory := text='inventory' .value = CommandName {return CommandName.INVENTORY
     text='i' .value = CommandName {return CommandName.INVENTORY;}
 whisper := text='whisper' .value = CommandName {return CommandName.WHISPER;} | 
     text='w' .value = CommandName {return CommandName.WHISPER;}
+look := text='look' .value = CommandName {return CommandName.LOOK;}  
 help := text='' .value = CommandName {return CommandName.HELP;}
    
 
@@ -77,14 +79,11 @@ help := text='' .value = CommandName {return CommandName.HELP;}
 item :=
    text='test' .value = Item {return Item.ITEM_TEST;}
 
-moveCommand := moveKeyword space direction=direction
-    .command = MoveCommand {return new MoveCommand(this.direction.value);}
+moveCommand := 
+    moveKeyword space text=word
+    .command = MoveCommand {return new MoveCommand(text);}
+
 moveKeyword := 'move' | 'm'
 
-direction := north | south | east | west
 
 
-north := text='north' .value = Direction {return Direction.NORTH;} | text='n' .value = Direction {return Direction.NORTH;}
-south := text='south' .value = Direction {return Direction.SOUTH;} | text='s' .value = Direction {return Direction.SOUTH;}
-east := text='east' .value = Direction {return Direction.EAST;} | text='e' .value = Direction {return Direction.EAST;}
-west := text='west' .value = Direction {return Direction.WEST;} | text='w' .value = Direction {return Direction.WEST;}

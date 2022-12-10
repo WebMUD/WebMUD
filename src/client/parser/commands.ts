@@ -18,7 +18,7 @@ export enum Item {
 
 export enum CommandName {
   MOVE = 'MOVE',
-  EXAMINE = 'EXAMINE',
+  LOOK = 'LOOK',
   HELP = 'HELP',
   EXIT = 'EXIT',
   INVENTORY = 'INVENTORY',
@@ -28,15 +28,11 @@ export enum CommandName {
   WHISPER = 'WHISPER',
 }
 export class MoveCommand {
-  direction: Direction;
+  text:string
 
-  constructor(direction: Direction) {
-    this.direction = direction;
-  }
-
-  getDirection()
+  constructor(text: string)
   {
-    return this.direction;
+    this.text = text;
   }
 }
 
@@ -58,25 +54,37 @@ export class InventoryCommand {
 }
 
 export class SayCommand {
-  constructor() {}
+  text : string;
+  constructor(text : string) {
+    this.text = text;
+  }
   
 }
 
 export class WhisperCommand {
-  constructor() {}
+  text : string;
+  constructor(text : string) {
+    this.text = text;
+  }
 }
 
-export class ExamineCommand {
+export class LookCommand {
   constructor() {}
 }
 
 export class TakeCommand {
-  constructor() {}
+  text : string;
+  constructor(text: string) {
+    this.text=text;
+  }
 }
 
 
 export class DropCommand {
-  constructor() {}
+  text: string;
+  constructor(text: string) {
+    this.text=text;
+  }
 }
 
 

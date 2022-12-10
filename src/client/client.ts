@@ -6,7 +6,7 @@ import { Frame, FrameMessage, frames, FrameSendCommand } from '../common/frames'
 import { EventEmitter } from '../common/event-emitter';
 import { ClientView } from './client-view';
 import * as Parser from './parser/parser';
-import { DropCommand, ExamineCommand, ExitCommand, HelpCommand, InventoryCommand, MoveCommand, SayCommand, TakeCommand, WhisperCommand } from './parser/commands';
+import { DropCommand, LookCommand, ExitCommand, HelpCommand, InventoryCommand, MoveCommand, SayCommand, TakeCommand, WhisperCommand } from './parser/commands';
 import { Player } from '../server/gamestate/components';
 import { Server } from '../server/server';
 import { EntityID } from '../server/gamestate/entity';
@@ -36,63 +36,46 @@ export class Client extends Logger {
     });
   }
   
-  read(...data: string[]) {
-    var input = "";
-    data.forEach(()=>{
-      input += data;
-    })
+  read(input: string) {
     var result = this.parse(input);
-    console.log(result);
     
     if(result instanceof MoveCommand)
     {
-     this.sendCommandFrame("move", result.direction);
-     this.debug("Move command sent. Direction: " + result.direction);
+      new FrameSendCommand('move', [{name: 'direction', value: result.text}]);
     }
     else if(result instanceof SayCommand)
     {
-     this.sendCommandFrame("say", input);
-     this.debug("Say command sent.");
+     new FrameSendCommand('say', [{name: 'message', value: result.text}]);
+    
     }
     else if(result instanceof HelpCommand)
     {
       //if no command name is given, default command name is "HELP"
-      this.sendCommandFrame("help", result.commandName);
-      this.debug("Help command sent.")
+      new FrameSendCommand('help', [{name: 'command', value: result.commandName}]);
     }
-    else if(result instanceof ExamineCommand)
+    else if(result instanceof LookCommand)
     {
-      this.sendCommandFrame("examine", null); 
-      this.debug("Examine command sent.");
+      new FrameSendCommand('look', [{name: 'look', value: ""}]);
     }
     else if(result instanceof ExitCommand)
     {
-      this.sendCommandFrame("exit", null); 
-      this.debug("Exit command sent.");
+      new FrameSendCommand('exit', [{name: 'exit', value: ""}]);
     }
     else if(result instanceof InventoryCommand)
     {
-      this.sendCommandFrame("inventory", null); 
-      this.debug("Inventory command sent.");
+      new FrameSendCommand('inventory', [{name: 'inventory', value: ""}]);
     }
     else if(result instanceof TakeCommand)
     {
-      this.sendCommandFrame("take", input); 
-      this.debug("Take command sent.");
+      new FrameSendCommand('take', [{name: 'item', value: result.text}]);
     }
     else if(result instanceof DropCommand)
     {
-      this.sendCommandFrame("drop", input); 
-      this.debug("Drop command sent.");
+      new FrameSendCommand('drop', [{name: 'item', value: result.text}]);
     }
     else if(result instanceof WhisperCommand)
     {
-      this.sendCommandFrame("whisper", input); 
-      this.debug("Whisper command sent.");
-    }
-    else
-    {
-      this.print(result + input + ".");
+      new FrameSendCommand('whisper', [{name: 'secretMessage', value: result.text}]);
     }
   }
 
@@ -103,8 +86,8 @@ export class Client extends Logger {
         console.error(error);
         console.error(error.toString());
       }
-      return "Could not parse input: ";
-      //throw new Error(`error while parsing ${input}`);
+      this.error("Could not parse input: " + input)
+      throw new Error(`error while parsing ${input}`);
     }
   
     if (!ast) throw new Error('missing ast');

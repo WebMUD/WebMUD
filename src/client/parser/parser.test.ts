@@ -23,36 +23,6 @@ function parse(input: string) {
   return ast?.command;
 }
 
-//TESTING MOVE COMMAND
-
-test('Parser', () => {
-  const result = parse('move north');
-  expect(result).toBeInstanceOf(MoveCommand);
-  if (result !== undefined && result instanceof MoveCommand) {
-    expect(result?.direction).toBe(Direction.NORTH);
-  }
-});
-test('Parser', () => {
-  const result = parse('move south');
-  expect(result).toBeInstanceOf(MoveCommand);
-  if (result !== undefined && result instanceof MoveCommand) {
-    expect(result?.direction).toBe(Direction.SOUTH);
-  }
-});
-test('Parser', () => {
-  const result = parse('move east');
-  expect(result).toBeInstanceOf(MoveCommand);
-  if (result !== undefined && result instanceof MoveCommand) {
-    expect(result?.direction).toBe(Direction.EAST);
-  }
-});
-test('Parser', () => {
-  const result = parse('move west');
-  expect(result).toBeInstanceOf(MoveCommand);
-  if (result !== undefined && result instanceof MoveCommand) {
-    expect(result?.direction).toBe(Direction.WEST);
-  }
-});
 
 //TESTING HELP COMMAND
 

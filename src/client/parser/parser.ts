@@ -11,24 +11,25 @@
 *     InventoryCommand,
 *     SayCommand,
 *     WhisperCommand,
-*     ExamineCommand,
+*     LookCommand,
 *     TakeCommand,
 *     DropCommand
 *     } from './commands';
 * ---
 * start := commands
 * commands := moveCommand | helpCommand | exitCommand | inventoryCommand | sayCommand | whisperCommand | 
-* examineCommand | takeCommand | dropCommand
+* lookCommand | takeCommand | dropCommand
 * space := ' '
-* dropCommand := dropKeyword=dropKeyword .command =  DropCommand {return new DropCommand();}
+* dropCommand := dropKeyword=dropKeyword space text=word .command =  DropCommand {return new DropCommand(text);}
 * dropKeyword := 'drop'
-* takeCommand := takeKeyword=takeKeyword .command =  TakeCommand {return new TakeCommand();}
+* takeCommand := takeKeyword=takeKeyword space text=word .command =  TakeCommand {return new TakeCommand(text);}
 * takeKeyword := 'take'
-* examineCommand := examineKeyword=examineKeyword .command =  ExamineCommand {return new ExamineCommand();}
-* examineKeyword := 'examine'
-* whisperCommand := whisperKeyword=whisperKeyword .command =  WhisperCommand {return new WhisperCommand();}
+* lookCommand := lookKeyword=lookCommand .command =  LookCommand {return new LookCommand();}
+* lookKeyword := 'look'
+* whisperCommand := whisperKeyword=whisperKeyword space text=word .command =  WhisperCommand {return new WhisperCommand(text);}
 * whisperKeyword := 'whisper' | 'w'
-* sayCommand := sayKeyword=sayKeyword .command = SayCommand {return new SayCommand();}
+* word:='.+'
+* sayCommand := sayKeyword=sayKeyword space text=word .command = SayCommand {return new SayCommand(text);}
 * sayKeyword := 'say' | 's'
 * inventoryCommand := inventoryKeyword=inventoryKeyword .command = InventoryCommand {return new InventoryCommand();}
 * inventoryKeyword := 'inventory' | 'i'
@@ -57,18 +58,15 @@
 *     text='i' .value = CommandName {return CommandName.INVENTORY;}
 * whisper := text='whisper' .value = CommandName {return CommandName.WHISPER;} | 
 *     text='w' .value = CommandName {return CommandName.WHISPER;}
+* look := text='look' .value = CommandName {return CommandName.LOOK;}  
 * help := text='' .value = CommandName {return CommandName.HELP;}
 *    
 * item :=
 *    text='test' .value = Item {return Item.ITEM_TEST;}
-* moveCommand := moveKeyword space direction=direction
-*     .command = MoveCommand {return new MoveCommand(this.direction.value);}
+* moveCommand := 
+*     moveKeyword space text=word
+*     .command = MoveCommand {return new MoveCommand(text);}
 * moveKeyword := 'move' | 'm'
-* direction := north | south | east | west
-* north := text='north' .value = Direction {return Direction.NORTH;} | text='n' .value = Direction {return Direction.NORTH;}
-* south := text='south' .value = Direction {return Direction.SOUTH;} | text='s' .value = Direction {return Direction.SOUTH;}
-* east := text='east' .value = Direction {return Direction.EAST;} | text='e' .value = Direction {return Direction.EAST;}
-* west := text='west' .value = Direction {return Direction.WEST;} | text='w' .value = Direction {return Direction.WEST;}
 */
 
 import {
@@ -81,7 +79,7 @@ import {
     InventoryCommand,
     SayCommand,
     WhisperCommand,
-    ExamineCommand,
+    LookCommand,
     TakeCommand,
     DropCommand
     } from './commands';
@@ -107,11 +105,12 @@ export enum ASTKinds {
     dropKeyword = "dropKeyword",
     takeCommand = "takeCommand",
     takeKeyword = "takeKeyword",
-    examineCommand = "examineCommand",
-    examineKeyword = "examineKeyword",
+    lookCommand = "lookCommand",
+    lookKeyword = "lookKeyword",
     whisperCommand = "whisperCommand",
     whisperKeyword_1 = "whisperKeyword_1",
     whisperKeyword_2 = "whisperKeyword_2",
+    word = "word",
     sayCommand = "sayCommand",
     sayKeyword_1 = "sayKeyword_1",
     sayKeyword_2 = "sayKeyword_2",
@@ -148,23 +147,12 @@ export enum ASTKinds {
     inventory_2 = "inventory_2",
     whisper_1 = "whisper_1",
     whisper_2 = "whisper_2",
+    look = "look",
     help = "help",
     item = "item",
     moveCommand = "moveCommand",
     moveKeyword_1 = "moveKeyword_1",
     moveKeyword_2 = "moveKeyword_2",
-    direction_1 = "direction_1",
-    direction_2 = "direction_2",
-    direction_3 = "direction_3",
-    direction_4 = "direction_4",
-    north_1 = "north_1",
-    north_2 = "north_2",
-    south_1 = "south_1",
-    south_2 = "south_2",
-    east_1 = "east_1",
-    east_2 = "east_2",
-    west_1 = "west_1",
-    west_2 = "west_2",
 }
 export type start = commands;
 export type commands = commands_1 | commands_2 | commands_3 | commands_4 | commands_5 | commands_6 | commands_7 | commands_8 | commands_9;
@@ -174,18 +162,20 @@ export type commands_3 = exitCommand;
 export type commands_4 = inventoryCommand;
 export type commands_5 = sayCommand;
 export type commands_6 = whisperCommand;
-export type commands_7 = examineCommand;
+export type commands_7 = lookCommand;
 export type commands_8 = takeCommand;
 export type commands_9 = dropCommand;
 export type space = string;
 export class dropCommand {
     public kind: ASTKinds.dropCommand = ASTKinds.dropCommand;
     public dropKeyword: dropKeyword;
+    public text: word;
     public command: DropCommand;
-    constructor(dropKeyword: dropKeyword){
+    constructor(dropKeyword: dropKeyword, text: word){
         this.dropKeyword = dropKeyword;
+        this.text = text;
         this.command = ((): DropCommand => {
-        return new DropCommand();
+        return new DropCommand(text);
         })();
     }
 }
@@ -193,49 +183,56 @@ export type dropKeyword = string;
 export class takeCommand {
     public kind: ASTKinds.takeCommand = ASTKinds.takeCommand;
     public takeKeyword: takeKeyword;
+    public text: word;
     public command: TakeCommand;
-    constructor(takeKeyword: takeKeyword){
+    constructor(takeKeyword: takeKeyword, text: word){
         this.takeKeyword = takeKeyword;
+        this.text = text;
         this.command = ((): TakeCommand => {
-        return new TakeCommand();
+        return new TakeCommand(text);
         })();
     }
 }
 export type takeKeyword = string;
-export class examineCommand {
-    public kind: ASTKinds.examineCommand = ASTKinds.examineCommand;
-    public examineKeyword: examineKeyword;
-    public command: ExamineCommand;
-    constructor(examineKeyword: examineKeyword){
-        this.examineKeyword = examineKeyword;
-        this.command = ((): ExamineCommand => {
-        return new ExamineCommand();
+export class lookCommand {
+    public kind: ASTKinds.lookCommand = ASTKinds.lookCommand;
+    public lookKeyword: lookCommand;
+    public command: LookCommand;
+    constructor(lookKeyword: lookCommand){
+        this.lookKeyword = lookKeyword;
+        this.command = ((): LookCommand => {
+        return new LookCommand();
         })();
     }
 }
-export type examineKeyword = string;
+export type lookKeyword = string;
 export class whisperCommand {
     public kind: ASTKinds.whisperCommand = ASTKinds.whisperCommand;
     public whisperKeyword: whisperKeyword;
+    public text: word;
     public command: WhisperCommand;
-    constructor(whisperKeyword: whisperKeyword){
+    constructor(whisperKeyword: whisperKeyword, text: word){
         this.whisperKeyword = whisperKeyword;
+        this.text = text;
         this.command = ((): WhisperCommand => {
-        return new WhisperCommand();
+        return new WhisperCommand(text);
         })();
     }
 }
 export type whisperKeyword = whisperKeyword_1 | whisperKeyword_2;
 export type whisperKeyword_1 = string;
 export type whisperKeyword_2 = string;
+export type word = string;
 export class sayCommand {
     public kind: ASTKinds.sayCommand = ASTKinds.sayCommand;
     public sayKeyword: sayKeyword;
+    public text: word;
     public command: SayCommand;
-    constructor(sayKeyword: sayKeyword){
+    constructor(sayKeyword: sayKeyword, text: word){
         this.sayKeyword = sayKeyword;
+        this.text = text;
         this.command = ((): SayCommand => {
-        return new SayCommand();
+        return new SayCommand(text);
         })();
     }
 }
@@ -477,6 +474,17 @@ export class whisper_2 {
         })();
     }
 }
+export class look {
+    public kind: ASTKinds.look = ASTKinds.look;
+    public text: string;
+    public value: CommandName;
+    constructor(text: string){
+        this.text = text;
+        this.value = ((): CommandName => {
+        return CommandName.LOOK;
+        })();
+    }
+}
 export class help {
     public kind: ASTKinds.help = ASTKinds.help;
     public text: string;
@@ -501,115 +509,18 @@ export class item {
 }
 export class moveCommand {
     public kind: ASTKinds.moveCommand = ASTKinds.moveCommand;
-    public direction: direction;
+    public text: word;
     public command: MoveCommand;
-    constructor(direction: direction){
-        this.direction = direction;
+    constructor(text: word){
+        this.text = text;
         this.command = ((): MoveCommand => {
-        return new MoveCommand(this.direction.value);
+        return new MoveCommand(text);
         })();
     }
 }
 export type moveKeyword = moveKeyword_1 | moveKeyword_2;
 export type moveKeyword_1 = string;
 export type moveKeyword_2 = string;
-export type direction = direction_1 | direction_2 | direction_3 | direction_4;
-export type direction_1 = north;
-export type direction_2 = south;
-export type direction_3 = east;
-export type direction_4 = west;
-export type north = north_1 | north_2;
-export class north_1 {
-    public kind: ASTKinds.north_1 = ASTKinds.north_1;
-    public text: string;
-    public value: Direction;
-    constructor(text: string){
-        this.text = text;
-        this.value = ((): Direction => {
-        return Direction.NORTH;
-        })();
-    }
-}
-export class north_2 {
-    public kind: ASTKinds.north_2 = ASTKinds.north_2;
-    public text: string;
-    public value: Direction;
-    constructor(text: string){
-        this.text = text;
-        this.value = ((): Direction => {
-        return Direction.NORTH;
-        })();
-    }
-}
-export type south = south_1 | south_2;
-export class south_1 {
-    public kind: ASTKinds.south_1 = ASTKinds.south_1;
-    public text: string;
-    public value: Direction;
-    constructor(text: string){
-        this.text = text;
-        this.value = ((): Direction => {
-        return Direction.SOUTH;
-        })();
-    }
-}
-export class south_2 {
-    public kind: ASTKinds.south_2 = ASTKinds.south_2;
-    public text: string;
-    public value: Direction;
-    constructor(text: string){
-        this.text = text;
-        this.value = ((): Direction => {
-        return Direction.SOUTH;
-        })();
-    }
-}
-export type east = east_1 | east_2;
-export class east_1 {
-    public kind: ASTKinds.east_1 = ASTKinds.east_1;
-    public text: string;
-    public value: Direction;
-    constructor(text: string){
-        this.text = text;
-        this.value = ((): Direction => {
-        return Direction.EAST;
-        })();
-    }
-}
-export class east_2 {
-    public kind: ASTKinds.east_2 = ASTKinds.east_2;
-    public text: string;
-    public value: Direction;
-    constructor(text: string){
-        this.text = text;
-        this.value = ((): Direction => {
-        return Direction.EAST;
-        })();
-    }
-}
-export type west = west_1 | west_2;
-export class west_1 {
-    public kind: ASTKinds.west_1 = ASTKinds.west_1;
-    public text: string;
-    public value: Direction;
-    constructor(text: string){
-        this.text = text;
-        this.value = ((): Direction => {
-        return Direction.WEST;
-        })();
-    }
-}
-export class west_2 {
-    public kind: ASTKinds.west_2 = ASTKinds.west_2;
-    public text: string;
-    public value: Direction;
-    constructor(text: string){
-        this.text = text;
-        this.value = ((): Direction => {
-        return Direction.WEST;
-        })();
-    }
-}
 export class Parser {
     private readonly input: string;
     private pos: PosInfo;
@@ -626,7 +537,9 @@ export class Parser {
         return this.pos.overallPos === this.input.length;
     }
     public clearMemos(): void {
+        this.$scope$lookCommand$memo.clear();
     }
+    protected $scope$lookCommand$memo: Map<number, [Nullable<lookCommand>, PosInfo]> = new Map();
     public matchstart($$dpth: number, $$cr?: ErrorTracker): Nullable<start> {
         return this.matchcommands($$dpth + 1, $$cr);
     }
@@ -662,7 +575,7 @@ export class Parser {
         return this.matchwhisperCommand($$dpth + 1, $$cr);
     }
     public matchcommands_7($$dpth: number, $$cr?: ErrorTracker): Nullable<commands_7> {
-        return this.matchexamineCommand($$dpth + 1, $$cr);
+        return this.matchlookCommand($$dpth + 1, $$cr);
     }
     public matchcommands_8($$dpth: number, $$cr?: ErrorTracker): Nullable<commands_8> {
         return this.matchtakeCommand($$dpth + 1, $$cr);
@@ -677,11 +590,14 @@ export class Parser {
         return this.run<dropCommand>($$dpth,
             () => {
                 let $scope$dropKeyword: Nullable<dropKeyword>;
+                let $scope$text: Nullable<word>;
                 let $$res: Nullable<dropCommand> = null;
                 if (true
                     && ($scope$dropKeyword = this.matchdropKeyword($$dpth + 1, $$cr)) !== null
+                    && this.matchspace($$dpth + 1, $$cr) !== null
+                    && ($scope$text = this.matchword($$dpth + 1, $$cr)) !== null
                 ) {
-                    $$res = new dropCommand($scope$dropKeyword);
+                    $$res = new dropCommand($scope$dropKeyword, $scope$text);
                 }
                 return $$res;
             });
@@ -693,11 +609,14 @@ export class Parser {
         return this.run<takeCommand>($$dpth,
             () => {
                 let $scope$takeKeyword: Nullable<takeKeyword>;
+                let $scope$text: Nullable<word>;
                 let $$res: Nullable<takeCommand> = null;
                 if (true
                     && ($scope$takeKeyword = this.matchtakeKeyword($$dpth + 1, $$cr)) !== null
+                    && this.matchspace($$dpth + 1, $$cr) !== null
+                    && ($scope$text = this.matchword($$dpth + 1, $$cr)) !== null
                 ) {
-                    $$res = new takeCommand($scope$takeKeyword);
+                    $$res = new takeCommand($scope$takeKeyword, $scope$text);
                 }
                 return $$res;
             });
@@ -705,31 +624,60 @@ export class Parser {
     public matchtakeKeyword($$dpth: number, $$cr?: ErrorTracker): Nullable<takeKeyword> {
         return this.regexAccept(String.raw`(?:take)`, $$dpth + 1, $$cr);
     }
-    public matchexamineCommand($$dpth: number, $$cr?: ErrorTracker): Nullable<examineCommand> {
-        return this.run<examineCommand>($$dpth,
-            () => {
-                let $scope$examineKeyword: Nullable<examineKeyword>;
-                let $$res: Nullable<examineCommand> = null;
-                if (true
-                    && ($scope$examineKeyword = this.matchexamineKeyword($$dpth + 1, $$cr)) !== null
-                ) {
-                    $$res = new examineCommand($scope$examineKeyword);
-                }
-                return $$res;
-            });
+    public matchlookCommand($$dpth: number, $$cr?: ErrorTracker): Nullable<lookCommand> {
+        const fn = () => {
+            return this.run<lookCommand>($$dpth,
+                () => {
+                    let $scope$lookKeyword: Nullable<lookCommand>;
+                    let $$res: Nullable<lookCommand> = null;
+                    if (true
+                        && ($scope$lookKeyword = this.matchlookCommand($$dpth + 1, $$cr)) !== null
+                    ) {
+                        $$res = new lookCommand($scope$lookKeyword);
+                    }
+                    return $$res;
+                });
+        };
+        const $scope$pos = this.mark();
+        const memo = this.$scope$lookCommand$memo.get($scope$pos.overallPos);
+        if(memo !== undefined) {
+            this.reset(memo[1]);
+            return memo[0];
+        }
+        const $scope$oldMemoSafe = this.memoSafe;
+        this.memoSafe = false;
+        this.$scope$lookCommand$memo.set($scope$pos.overallPos, [null, $scope$pos]);
+        let lastRes: Nullable<lookCommand> = null;
+        let lastPos: PosInfo = $scope$pos;
+        for(;;) {
+            this.reset($scope$pos);
+            const res = fn();
+            const end = this.mark();
+            if(end.overallPos <= lastPos.overallPos)
+                break;
+            lastRes = res;
+            lastPos = end;
+            this.$scope$lookCommand$memo.set($scope$pos.overallPos, [lastRes, lastPos]);
+        }
+        this.reset(lastPos);
+        this.memoSafe = $scope$oldMemoSafe;
+        return lastRes;
     }
-    public matchexamineKeyword($$dpth: number, $$cr?: ErrorTracker): Nullable<examineKeyword> {
-        return this.regexAccept(String.raw`(?:examine)`, $$dpth + 1, $$cr);
+    public matchlookKeyword($$dpth: number, $$cr?: ErrorTracker): Nullable<lookKeyword> {
+        return this.regexAccept(String.raw`(?:look)`, $$dpth + 1, $$cr);
     }
     public matchwhisperCommand($$dpth: number, $$cr?: ErrorTracker): Nullable<whisperCommand> {
         return this.run<whisperCommand>($$dpth,
             () => {
                 let $scope$whisperKeyword: Nullable<whisperKeyword>;
+                let $scope$text: Nullable<word>;
                 let $$res: Nullable<whisperCommand> = null;
                 if (true
                     && ($scope$whisperKeyword = this.matchwhisperKeyword($$dpth + 1, $$cr)) !== null
+                    && this.matchspace($$dpth + 1, $$cr) !== null
+                    && ($scope$text = this.matchword($$dpth + 1, $$cr)) !== null
                 ) {
-                    $$res = new whisperCommand($scope$whisperKeyword);
+                    $$res = new whisperCommand($scope$whisperKeyword, $scope$text);
                 }
                 return $$res;
             });
@@ -746,15 +694,21 @@ export class Parser {
     public matchwhisperKeyword_2($$dpth: number, $$cr?: ErrorTracker): Nullable<whisperKeyword_2> {
         return this.regexAccept(String.raw`(?:w)`, $$dpth + 1, $$cr);
     }
+    public matchword($$dpth: number, $$cr?: ErrorTracker): Nullable<word> {
+        return this.regexAccept(String.raw`(?:.+)`, $$dpth + 1, $$cr);
+    }
     public matchsayCommand($$dpth: number, $$cr?: ErrorTracker): Nullable<sayCommand> {
         return this.run<sayCommand>($$dpth,
             () => {
                 let $scope$sayKeyword: Nullable<sayKeyword>;
+                let $scope$text: Nullable<word>;
                 let $$res: Nullable<sayCommand> = null;
                 if (true
                     && ($scope$sayKeyword = this.matchsayKeyword($$dpth + 1, $$cr)) !== null
+                    && this.matchspace($$dpth + 1, $$cr) !== null
+                    && ($scope$text = this.matchword($$dpth + 1, $$cr)) !== null
                 ) {
-                    $$res = new sayCommand($scope$sayKeyword);
+                    $$res = new sayCommand($scope$sayKeyword, $scope$text);
                 }
                 return $$res;
             });
@@ -1142,6 +1096,19 @@ export class Parser {
                 return $$res;
             });
     }
+    public matchlook($$dpth: number, $$cr?: ErrorTracker): Nullable<look> {
+        return this.run<look>($$dpth,
+            () => {
+                let $scope$text: Nullable<string>;
+                let $$res: Nullable<look> = null;
+                if (true
+                    && ($scope$text = this.regexAccept(String.raw`(?:look)`, $$dpth + 1, $$cr)) !== null
+                ) {
+                    $$res = new look($scope$text);
+                }
+                return $$res;
+            });
+    }
     public matchhelp($$dpth: number, $$cr?: ErrorTracker): Nullable<help> {
         return this.run<help>($$dpth,
             () => {
@@ -1171,14 +1138,14 @@ export class Parser {
     public matchmoveCommand($$dpth: number, $$cr?: ErrorTracker): Nullable<moveCommand> {
         return this.run<moveCommand>($$dpth,
             () => {
-                let $scope$direction: Nullable<direction>;
+                let $scope$text: Nullable<word>;
                 let $$res: Nullable<moveCommand> = null;
                 if (true
                     && this.matchmoveKeyword($$dpth + 1, $$cr) !== null
                     && this.matchspace($$dpth + 1, $$cr) !== null
-                    && ($scope$direction = this.matchdirection($$dpth + 1, $$cr)) !== null
+                    && ($scope$text = this.matchword($$dpth + 1, $$cr)) !== null
                 ) {
-                    $$res = new moveCommand($scope$direction);
+                    $$res = new moveCommand($scope$text);
                 }
                 return $$res;
             });
@@ -1194,154 +1161,6 @@ export class Parser {
     }
     public matchmoveKeyword_2($$dpth: number, $$cr?: ErrorTracker): Nullable<moveKeyword_2> {
         return this.regexAccept(String.raw`(?:m)`, $$dpth + 1, $$cr);
-    }
-    public matchdirection($$dpth: number, $$cr?: ErrorTracker): Nullable<direction> {
-        return this.choice<direction>([
-            () => this.matchdirection_1($$dpth + 1, $$cr),
-            () => this.matchdirection_2($$dpth + 1, $$cr),
-            () => this.matchdirection_3($$dpth + 1, $$cr),
-            () => this.matchdirection_4($$dpth + 1, $$cr),
-        ]);
-    }
-    public matchdirection_1($$dpth: number, $$cr?: ErrorTracker): Nullable<direction_1> {
-        return this.matchnorth($$dpth + 1, $$cr);
-    }
-    public matchdirection_2($$dpth: number, $$cr?: ErrorTracker): Nullable<direction_2> {
-        return this.matchsouth($$dpth + 1, $$cr);
-    }
-    public matchdirection_3($$dpth: number, $$cr?: ErrorTracker): Nullable<direction_3> {
-        return this.matcheast($$dpth + 1, $$cr);
-    }
-    public matchdirection_4($$dpth: number, $$cr?: ErrorTracker): Nullable<direction_4> {
-        return this.matchwest($$dpth + 1, $$cr);
-    }
-    public matchnorth($$dpth: number, $$cr?: ErrorTracker): Nullable<north> {
-        return this.choice<north>([
-            () => this.matchnorth_1($$dpth + 1, $$cr),
-            () => this.matchnorth_2($$dpth + 1, $$cr),
-        ]);
-    }
-    public matchnorth_1($$dpth: number, $$cr?: ErrorTracker): Nullable<north_1> {
-        return this.run<north_1>($$dpth,
-            () => {
-                let $scope$text: Nullable<string>;
-                let $$res: Nullable<north_1> = null;
-                if (true
-                    && ($scope$text = this.regexAccept(String.raw`(?:north)`, $$dpth + 1, $$cr)) !== null
-                ) {
-                    $$res = new north_1($scope$text);
-                }
-                return $$res;
-            });
-    }
-    public matchnorth_2($$dpth: number, $$cr?: ErrorTracker): Nullable<north_2> {
-        return this.run<north_2>($$dpth,
-            () => {
-                let $scope$text: Nullable<string>;
-                let $$res: Nullable<north_2> = null;
-                if (true
-                    && ($scope$text = this.regexAccept(String.raw`(?:n)`, $$dpth + 1, $$cr)) !== null
-                ) {
-                    $$res = new north_2($scope$text);
-                }
-                return $$res;
-            });
-    }
-    public matchsouth($$dpth: number, $$cr?: ErrorTracker): Nullable<south> {
-        return this.choice<south>([
-            () => this.matchsouth_1($$dpth + 1, $$cr),
-            () => this.matchsouth_2($$dpth + 1, $$cr),
-        ]);
-    }
-    public matchsouth_1($$dpth: number, $$cr?: ErrorTracker): Nullable<south_1> {
-        return this.run<south_1>($$dpth,
-            () => {
-                let $scope$text: Nullable<string>;
-                let $$res: Nullable<south_1> = null;
-                if (true
-                    && ($scope$text = this.regexAccept(String.raw`(?:south)`, $$dpth + 1, $$cr)) !== null
-                ) {
-                    $$res = new south_1($scope$text);
-                }
-                return $$res;
-            });
-    }
-    public matchsouth_2($$dpth: number, $$cr?: ErrorTracker): Nullable<south_2> {
-        return this.run<south_2>($$dpth,
-            () => {
-                let $scope$text: Nullable<string>;
-                let $$res: Nullable<south_2> = null;
-                if (true
-                    && ($scope$text = this.regexAccept(String.raw`(?:s)`, $$dpth + 1, $$cr)) !== null
-                ) {
-                    $$res = new south_2($scope$text);
-                }
-                return $$res;
-            });
-    }
-    public matcheast($$dpth: number, $$cr?: ErrorTracker): Nullable<east> {
-        return this.choice<east>([
-            () => this.matcheast_1($$dpth + 1, $$cr),
-            () => this.matcheast_2($$dpth + 1, $$cr),
-        ]);
-    }
-    public matcheast_1($$dpth: number, $$cr?: ErrorTracker): Nullable<east_1> {
-        return this.run<east_1>($$dpth,
-            () => {
-                let $scope$text: Nullable<string>;
-                let $$res: Nullable<east_1> = null;
-                if (true
-                    && ($scope$text = this.regexAccept(String.raw`(?:east)`, $$dpth + 1, $$cr)) !== null
-                ) {
-                    $$res = new east_1($scope$text);
-                }
-                return $$res;
-            });
-    }
-    public matcheast_2($$dpth: number, $$cr?: ErrorTracker): Nullable<east_2> {
-        return this.run<east_2>($$dpth,
-            () => {
-                let $scope$text: Nullable<string>;
-                let $$res: Nullable<east_2> = null;
-                if (true
-                    && ($scope$text = this.regexAccept(String.raw`(?:e)`, $$dpth + 1, $$cr)) !== null
-                ) {
-                    $$res = new east_2($scope$text);
-                }
-                return $$res;
-            });
-    }
-    public matchwest($$dpth: number, $$cr?: ErrorTracker): Nullable<west> {
-        return this.choice<west>([
-            () => this.matchwest_1($$dpth + 1, $$cr),
-            () => this.matchwest_2($$dpth + 1, $$cr),
-        ]);
-    }
-    public matchwest_1($$dpth: number, $$cr?: ErrorTracker): Nullable<west_1> {
-        return this.run<west_1>($$dpth,
-            () => {
-                let $scope$text: Nullable<string>;
-                let $$res: Nullable<west_1> = null;
-                if (true
-                    && ($scope$text = this.regexAccept(String.raw`(?:west)`, $$dpth + 1, $$cr)) !== null
-                ) {
-                    $$res = new west_1($scope$text);
-                }
-                return $$res;
-            });
-    }
-    public matchwest_2($$dpth: number, $$cr?: ErrorTracker): Nullable<west_2> {
-        return this.run<west_2>($$dpth,
-            () => {
-                let $scope$text: Nullable<string>;
-                let $$res: Nullable<west_2> = null;
-                if (true
-                    && ($scope$text = this.regexAccept(String.raw`(?:w)`, $$dpth + 1, $$cr)) !== null
-                ) {
-                    $$res = new west_2($scope$text);
-                }
-                return $$res;
-            });
     }
     public test(): boolean {
         const mrk = this.mark();
