@@ -26,14 +26,178 @@ type Handler<T extends Frame> = (
 
 export class ClientBehaviorPlugin extends WebMUDServerPlugin {
   private handlers = new Map<Function, Handler<any>>();
+  private commandHandlers = new Map<string, (frame: FrameSendCommand, client: Client, server: Server)=>void>();
 
   constructor() {
     super();
 
+    this.addCommand('move', (frame: FrameSendCommand, client: Client, server: Server) => {
+      let direction: null | string = null;
+      for (const {name, value} of frame.arguements) {
+        if (name === 'direction') direction = value;
+      }
+
+     const adjacent = client.gs.getParent(client.player).get(Adjacent);
+
+      if (direction === null) throw new Error('missing target argument');
+
+      const target = (adjacent as any)[direction];
+
+      if (!target){
+        client.sendMessageFrame(
+          FrameMessage.field(`No room ${direction} of you.`)
+        );
+        return; 
+      }
+
+      const id = client.player;
+      client.gs.move(id, target)
+    })
+    
+    this.addCommand('whisper', (frame: FrameSendCommand, client: Client, server: Server) => {
+      let playerName: null | string = null;
+      let message: null | string = null;
+      for (const {name, value} of frame.arguements) {
+        if (playerName === 'username') playerName = value;
+        if (name === 'message') message = value;
+      }
+
+      if (playerName === null) throw new Error('missing player argument');
+
+      const recieverID = client.gs.findPlayer(playerName)
+      const senderID = client.player
+
+      if (message === null) throw new Error('missing message argument');
+
+
+      if(!recieverID) {
+        client.sendMessageFrame(
+          FrameMessage.field(`player ${playerName} could not be found!`)
+        );
+        return;
+      } 
+
+      client.sendMessageFrame(
+        this.formatName(client, senderID),
+        FrameMessage.field(' whisper '),
+        FrameMessage.field(`${message}`), //you whispered to Player.... 
+        FrameMessage.field(' to '),
+        FrameMessage.field(`${client.gs.nameOf(recieverID)}`)
+      )
+        
+      client.sendChat(recieverID, message);
+    })
+
+    this.addCommand('drop', (frame: FrameSendCommand, client: Client, server: Server) => {
+      const room = server.gs.getParentID(client.player);
+
+      let itemname: null | string = null;
+      for (const {name, value} of frame.arguements) {
+        if (name === 'item') itemname = value;
+      }
+
+      if (itemname === null) throw new Error('missing player argument');
+
+      let item: null | string = null;
+
+      for (const child of client.gs.entity(client.player).get(HierarchyContainer).children){
+        if(client.gs.nameOf(child) === itemname){
+          item = child;
+        }
+      }
+
+      if(!item){
+        client.sendMessageFrame(
+          FrameMessage.field(`You are not carrying ${itemname}`)
+        );
+        return;
+
+      }
+
+      server.gs.move(item, room);
+    })
+
+    this.addCommand('help', (frame: FrameSendCommand, client: Client, server: Server) => {
+      const commands = {
+        help: ['usage: (h)elp or (h)elp <command> ',' Lists out the commands available to the player and can be used to get specific information about a specific command'],
+        move: ['usage: (m)ove <target> ',' Can move to specific target, i.e. person place or thing. Alternatly can use cardinal directions. (north, east, south, or west)'], 
+        exit: ['usage: (e)xit ',' Tells you where all the exits are'],
+        inventory: ['inventory ', 'Usage: (i)nventory ',' Lists out your inventory'],
+        say: ['usage: (s)ay <message> ',' Sends a message to everyone in the room'],
+        whisper: ['usage: (w)hisper <player> <message> ',' Sends a message only to the player designated'],
+        drop: ['usage: (d)rop <item> ',' Drops the item from your inventory to the ground'],
+        //take: ['usage: (t)ake <item> ',' Grabs the specificed item'],
+        //examine: [ '(e)xamine <item> ',' Tells you more about the specified item'],
+      }
+      
+      for (const [commandName, helpLines] of Object.entries(commands)) {
+        client.sendMessageFrame(
+          FrameMessage.field(`${commandName}:`)
+        )
+        for(const line of helpLines){
+          client.sendMessageFrame(
+            FrameMessage.field(` * ${line}`)
+          )
+        }
+      }
+    })
+
+    this.addCommand('inventory', (frame: FrameSendCommand, client: Client, server: Server)=>{
+      const items = server.gs.getChildrenIDs(client.player);
+      const itemNames = items.map(id=>server.gs.nameOf(id));
+
+      client.sendMessageFrame(
+        FrameMessage.field(`You are carrying:`)
+      )
+      for(const item of itemNames ){
+        client.sendMessageFrame(
+          FrameMessage.field(` * ${item}`)
+        )
+
+      }
+    });
+
+    this.addCommand('say', (frame: FrameSendCommand, client: Client, server: Server) => {
+      let message: null | string = null;
+      for (const {name, value} of frame.arguements) {
+        if (name === 'message') message = value;
+      }
+
+      if (message === null) throw new Error('missing message argument');
+
+      client.sendChat(server.gs.getParentID(client.player), message);
+    });
+
+    
+
+    this.addCommand('exits', (frame: FrameSendCommand, client: Client, server: Server)=>{
+      const room = client.gs.getParent(client.player);
+      const roomName = client.gs.nameOf(room);
+      const adjacent = room.get(Adjacent);
+      client.sendMessageFrame(FrameMessage.field('exits:'));
+
+      for (const direction of Adjacent.directions) {
+        const value = (adjacent as any)[direction];
+        if (value) {
+          client.sendMessageFrame(
+            FrameMessage.field(direction),
+            FrameMessage.field(': '),
+            FrameMessage.field(client.gs.nameOf(value))
+          );
+        }
+      }
+    });
+
+    this.addCommand('look', (frame: FrameSendCommand, client: Client, server: Server)=>{
+      this.describeRoom(client);
+    });
+
     this.addHandler(
       FrameSendCommand,
       (frame: FrameSendCommand, client, server) => {
-        console.log(frame.command);
+        const handler = this.commandHandlers.get(frame.command);
+        if (handler) handler(frame, client, server)
+        else throw new Error(`No handler for command ${frame.command}`);
       }
     );
 
@@ -212,5 +376,9 @@ export class ClientBehaviorPlugin extends WebMUDServerPlugin {
     if (!result) throw new Error(`cannot handle ${frame.type} frame`);
 
     result(frame, client, server);
+  }
+
+  addCommand(command: string, callback: (frame: FrameSendCommand, client: Client, server: Server)=>void) {
+    this.commandHandlers.set(command, callback);
   }
 }
