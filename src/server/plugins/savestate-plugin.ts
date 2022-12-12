@@ -1,3 +1,4 @@
+import { useFunc } from 'ajv/dist/compile/util';
 import { Gamestate } from '../gamestate/gamestate';
 import { Server } from '../server';
 import { WebMUDServerPlugin } from '../webmud-server-plugin';
@@ -34,6 +35,57 @@ export class SaveStatePlugin extends WebMUDServerPlugin {
           console.log(JSON.parse(data));
           self.deserializeState(data);
         }, 100);
+      },
+    });
+
+    server.commands.addCommand({
+      command: 'session-save',
+      alias: [],
+      usage: 'session-save',
+      about: 'save gamestate to session storage',
+
+      use(argv: string[]) {
+        sessionStorage.setItem('gssave', self.serializeState());
+      },
+    });
+
+    server.commands.addCommand({
+      command: 'session-load',
+      alias: [],
+      usage: 'session-load',
+      about: 'load gamestate from session storage',
+
+      use(argv: string[]) {
+        const data = sessionStorage.getItem('gssave');
+        if(!data) return server.error('Could not find gamestate save data.');
+        console.log(JSON.parse(data));
+        self.deserializeState(data);
+      },
+    });
+
+    server.commands.addCommand({
+      command: 'local-save',
+      alias: [],
+      usage: 'local-save',
+      about: 'save gamestate to local storage',
+
+      use(argv: string[]) {
+        
+      },
+    });
+
+    server.commands.addCommand({
+      command: 'local-load',
+      alias: [],
+      usage: 'local-load',
+      about: 'load gamestate from local storage',
+
+      use(argv: string[]) {
+        /*const data = localStorage.getItem('gssave');
+        if(!data) return server.error('Could not find gamestate save data.');
+        console.log(JSON.parse(data));
+        self.deserializeState(data);
+        */
       },
     });
   }
@@ -83,7 +135,7 @@ export class SaveStatePlugin extends WebMUDServerPlugin {
 
   loadFromLocalStorage(saveName: string) {}
 
-  listSaves() {}
+  listSaves(): string[] {}
 
   // SessionStorage could be used for autosave so the tab can recover its state when reloaded
   // https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage
