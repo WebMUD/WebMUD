@@ -146,7 +146,8 @@
     },
     {
       "type": "component-npc-greeter",
-      "message": "Welcome to the development server, %p.",
+      "messages": ["Welcome to the development server, %p.", "I hope you suffer!"],
+      "delay": 1,
       "greeted": []
     }
   ],
@@ -168,7 +169,8 @@
     },
     {
       "type": "component-npc-greeter",
-      "message": "Welcome to the shop.",
+      "messages": ["Welcome to the shop."],
+      "delay": 1,
       "greeted": []
     }
   ]
