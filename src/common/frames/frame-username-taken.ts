@@ -30,7 +30,7 @@ export class FrameUsernameTaken {
   }
 
   public static from(obj: any) {
-      if (validate(obj)) return new FrameUsernameTaken(obj.username);
+    if (validate(obj)) return new FrameUsernameTaken(obj.username);
     return false;
   }
 

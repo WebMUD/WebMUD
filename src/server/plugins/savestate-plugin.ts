@@ -1,3 +1,4 @@
+import { useFunc } from 'ajv/dist/compile/util';
 import { Gamestate } from '../gamestate/gamestate';
 import { Server } from '../server';
 import { WebMUDServerPlugin } from '../webmud-server-plugin';
@@ -79,17 +80,36 @@ export class SaveStatePlugin extends WebMUDServerPlugin {
 
   // LocalStorage could be used to save and load multiple gamestates
   // https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage
-  saveToLocalStorage(saveName: string) {}
+  saveToLocalStorage(saveName: string) {
+    const obj: any = localStorage.getItem('savestates') ?? {};
+    obj[saveName] = this.serializeState();
+    localStorage.setItem('savestates', obj);
+  }
 
-  loadFromLocalStorage(saveName: string) {}
+  loadFromLocalStorage(saveName: string) {
+    const obj: any = localStorage.getItem('savestates') ?? {};
+    const data = obj[saveName];
+    if (!data) return this.server.error(`Could not find saved gamestate ${saveName}`);
+    this.deserializeState(data);
+  }
 
-  listSaves() {}
+  listSaves(): string[] {
+    const obj = localStorage.getItem('savestates') ?? {};
+    return Object.keys(obj);
+  }
 
   // SessionStorage could be used for autosave so the tab can recover its state when reloaded
   // https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage
-  saveToSessionStorage() {}
+  saveToSessionStorage() {
+    sessionStorage.setItem('gssave', this.serializeState());
+  }
 
-  recoverSessionStorage() {}
+  recoverSessionStorage() {
+    const data = sessionStorage.getItem('gssave');
+    if(!data) return this.server.error('Could not find gamestate save data.');
+    console.log(JSON.parse(data));
+    this.deserializeState(data);
+  }
 
   // local json files on disk could be used for longer-term backups of saves
   // https://developer.mozilla.org/en-US/docs/Web/API/File_API/Using_files_from_web_applications
