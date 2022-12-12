@@ -62,15 +62,12 @@ export class ClientBehaviorPlugin extends WebMUDServerPlugin {
         if (name === 'message') message = value;
       }
 
-      console.log(frame);
-
       if (playerName === null) throw new Error('missing player argument');
 
       const recieverID = client.gs.findPlayer(playerName)
       const senderID = client.player
 
       if (message === null) throw new Error('missing message argument');
-
 
       if(!recieverID) {
         client.sendMessageFrame(
@@ -113,7 +110,6 @@ export class ClientBehaviorPlugin extends WebMUDServerPlugin {
           FrameMessage.field(`You are not carrying ${itemname}`)
         );
         return;
-
       }
 
       server.gs.move(item, room);
@@ -155,7 +151,6 @@ export class ClientBehaviorPlugin extends WebMUDServerPlugin {
         client.sendMessageFrame(
           FrameMessage.field(` * ${item}`)
         )
-
       }
     });
 
