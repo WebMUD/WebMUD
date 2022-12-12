@@ -50,7 +50,7 @@ export class Client extends Logger {
     }
     else if(result instanceof HelpCommand)
     {
-      //if no command name is given, default command name is "HELP"
+      
       new FrameSendCommand('help', [{name: 'command', value: result.commandName}]);
     }
     else if(result instanceof LookCommand)
@@ -75,7 +75,7 @@ export class Client extends Logger {
     }
     else if(result instanceof WhisperCommand)
     {
-      new FrameSendCommand('whisper', [{name: 'secretMessage', value: result.text}]);
+      new FrameSendCommand('whisper', [{name: 'message', value: result.text}, {name: 'username', value: result.username}]);
     }
   }
 

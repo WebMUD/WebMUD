@@ -136,10 +136,7 @@ test('Parser', () => {
   const result = parse('exits');
   expect(result).toBeInstanceOf(ExitCommand);
 });
-test('Parser', () => {
-  const result = parse('e');
-  expect(result).toBeInstanceOf(ExitCommand);
-});
+
 
 test('Parser', () => {
   const result = parse('inventory');
@@ -147,11 +144,16 @@ test('Parser', () => {
 });
 
 test('Parser', () => {
-  const result = parse('say');
+  const result = parse('say something');
   expect(result).toBeInstanceOf(SayCommand);
 });
 
 test('Parser', () => {
-  const result = parse('w');
-  expect(result).toBeInstanceOf(WhisperCommand);
+  const result = parse('whisper player message');
+  if (result !== undefined && result instanceof WhisperCommand) {
+    console.log("USERNAME: "+ result?.username.toString);
+    console.log(result?.text);
+    expect(result?.username).toBe("player");
+    expect(result?.text).toBe("message");
+  }
 });

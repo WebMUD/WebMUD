@@ -19,7 +19,7 @@ export enum Item {
 export enum CommandName {
   MOVE = 'MOVE',
   LOOK = 'LOOK',
-  HELP = 'HELP',
+  HELP = '',
   EXIT = 'EXIT',
   INVENTORY = 'INVENTORY',
   TAKE = 'TAKE',
@@ -63,8 +63,10 @@ export class SayCommand {
 
 export class WhisperCommand {
   text : string;
-  constructor(text : string) {
+  username : string;
+  constructor(text : string, username : string) {
     this.text = text;
+    this.username = username;
   }
 }
 

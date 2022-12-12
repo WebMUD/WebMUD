@@ -26,9 +26,10 @@
 * takeKeyword := 'take'
 * lookCommand := lookKeyword=lookCommand .command =  LookCommand {return new LookCommand();}
 * lookKeyword := 'look'
-* whisperCommand := whisperKeyword=whisperKeyword space text=word .command =  WhisperCommand {return new WhisperCommand(text);}
+* whisperCommand := whisperKeyword=whisperKeyword space username = oneWord space text=word .command =  WhisperCommand {return new WhisperCommand(text, username);}
 * whisperKeyword := 'whisper' | 'w'
 * word:='.+'
+* oneWord:='\S+'
 * sayCommand := sayKeyword=sayKeyword space text=word .command = SayCommand {return new SayCommand(text);}
 * sayKeyword := 'say' | 's'
 * inventoryCommand := inventoryKeyword=inventoryKeyword .command = InventoryCommand {return new InventoryCommand();}
@@ -111,6 +112,7 @@ export enum ASTKinds {
     whisperKeyword_1 = "whisperKeyword_1",
     whisperKeyword_2 = "whisperKeyword_2",
     word = "word",
+    oneWord = "oneWord",
     sayCommand = "sayCommand",
     sayKeyword_1 = "sayKeyword_1",
     sayKeyword_2 = "sayKeyword_2",
@@ -209,13 +211,15 @@ export type lookKeyword = string;
 export class whisperCommand {
     public kind: ASTKinds.whisperCommand = ASTKinds.whisperCommand;
     public whisperKeyword: whisperKeyword;
+    public username: oneWord;
     public text: word;
     public command: WhisperCommand;
-    constructor(whisperKeyword: whisperKeyword, text: word){
+    constructor(whisperKeyword: whisperKeyword, username: oneWord, text: word){
         this.whisperKeyword = whisperKeyword;
+        this.username = username;
         this.text = text;
         this.command = ((): WhisperCommand => {
-        return new WhisperCommand(text);
+        return new WhisperCommand(text, username);
         })();
     }
 }
@@ -223,6 +227,7 @@ export type whisperKeyword = whisperKeyword_1 | whisperKeyword_2;
 export type whisperKeyword_1 = string;
 export type whisperKeyword_2 = string;
 export type word = string;
+export type oneWord = string;
 export class sayCommand {
     public kind: ASTKinds.sayCommand = ASTKinds.sayCommand;
     public sayKeyword: sayKeyword;
@@ -670,14 +675,17 @@ export class Parser {
         return this.run<whisperCommand>($$dpth,
             () => {
                 let $scope$whisperKeyword: Nullable<whisperKeyword>;
+                let $scope$username: Nullable<oneWord>;
                 let $scope$text: Nullable<word>;
                 let $$res: Nullable<whisperCommand> = null;
                 if (true
                     && ($scope$whisperKeyword = this.matchwhisperKeyword($$dpth + 1, $$cr)) !== null
                     && this.matchspace($$dpth + 1, $$cr) !== null
+                    && ($scope$username = this.matchoneWord($$dpth + 1, $$cr)) !== null
+                    && this.matchspace($$dpth + 1, $$cr) !== null
                     && ($scope$text = this.matchword($$dpth + 1, $$cr)) !== null
                 ) {
-                    $$res = new whisperCommand($scope$whisperKeyword, $scope$text);
+                    $$res = new whisperCommand($scope$whisperKeyword, $scope$username, $scope$text);
                 }
                 return $$res;
             });
@@ -696,6 +704,9 @@ export class Parser {
     }
     public matchword($$dpth: number, $$cr?: ErrorTracker): Nullable<word> {
         return this.regexAccept(String.raw`(?:.+)`, $$dpth + 1, $$cr);
+    }
+    public matchoneWord($$dpth: number, $$cr?: ErrorTracker): Nullable<oneWord> {
+        return this.regexAccept(String.raw`(?:\S+)`, $$dpth + 1, $$cr);
     }
     public matchsayCommand($$dpth: number, $$cr?: ErrorTracker): Nullable<sayCommand> {
         return this.run<sayCommand>($$dpth,

@@ -32,10 +32,11 @@ takeKeyword := 'take'
 lookCommand := lookKeyword=lookCommand .command =  LookCommand {return new LookCommand();}
 lookKeyword := 'look'
 
-whisperCommand := whisperKeyword=whisperKeyword space text=word .command =  WhisperCommand {return new WhisperCommand(text);}
+whisperCommand := whisperKeyword=whisperKeyword space username = oneWord space text=word .command =  WhisperCommand {return new WhisperCommand(text, username);}
 whisperKeyword := 'whisper' | 'w'
 
 word:='.+'
+oneWord:='\S+'
 sayCommand := sayKeyword=sayKeyword space text=word .command = SayCommand {return new SayCommand(text);}
 sayKeyword := 'say' | 's'
 
