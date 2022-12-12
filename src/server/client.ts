@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import * as Parser from '../client/parser/parser';
 import {
   ConnectionBase,
   ConnectionStatus,
@@ -13,6 +14,8 @@ import {
   Name,
 } from './gamestate/components';
 import { Server } from './server';
+import { CommandName } from '../client/parser/commands';
+import { Logger } from '../common/logger';
 
 export interface SeralizedClient {
   type: 'client';
@@ -43,12 +46,13 @@ export class Client {
     player: EntityID,
     id?: string
   ) {
-    this.id = id ?? uuidv4();
     this.server = server;
     this.player = player;
     this._name = this.name;
     this.useConnection(connection);
   }
+
+
 
   get gs() {
     return this.server.gamestate;
@@ -107,8 +111,10 @@ export class Client {
    */
   public start(world: EntityID) {
     const closeCallbacks: Array<Function> = [];
-
+    
     if (!this.connection) throw new Error('No attached connection');
+    
+   
 
     this.onConnectionClose.once(
       this.connection.onData(data => {
@@ -142,6 +148,8 @@ export class Client {
           this.chatMessage(data, 'whispers');
         })
     );
+
+    
 
     if (this.gs.hasParent(this.player)) this.onMove();
   }
@@ -231,29 +239,5 @@ export class Client {
   public getRoom(): EntityID {
     const room = this.gs.getParentID(this.player);
     return room;
-  }
-
-  public serialize(): SeralizedClient {
-    return {
-      type: 'client',
-      id: this.id,
-      player: this.player,
-    };
-  }
-
-  public static validate(data: any): data is SeralizedClient {
-    if (typeof data !== 'object' || data === null) return false;
-    if (typeof data.type !== 'string') return false;
-    if (data.type !== 'client') return false;
-    if (typeof data.player !== 'string') return false;
-    if (typeof data.id !== 'string') return false;
-    return true;
-  }
-
-  public static deseralize(server: Server, data: unknown): Client | false {
-    if (Client.validate(data)) {
-      return new Client(server, null, data.player, data.id);
-    }
-    return false;
   }
 }

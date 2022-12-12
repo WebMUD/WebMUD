@@ -284,14 +284,14 @@ export class Server extends Logger {
 
     return client;
   }
-
+/*
   public loadClient(data: unknown): Client {
     const client = Client.deseralize(this, data);
     if (!client) throw new Error('invalid client data');
     this.clients.add(client);
     return client;
   }
-
+*/
   /**
    * reconnect an existing client
    * TODO: test

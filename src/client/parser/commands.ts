@@ -1,4 +1,9 @@
-import { commandName } from './parser';
+import { commandName } from "./parser";
+import {Client} from "../../server/client"
+import { CodeKeywordDefinition } from "ajv";
+import { Server } from "../../server/server";
+import { Connection } from "../../common/connection/connection";
+import { Player } from "../../server/gamestate/components";
 
 export enum Direction {
   NORTH = 'NORTH',
@@ -13,8 +18,8 @@ export enum Item {
 
 export enum CommandName {
   MOVE = 'MOVE',
-  EXAMINE = 'EXAMINE',
-  HELP = 'HELP',
+  LOOK = 'LOOK',
+  HELP = '',
   EXIT = 'EXIT',
   INVENTORY = 'INVENTORY',
   TAKE = 'TAKE',
@@ -23,19 +28,21 @@ export enum CommandName {
   WHISPER = 'WHISPER',
 }
 export class MoveCommand {
-  direction: Direction;
+  text:string
 
-  constructor(direction: Direction) {
-    this.direction = direction;
+  constructor(text: string)
+  {
+    this.text = text;
   }
 }
 
 export class HelpCommand {
-  commandName: CommandName;
-
-  constructor(commandName: CommandName) {
-    this.commandName = commandName;
-  }
+    commandName : CommandName;
+    
+    constructor(commandName : CommandName)
+    {
+        this.commandName = commandName;
+    }
 }
 
 export class ExitCommand {
@@ -47,9 +54,39 @@ export class InventoryCommand {
 }
 
 export class SayCommand {
-  constructor() {}
+  text : string;
+  constructor(text : string) {
+    this.text = text;
+  }
+  
 }
 
 export class WhisperCommand {
+  text : string;
+  username : string;
+  constructor(text : string, username : string) {
+    this.text = text;
+    this.username = username;
+  }
+}
+
+export class LookCommand {
   constructor() {}
 }
+
+export class TakeCommand {
+  text : string;
+  constructor(text: string) {
+    this.text=text;
+  }
+}
+
+
+export class DropCommand {
+  text: string;
+  constructor(text: string) {
+    this.text=text;
+  }
+}
+
+
