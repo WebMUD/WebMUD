@@ -55,15 +55,15 @@ export class Client extends Logger {
     }
     else if(result instanceof LookCommand)
     {
-      new FrameSendCommand('look', [{name: 'look', value: ""}]);
+      new FrameSendCommand('look', []);
     }
     else if(result instanceof ExitCommand)
     {
-      new FrameSendCommand('exit', [{name: 'exit', value: ""}]);
+      new FrameSendCommand('exits', []);
     }
     else if(result instanceof InventoryCommand)
     {
-      new FrameSendCommand('inventory', [{name: 'inventory', value: ""}]);
+      new FrameSendCommand('inventory', []);
     }
     else if(result instanceof TakeCommand)
     {
