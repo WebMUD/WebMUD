@@ -17,6 +17,7 @@ import {
   Name,
 } from '../server/gamestate/components';
 import { dir } from 'console';
+import { data } from '../common/frames/mock-data';
 
 export class Client extends Logger {
   public connection: ConnectionBase;
@@ -72,7 +73,7 @@ export class Client extends Logger {
     }
     else if(result instanceof LookCommand)
     {
-      this.sendFrame( new FrameSendCommand('look', []));
+      this.sendFrame( new FrameSendCommand('look', [{name:"object", value: result.text}]));
     }
     else if(result instanceof ExitCommand)
     {

@@ -31,7 +31,9 @@ dropKeyword := 'drop'
 takeCommand := takeKeyword=takeKeyword space text=word .command =  TakeCommand {return new TakeCommand(text);}
 takeKeyword := 'take'
 
-lookCommand := lookKeyword=lookCommand .command =  LookCommand {return new LookCommand();}
+lookCommand :=   lookKeyword=lookKeyword space text=word .command =  LookCommand {return new LookCommand(text);} |
+                    lookKeyword=lookKeyword .command = LookCommand {return new LookCommand("");}
+   
 lookKeyword := 'look'
 
 whisperCommand := whisperKeyword=whisperKeyword space username = oneWord space text=word .command =  WhisperCommand {return new WhisperCommand(text, username);}

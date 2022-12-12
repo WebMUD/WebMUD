@@ -71,7 +71,10 @@ export class WhisperCommand {
 }
 
 export class LookCommand {
-  constructor() {}
+  text : string;
+  constructor(text : string) {
+    this.text = text;
+  }
 }
 
 export class TakeCommand {
@@ -88,5 +91,4 @@ export class DropCommand {
     this.text=text;
   }
 }
-
 
