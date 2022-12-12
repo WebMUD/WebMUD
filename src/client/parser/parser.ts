@@ -13,7 +13,7 @@
 *     WhisperCommand,
 *     LookCommand,
 *     TakeCommand,
-*     DropCommand
+*     DropCommand,
 *     } from './commands';
 * ---
 * start := commands
@@ -24,7 +24,9 @@
 * dropKeyword := 'drop'
 * takeCommand := takeKeyword=takeKeyword space text=word .command =  TakeCommand {return new TakeCommand(text);}
 * takeKeyword := 'take'
-* lookCommand := lookKeyword=lookCommand .command =  LookCommand {return new LookCommand();}
+* lookCommand :=   lookKeyword=lookKeyword space text=word .command =  LookCommand {return new LookCommand(text);} |
+*                     lookKeyword=lookKeyword .command = LookCommand {return new LookCommand("");}
+*    
 * lookKeyword := 'look'
 * whisperCommand := whisperKeyword=whisperKeyword space username = oneWord space text=word .command =  WhisperCommand {return new WhisperCommand(text, username);}
 * whisperKeyword := 'whisper' | 'w'
@@ -82,7 +84,7 @@ import {
     WhisperCommand,
     LookCommand,
     TakeCommand,
-    DropCommand
+    DropCommand,
     } from './commands';
 
 type Nullable<T> = T | null;
@@ -106,7 +108,8 @@ export enum ASTKinds {
     dropKeyword = "dropKeyword",
     takeCommand = "takeCommand",
     takeKeyword = "takeKeyword",
-    lookCommand = "lookCommand",
+    lookCommand_1 = "lookCommand_1",
+    lookCommand_2 = "lookCommand_2",
     lookKeyword = "lookKeyword",
     whisperCommand = "whisperCommand",
     whisperKeyword_1 = "whisperKeyword_1",
@@ -196,14 +199,28 @@ export class takeCommand {
     }
 }
 export type takeKeyword = string;
-export class lookCommand {
-    public kind: ASTKinds.lookCommand = ASTKinds.lookCommand;
-    public lookKeyword: lookCommand;
+export type lookCommand = lookCommand_1 | lookCommand_2;
+export class lookCommand_1 {
+    public kind: ASTKinds.lookCommand_1 = ASTKinds.lookCommand_1;
+    public lookKeyword: lookKeyword;
+    public text: word;
     public command: LookCommand;
-    constructor(lookKeyword: lookCommand){
+    constructor(lookKeyword: lookKeyword, text: word){
+        this.lookKeyword = lookKeyword;
+        this.text = text;
+        this.command = ((): LookCommand => {
+        return new LookCommand(text);
+        })();
+    }
+}
+export class lookCommand_2 {
+    public kind: ASTKinds.lookCommand_2 = ASTKinds.lookCommand_2;
+    public lookKeyword: lookKeyword;
+    public command: LookCommand;
+    constructor(lookKeyword: lookKeyword){
         this.lookKeyword = lookKeyword;
         this.command = ((): LookCommand => {
-        return new LookCommand();
+        return new LookCommand("");
         })();
     }
 }
@@ -542,9 +559,7 @@ export class Parser {
         return this.pos.overallPos === this.input.length;
     }
     public clearMemos(): void {
-        this.$scope$lookCommand$memo.clear();
     }
-    protected $scope$lookCommand$memo: Map<number, [Nullable<lookCommand>, PosInfo]> = new Map();
     public matchstart($$dpth: number, $$cr?: ErrorTracker): Nullable<start> {
         return this.matchcommands($$dpth + 1, $$cr);
     }
@@ -630,43 +645,39 @@ export class Parser {
         return this.regexAccept(String.raw`(?:take)`, $$dpth + 1, $$cr);
     }
     public matchlookCommand($$dpth: number, $$cr?: ErrorTracker): Nullable<lookCommand> {
-        const fn = () => {
-            return this.run<lookCommand>($$dpth,
-                () => {
-                    let $scope$lookKeyword: Nullable<lookCommand>;
-                    let $$res: Nullable<lookCommand> = null;
-                    if (true
-                        && ($scope$lookKeyword = this.matchlookCommand($$dpth + 1, $$cr)) !== null
-                    ) {
-                        $$res = new lookCommand($scope$lookKeyword);
-                    }
-                    return $$res;
-                });
-        };
-        const $scope$pos = this.mark();
-        const memo = this.$scope$lookCommand$memo.get($scope$pos.overallPos);
-        if(memo !== undefined) {
-            this.reset(memo[1]);
-            return memo[0];
-        }
-        const $scope$oldMemoSafe = this.memoSafe;
-        this.memoSafe = false;
-        this.$scope$lookCommand$memo.set($scope$pos.overallPos, [null, $scope$pos]);
-        let lastRes: Nullable<lookCommand> = null;
-        let lastPos: PosInfo = $scope$pos;
-        for(;;) {
-            this.reset($scope$pos);
-            const res = fn();
-            const end = this.mark();
-            if(end.overallPos <= lastPos.overallPos)
-                break;
-            lastRes = res;
-            lastPos = end;
-            this.$scope$lookCommand$memo.set($scope$pos.overallPos, [lastRes, lastPos]);
-        }
-        this.reset(lastPos);
-        this.memoSafe = $scope$oldMemoSafe;
-        return lastRes;
+        return this.choice<lookCommand>([
+            () => this.matchlookCommand_1($$dpth + 1, $$cr),
+            () => this.matchlookCommand_2($$dpth + 1, $$cr),
+        ]);
+    }
+    public matchlookCommand_1($$dpth: number, $$cr?: ErrorTracker): Nullable<lookCommand_1> {
+        return this.run<lookCommand_1>($$dpth,
+            () => {
+                let $scope$lookKeyword: Nullable<lookKeyword>;
+                let $scope$text: Nullable<word>;
+                let $$res: Nullable<lookCommand_1> = null;
+                if (true
+                    && ($scope$lookKeyword = this.matchlookKeyword($$dpth + 1, $$cr)) !== null
+                    && this.matchspace($$dpth + 1, $$cr) !== null
+                    && ($scope$text = this.matchword($$dpth + 1, $$cr)) !== null
+                ) {
+                    $$res = new lookCommand_1($scope$lookKeyword, $scope$text);
+                }
+                return $$res;
+            });
+    }
+    public matchlookCommand_2($$dpth: number, $$cr?: ErrorTracker): Nullable<lookCommand_2> {
+        return this.run<lookCommand_2>($$dpth,
+            () => {
+                let $scope$lookKeyword: Nullable<lookKeyword>;
+                let $$res: Nullable<lookCommand_2> = null;
+                if (true
+                    && ($scope$lookKeyword = this.matchlookKeyword($$dpth + 1, $$cr)) !== null
+                ) {
+                    $$res = new lookCommand_2($scope$lookKeyword);
+                }
+                return $$res;
+            });
     }
     public matchlookKeyword($$dpth: number, $$cr?: ErrorTracker): Nullable<lookKeyword> {
         return this.regexAccept(String.raw`(?:look)`, $$dpth + 1, $$cr);

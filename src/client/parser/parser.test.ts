@@ -147,13 +147,3 @@ test('Parser', () => {
   const result = parse('say something');
   expect(result).toBeInstanceOf(SayCommand);
 });
-
-test('Parser', () => {
-  const result = parse('whisper player message');
-  if (result !== undefined && result instanceof WhisperCommand) {
-    console.log("USERNAME: "+ result?.username.toString);
-    console.log(result?.text);
-    expect(result?.username).toBe("player");
-    expect(result?.text).toBe("message");
-  }
-});
