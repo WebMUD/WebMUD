@@ -81,23 +81,21 @@ export class SaveStatePlugin extends WebMUDServerPlugin {
   // LocalStorage could be used to save and load multiple gamestates
   // https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage
   saveToLocalStorage(saveName: string) {
-    localStorage.setItem(saveName, this.serializeState());
+    const obj: any = localStorage.getItem('savestates') ?? {};
+    obj[saveName] = this.serializeState();
+    localStorage.setItem('savestates', obj);
   }
 
   loadFromLocalStorage(saveName: string) {
-    if(localStorage.length == 0) return this.server.error('No saves available.');
-    const data = localStorage.getItem(saveName);
-    if(!data) return this.server.error(`Could not find saved gamestate ${saveName}`);
-    console.log(JSON.parse(data));
+    const obj: any = localStorage.getItem('savestates') ?? {};
+    const data = obj[saveName];
+    if (!data) return this.server.error(`Could not find saved gamestate ${saveName}`);
     this.deserializeState(data);
   }
 
   listSaves(): string[] {
-    if(localStorage.length == 0) return [];
-    let saveList: string[] | null = [];
-    //for(let i: number = 0; i < localStorage.length; i++) saveList.push(localStorage.key(i));
-
-    return saveList;
+    const obj = localStorage.getItem('savestates') ?? {};
+    return Object.keys(obj);
   }
 
   // SessionStorage could be used for autosave so the tab can recover its state when reloaded
