@@ -29,53 +29,70 @@ export class Client extends Logger {
   constructor( 
   ) {
     super();
-   
+    this.onReady(() =>{
+      this.print("Please enter a username.");
+      const stop = this.onInput((data)=>{
+        if(!this.containsWhitespace(data) && data !== "")
+        {
+          this.join(data);
+          stop();
+          this.startListening();
+          this.print("USERNAME: " + data);
+        }
+      }) 
+    });
+  }
+
+  
+  startListening(){
     this.onInput((data)=>{
       data = data.toLowerCase();
       this.read(data);
     });
   }
   
+  containsWhitespace(input:string){
+    return /\s/.test(input);
+  }
+
   read(input: string) {
     var result = this.parse(input);
     
     if(result instanceof MoveCommand)
     {
-      new FrameSendCommand('move', [{name: 'direction', value: result.text}]);
+      this.sendFrame(new FrameSendCommand('move', [{name: 'direction', value: result.text}]));
     }
     else if(result instanceof SayCommand)
     {
-     new FrameSendCommand('say', [{name: 'message', value: result.text}]);
-    
+     this.sendFrame(new FrameSendCommand('say', [{name: 'message', value: result.text}]));
     }
     else if(result instanceof HelpCommand)
     {
-      
-      new FrameSendCommand('help', [{name: 'command', value: result.commandName}]);
+      this.sendFrame(new FrameSendCommand('help', [{name: 'command', value: result.commandName}]));
     }
     else if(result instanceof LookCommand)
     {
-      new FrameSendCommand('look', []);
+      this.sendFrame( new FrameSendCommand('look', []));
     }
     else if(result instanceof ExitCommand)
     {
-      new FrameSendCommand('exits', []);
+      this.sendFrame(new FrameSendCommand('exits', []));     
     }
     else if(result instanceof InventoryCommand)
     {
-      new FrameSendCommand('inventory', []);
+      this.sendFrame(new FrameSendCommand('inventory', []));    
     }
     else if(result instanceof TakeCommand)
     {
-      new FrameSendCommand('take', [{name: 'item', value: result.text}]);
+      this.sendFrame(new FrameSendCommand('take', [{name: 'item', value: result.text}]));    
     }
     else if(result instanceof DropCommand)
     {
-      new FrameSendCommand('drop', [{name: 'item', value: result.text}]);
+      this.sendFrame(new FrameSendCommand('drop', [{name: 'item', value: result.text}]));   
     }
     else if(result instanceof WhisperCommand)
     {
-      new FrameSendCommand('whisper', [{name: 'message', value: result.text}, {name: 'username', value: result.username}]);
+      this.sendFrame(new FrameSendCommand('whisper', [{name: 'message', value: result.text}, {name: 'username', value: result.username}]));
     }
   }
 

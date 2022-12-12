@@ -11,7 +11,7 @@ import {
     WhisperCommand,
     LookCommand,
     TakeCommand,
-    DropCommand
+    DropCommand,
     } from './commands';
 ---
 
@@ -21,6 +21,8 @@ commands := moveCommand | helpCommand | exitCommand | inventoryCommand | sayComm
 lookCommand | takeCommand | dropCommand
 
 space := ' '
+
+
 
 dropCommand := dropKeyword=dropKeyword space text=word .command =  DropCommand {return new DropCommand(text);}
 dropKeyword := 'drop'

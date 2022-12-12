@@ -13,7 +13,7 @@
 *     WhisperCommand,
 *     LookCommand,
 *     TakeCommand,
-*     DropCommand
+*     DropCommand,
 *     } from './commands';
 * ---
 * start := commands
@@ -82,7 +82,7 @@ import {
     WhisperCommand,
     LookCommand,
     TakeCommand,
-    DropCommand
+    DropCommand,
     } from './commands';
 
 type Nullable<T> = T | null;
