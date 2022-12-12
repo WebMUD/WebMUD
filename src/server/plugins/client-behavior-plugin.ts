@@ -58,9 +58,11 @@ export class ClientBehaviorPlugin extends WebMUDServerPlugin {
       let playerName: null | string = null;
       let message: null | string = null;
       for (const {name, value} of frame.arguements) {
-        if (playerName === 'username') playerName = value;
+        if (name === 'username') playerName = value;
         if (name === 'message') message = value;
       }
+
+      console.log(frame);
 
       if (playerName === null) throw new Error('missing player argument');
 
@@ -167,8 +169,6 @@ export class ClientBehaviorPlugin extends WebMUDServerPlugin {
 
       client.sendChat(server.gs.getParentID(client.player), message);
     });
-
-    
 
     this.addCommand('exits', (frame: FrameSendCommand, client: Client, server: Server)=>{
       const room = client.gs.getParent(client.player);
@@ -322,6 +322,16 @@ export class ClientBehaviorPlugin extends WebMUDServerPlugin {
         const name = msg.senderName;
         const content = msg.content;
 
+        const firstPersonVerbs: {[key: string]: string} = {
+          'says': 'say',
+          'shouts': 'shout',
+          'whispers': 'whisper',
+        }
+
+        if (this.isFirstPerson(client, id)) {
+          verb = firstPersonVerbs[verb] ?? verb;
+        }
+        
         client.sendMessageFrame(
           this.formatName(client, id),
           FrameMessage.field(` ${verb} `),
