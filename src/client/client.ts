@@ -34,10 +34,10 @@ export class Client extends Logger {
       const stop = this.onInput((data)=>{
         if(!this.containsWhitespace(data) && data !== "")
         {
+          this.print(`Joining as: ${data}.`);
           this.join(data);
           stop();
-          this.startListening();
-          this.print("USERNAME: " + data);
+          this.startListening();       
         }
       }) 
     });
