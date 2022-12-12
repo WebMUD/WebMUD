@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-<head>
+  <head>
     <meta charset="utf-8" />
     <title>WebMUD - Client</title>
 
@@ -10,54 +10,56 @@
     <link rel="stylesheet" href="main.css" />
 
     <script defer="defer" src="/client/main.bundle.js"></script>
-</head>
-    
-<body>
+  </head>
+
+  <body>
     <header>
-        <div class="header-container">
-            <div class="logo">
-                <a href="">WEBMUD</a>
-            </div>
-            <nav>
-                <ul class="menu">
-                    <li class="navT">
-                        <a href="#">Menu</a>
-                        <i class="fas fa-arrow-down"></i>
-                        <div class="navT-items">
-                            <a href="#">Button 1</a>
-                            <a href="#">Button 2</a>
-                            <a href="#">Button 3</a>
-                        </div>
-                    </li>
-                </ul>
-            </nav>
+      <div class="header-container">
+        <div class="logo">
+          <a href="">WEBMUD</a>
         </div>
+        <nav>
+          <ul class="menu">
+            <li class="navT">
+              <a href="#">Menu</a>
+              <i class="fas fa-arrow-down"></i>
+              <div class="navT-items">
+                <a href="#">Button 1</a>
+                <a href="#">Button 2</a>
+                <a href="#">Button 3</a>
+              </div>
+            </li>
+          </ul>
+        </nav>
+      </div>
     </header>
     <div class="console">
-        <div class="console-section">
-            Console
-            <span class="float-right">
-                <label for="enable-debug">Debug</label>
-                <input type="checkbox" id="enable-debug" />
-            </span>
-        </div>
-        <div class="console-section log">
-            <div class="text-output" id="console-output"></div>
-        </div>
-        <input class="console-section command"
-               type="text"
-               id="console-input"
-               placeholder=">" />
+      <div class="console-section">
+        Console
+        <span class="float-right">
+          <label for="enable-debug">Debug</label>
+          <input type="checkbox" id="enable-debug" />
+        </span>
+      </div>
+      <div class="console-section log">
+        <div class="text-output" id="console-output"></div>
+      </div>
+      <input
+        class="console-section command"
+        type="text"
+        id="console-input"
+        placeholder=">"
+      />
     </div>
     <div class="notepad">
-        <div class="notepad-text">
-            <textarea 
-                class="notepad-show"
-                id="addText" 
-                rows="15"
-                placeholder= "Notepad"
-                ></textarea>
-        </div>
+      <div class="notepad-text">
+        <textarea
+          class="notepad-show"
+          id="addText"
+          rows="15"
+          placeholder="Notepad"
+        ></textarea>
+      </div>
     </div>
-</body>
+  </body>
 </html>

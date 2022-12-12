@@ -6,8 +6,8 @@ const PACKAGE = require('../../package.json');
 
 export type ServerViewOptions = ViewOptions & {
   joinLink?: HTMLElement;
-    joinURL?: HTMLElement;
-    clientList?: HTMLElement;
+  joinURL?: HTMLElement;
+  clientList?: HTMLElement;
 
   server: Server;
   devMode: boolean;
@@ -40,7 +40,7 @@ export class ServerView extends View {
       this.info(
         'Ready',
         ' ',
-          this.formatSmall('@' + new Date().toLocaleTimeString())
+        this.formatSmall('@' + new Date().toLocaleTimeString())
       );
 
       this.info('Enter "help" for a list of commands.');
@@ -48,22 +48,22 @@ export class ServerView extends View {
       const link = this.server.joinLink();
 
       if (options.joinURL) options.joinURL.textContent = link;
-        if (options.joinLink) options.joinLink.setAttribute('href', link);
-        if ('clientList' in options && options.clientList) {
-            const clientList = options.clientList;
-            this.server.onClientJoin((client) => {
-                this.updateClientList(clientList);
-            })
-        }
+      if (options.joinLink) options.joinLink.setAttribute('href', link);
+      if ('clientList' in options && options.clientList) {
+        const clientList = options.clientList;
+        this.server.onClientJoin(client => {
+          this.updateClientList(clientList);
+        });
+      }
     });
+  }
+  updateClientList(clientList: HTMLElement) {
+    clientList.replaceChildren();
+    for (const client of this.server.getClients()) {
+      const el = createElement('div', {
+        text: client.name,
+      });
+      clientList.appendChild(el);
     }
-    updateClientList(clientList: HTMLElement) {
-        clientList.replaceChildren();
-        for (const client of this.server.getClients()) {
-            const el = createElement('div', {
-                text: client.name,
-            });
-            clientList.appendChild(el);
-        }
-    }
+  }
 }
