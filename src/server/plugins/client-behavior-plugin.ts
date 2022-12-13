@@ -126,8 +126,8 @@ export class ClientBehaviorPlugin extends WebMUDServerPlugin {
         say: ['usage: (s)ay <message> ',' Sends a message to everyone in the room'],
         whisper: ['usage: (w)hisper <player> <message> ',' Sends a message only to the player designated'],
         drop: ['usage: (d)rop <item> ',' Drops the item from your inventory to the ground'],
-        //take: ['usage: (t)ake <item> ',' Grabs the specificed item'],
-        //examine: [ '(e)xamine <item> ',' Tells you more about the specified item'],
+        take: ['usage: (t)ake <item> ',' Grabs the specificed item'],
+        look: ['usage: (l)ook <object>  ',' Will give information on the room you are currently in, including which players reside there. If you input an object after look, it will give detailed information about the object']
       }
       
       for (const [commandName, helpLines] of Object.entries(commands)) {
