@@ -89,7 +89,8 @@ export class SaveStatePlugin extends WebMUDServerPlugin {
   loadFromLocalStorage(saveName: string) {
     const obj: any = localStorage.getItem('savestates') ?? {};
     const data = obj[saveName];
-    if (!data) return this.server.error(`Could not find saved gamestate ${saveName}`);
+    if (!data)
+      return this.server.error(`Could not find saved gamestate ${saveName}`);
     this.deserializeState(data);
   }
 
@@ -106,7 +107,7 @@ export class SaveStatePlugin extends WebMUDServerPlugin {
 
   recoverSessionStorage() {
     const data = sessionStorage.getItem('gssave');
-    if(!data) return this.server.error('Could not find gamestate save data.');
+    if (!data) return this.server.error('Could not find gamestate save data.');
     console.log(JSON.parse(data));
     this.deserializeState(data);
   }
