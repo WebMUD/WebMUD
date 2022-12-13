@@ -279,7 +279,7 @@ export class ClientBehaviorPlugin extends WebMUDServerPlugin {
           if (name === 'object') itemName = value;
         }
 
-        if (itemName === null) return this.describeRoom(client);
+        if (itemName === null || !itemName) return this.describeRoom(client);
 
         let item: null | string = null;
 
