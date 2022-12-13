@@ -177,7 +177,7 @@ export class ClientBehaviorPlugin extends WebMUDServerPlugin {
         client.sendMessageFrame(FrameMessage.field(`You pick up ${itemName}.`));
       }
     );
-
+    
     this.addCommand(
       'help',
       (frame: FrameSendCommand, client: Client, server: Server) => {
