@@ -179,7 +179,6 @@ export type commands_6 = whisperCommand;
 export type commands_7 = lookCommand;
 export type commands_8 = takeCommand;
 export type commands_9 = dropCommand;
-export type commands_10 = shortenedMoveCommand;
 export type space = string;
 export class dropCommand {
   public kind: ASTKinds.dropCommand = ASTKinds.dropCommand;
@@ -558,42 +557,6 @@ export class moveCommand {
     })();
   }
 }
-export class shortenedMoveCommand {
-    public kind: ASTKinds.shortenedMoveCommand = ASTKinds.shortenedMoveCommand;
-    public directions: directions;
-    public command: MoveCommand;
-    constructor(directions: directions){
-        this.directions = directions;
-        this.command = ((): MoveCommand => {
-        return new MoveCommand(directions);
-        })();
-    }
-}
-export type directions = directions_1 | directions_2 | directions_3 | directions_4 | directions_5 | directions_6;
-export type directions_1 = northKeyword;
-export type directions_2 = southKeyword;
-export type directions_3 = westKeyword;
-export type directions_4 = eastKeyword;
-export type directions_5 = upKeyword;
-export type directions_6 = downKeyword;
-export type northKeyword = northKeyword_1 | northKeyword_2;
-export type northKeyword_1 = string;
-export type northKeyword_2 = string;
-export type southKeyword = southKeyword_1 | southKeyword_2;
-export type southKeyword_1 = string;
-export type southKeyword_2 = string;
-export type westKeyword = westKeyword_1 | westKeyword_2;
-export type westKeyword_1 = string;
-export type westKeyword_2 = string;
-export type eastKeyword = eastKeyword_1 | eastKeyword_2;
-export type eastKeyword_1 = string;
-export type eastKeyword_2 = string;
-export type upKeyword = upKeyword_1 | upKeyword_2;
-export type upKeyword_1 = string;
-export type upKeyword_2 = string;
-export type downKeyword = downKeyword_1 | downKeyword_2;
-export type downKeyword_1 = string;
-export type downKeyword_2 = string;
 export type moveKeyword = moveKeyword_1 | moveKeyword_2;
 export type moveKeyword_1 = string;
 export type moveKeyword_2 = string;
