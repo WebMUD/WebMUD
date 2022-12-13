@@ -25,8 +25,6 @@ window.clientView = new ClientView({
   client,
 });
 
-client.onReady(() => client.join('NamelessPlayer'));
-
 const searchParams = new URLSearchParams(window.location.search);
 const serverID = searchParams.get('server');
 if (serverID) client.connect(serverID);

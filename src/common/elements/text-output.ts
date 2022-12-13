@@ -13,6 +13,10 @@ export class TextOutput {
     this.el.replaceChildren();
   }
 
+  public lineBreak() {
+    this.print(document.createElement('br'));
+  }
+
   /**
    * Print on the current line
    * @param fields text to print
@@ -66,7 +70,11 @@ export class TextOutput {
   }
 
   protected static textField(text: TextField): HTMLElement {
-    if (typeof text === 'string') return createElement('span', { text });
+    if (typeof text === 'string') {
+      if (text === '&br') return createElement('br');
+      return createElement('span', { text });
+    }
+
     if (text instanceof Text)
       return createElement('span', { children: [text] });
     return text;

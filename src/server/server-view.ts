@@ -1,4 +1,5 @@
 import * as _ from 'lodash';
+import { createElement } from '../common/util';
 import { View, ViewOptions } from '../common/view';
 import { Server } from './server';
 const PACKAGE = require('../../package.json');
@@ -6,6 +7,7 @@ const PACKAGE = require('../../package.json');
 export type ServerViewOptions = ViewOptions & {
   joinLink?: HTMLElement;
   joinURL?: HTMLElement;
+  clientList?: HTMLElement;
 
   server: Server;
   devMode: boolean;
@@ -47,6 +49,21 @@ export class ServerView extends View {
 
       if (options.joinURL) options.joinURL.textContent = link;
       if (options.joinLink) options.joinLink.setAttribute('href', link);
+      if ('clientList' in options && options.clientList) {
+        const clientList = options.clientList;
+        this.server.onClientJoin(client => {
+          this.updateClientList(clientList);
+        });
+      }
     });
+  }
+  updateClientList(clientList: HTMLElement) {
+    clientList.replaceChildren();
+    for (const client of this.server.getClients()) {
+      const el = createElement('div', {
+        text: client.name,
+      });
+      clientList.appendChild(el);
+    }
   }
 }

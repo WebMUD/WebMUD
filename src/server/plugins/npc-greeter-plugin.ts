@@ -1,3 +1,5 @@
+import { send } from 'process';
+import { arrayBuffer } from 'stream/consumers';
 import {
   ChatChannel,
   HierarchyChild,
@@ -18,24 +20,28 @@ import { NPCComponent } from './npc-plugin';
 
 export type SerializedNPCGreeter = SerializedComponent & {
   type: 'component-npc-greeter';
-  message: string;
+  messages: string[];
   greeted: string[];
+  delay: number;
 };
 
 export class NPCGreeterComponent extends Component {
   // "%p" replaced with player name
-  message: string;
+  messages: string[];
 
   greeted = new Set<EntityID>();
 
-  constructor(message: string) {
+  delay: number;
+
+  constructor(messages: string[], delay: number = 1) {
     super();
-    this.message = message;
+    this.messages = messages;
+    this.delay = delay;
   }
 
   static deserialize(data: unknown): NPCGreeterComponent | false {
     if (NPCGreeterComponent.validate(data)) {
-      const c = new NPCGreeterComponent(data.message);
+      const c = new NPCGreeterComponent(data.messages, data.delay);
       for (const greeted of data.greeted) c.greeted.add(greeted);
       return c;
     }
@@ -44,18 +50,21 @@ export class NPCGreeterComponent extends Component {
 
   static validate(data: any): data is SerializedNPCGreeter {
     if (!Component.validateType(NPCGreeterComponent.type, data)) return false;
-    if (!(data.parent === undefined || typeof data.parent === 'string'))
-      return false;
+    if (!Array.isArray(data.messages)) return false;
+    for (const message of data.messages)
+      if (typeof message !== 'string') return false;
     if (!Array.isArray(data.greeted)) return false;
     for (const x of data.greeted) if (typeof x !== 'string') return false;
+    if (typeof data.delay !== 'number') return false;
     return true;
   }
 
   serialize() {
     return {
       type: NPCGreeterComponent.type,
-      message: this.message,
+      messages: this.messages,
       greeted: Array.from(this.greeted.keys()),
+      delay: this.delay,
     };
   }
 
@@ -80,21 +89,26 @@ export class NPCGreeterPlugin extends WebMUDServerPlugin {
     server.commands.addCommand({
       command: 'create-npc-greeter',
       alias: ['cnpc-greeter'],
-      usage: 'create-npc-greeter <name> <message>',
+      usage: 'create-npc-greeter <name> <delay> <messages>',
       about: 'create a greeter npc',
 
       use(argv: string[]) {
         const name = argv.shift();
-        const message = argv.shift();
+        const delay = argv.shift();
+        const messages = argv;
         if (!name) return server.error(`Missing value for name`);
-        if (!message) return server.error(`Missing value for message`);
-        self.create(name, message);
+        if (!delay) return server.error('No delay specified');
+        if (!messages.length) return server.error(`Missing value for message`);
+        const check = parseInt(delay);
+        if (isNaN(check)) return server.error('Non-number delay');
+
+        self.create(name, check, messages);
         server.info(`Created NPC ${name}`);
       },
     });
   }
 
-  create(name: string, message: string) {
+  create(name: string, delay: number, messages: string[]) {
     const e = this.server.gs.createEntity();
     this.server.gs
       .entity(e)
@@ -102,7 +116,7 @@ export class NPCGreeterPlugin extends WebMUDServerPlugin {
       .add(new NPCComponent())
       .add(new HierarchyChild())
       .add(new HierarchyContainer())
-      .add(new NPCGreeterComponent(message));
+      .add(new NPCGreeterComponent(messages, delay));
 
     this.server.gs
       .entity(e)
@@ -126,15 +140,26 @@ export class NPCGreeterPlugin extends WebMUDServerPlugin {
       const greeterComponent = gs.entity(e).get(NPCGreeterComponent);
       if (greeterComponent.greeted.has(target)) return;
       greeterComponent.greeted.add(target);
-      setTimeout(() => {
-        gs.entity(target)
-          .get(ChatChannel)
-          .event.emit({
-            senderID: e,
-            senderName: gs.nameOf(e),
-            content: greeterComponent.message.replace('%p', gs.nameOf(target)),
-          });
-      }, 1000);
+
+      const unsentMessages = [...greeterComponent.messages];
+      const sendMessage = () => {
+        const nextMessage = unsentMessages.shift();
+        if (nextMessage) {
+          gs.entity(target)
+            .get(ChatChannel)
+            .event.emit({
+              senderID: e,
+              senderName: gs.nameOf(e),
+              content: nextMessage.replace('%p', gs.nameOf(target)),
+            });
+          sendNext();
+        }
+      };
+
+      const sendNext = () => {
+        setTimeout(sendMessage, greeterComponent.delay * 1000);
+      };
+      setTimeout(sendMessage, 1000);
     });
     gs.entity(e).get(HierarchyChild).onMove.once(stop);
   }

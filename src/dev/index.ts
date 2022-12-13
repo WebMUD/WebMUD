@@ -38,7 +38,7 @@ function createClient() {
   window.server.onConnection(serverConnection);
   client.useConnection(clientConnection);
 
-  client.join(`Player${id}`);
+  //client.join(`Player${id}`);
 }
 
 el.create.onclick = createClient;
@@ -60,7 +60,7 @@ window.setTimeout(() => {
       setTimeout(() => {
         const clients = Array.from(server.getClients());
       }, 1000);
-    });
+    }, 2000);
   });
 
   server.startDiscovery();

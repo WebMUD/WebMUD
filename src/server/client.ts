@@ -1,10 +1,16 @@
 import { v4 as uuidv4 } from 'uuid';
+import * as Parser from '../client/parser/parser';
 import {
   ConnectionBase,
   ConnectionStatus,
 } from '../common/connection/connection-base';
 import { EntityID } from './gamestate/entity';
-import { Frame, FrameMessage, frames } from '../common/frames';
+import {
+  Frame,
+  FrameAssignToken,
+  FrameMessage,
+  frames,
+} from '../common/frames';
 import { EventEmitter } from '../common/event-emitter';
 import { ChatChannel, ChatMessage } from './gamestate/components/chat-channel';
 import {
@@ -13,6 +19,8 @@ import {
   Name,
 } from './gamestate/components';
 import { Server } from './server';
+import { CommandName } from '../client/parser/commands';
+import { Logger } from '../common/logger';
 
 export interface SeralizedClient {
   type: 'client';
@@ -43,10 +51,10 @@ export class Client {
     player: EntityID,
     id?: string
   ) {
-    this.id = id ?? uuidv4();
     this.server = server;
     this.player = player;
     this._name = this.name;
+    this.id = id ?? uuidv4();
     this.useConnection(connection);
   }
 
@@ -233,27 +241,9 @@ export class Client {
     return room;
   }
 
-  public serialize(): SeralizedClient {
-    return {
-      type: 'client',
-      id: this.id,
-      player: this.player,
-    };
-  }
-
-  public static validate(data: any): data is SeralizedClient {
-    if (typeof data !== 'object' || data === null) return false;
-    if (typeof data.type !== 'string') return false;
-    if (data.type !== 'client') return false;
-    if (typeof data.player !== 'string') return false;
-    if (typeof data.id !== 'string') return false;
-    return true;
-  }
-
-  public static deseralize(server: Server, data: unknown): Client | false {
-    if (Client.validate(data)) {
-      return new Client(server, null, data.player, data.id);
-    }
-    return false;
+  public assignToken() {
+    const data = new FrameAssignToken(this.id);
+    console.log(data);
+    this.sendFrame(data);
   }
 }

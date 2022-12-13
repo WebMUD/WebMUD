@@ -32,6 +32,7 @@ export function createServer(
     output: 'console-output',
     input: 'console-input',
     debug: 'enable-debug',
+    clientList: 'client-list',
   });
 
   const server = (window.server = new Server('my game', {
@@ -42,6 +43,7 @@ export function createServer(
     output: el.output,
     input: el.input,
     debug: el.debug,
+    clientList: el.clientList,
     joinURL: document.getElementById('joinURL') ?? undefined,
     joinLink: document.getElementById('joinLink') ?? undefined,
     server,
