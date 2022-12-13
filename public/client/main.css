@@ -2,7 +2,7 @@
 * {
   padding: 0;
   margin: 0;
-  font-family: 'Times New Roman';
+  font-family: "Times New Roman";
 }
 
 body {
@@ -69,7 +69,7 @@ header {
 }
 
 /* Also change color of icon when hover on link */
-.menu li a:hover - .fas {
+.menu li a:hover .fas {
   color: #fb743e;
 }
 
@@ -115,4 +115,13 @@ header {
   background: #333;
   color: #fff;
   margin: 10px;
+}
+
+.text-output {
+  height: 48ch;
+  font-size: 12pt;
+}
+
+.console {
+  width: 120ch;
 }
