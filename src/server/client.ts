@@ -5,7 +5,7 @@ import {
   ConnectionStatus,
 } from '../common/connection/connection-base';
 import { EntityID } from './gamestate/entity';
-import { Frame, FrameMessage, frames } from '../common/frames';
+import { Frame, FrameAssignToken, FrameMessage, frames } from '../common/frames';
 import { EventEmitter } from '../common/event-emitter';
 import { ChatChannel, ChatMessage } from './gamestate/components/chat-channel';
 import {
@@ -49,6 +49,7 @@ export class Client {
     this.server = server;
     this.player = player;
     this._name = this.name;
+    this.id = id ?? uuidv4();
     this.useConnection(connection);
   }
 
@@ -81,6 +82,12 @@ export class Client {
       this.connection.close();
       this.connection = null;
     }
+  }
+
+  public assignToken() {
+    const data = new FrameAssignToken(this.id);
+    console.log(data);
+    this.sendFrame(data);
   }
 
   public isActive() {
