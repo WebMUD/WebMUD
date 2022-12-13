@@ -310,6 +310,17 @@ export class ClientBehaviorPlugin extends WebMUDServerPlugin {
         client.sendMessageFrame(
           FrameMessage.field(client.gs.entity(item).get(Description).data)
         );
+
+        if (client.gs.entity(item).has(HierarchyContainer)) {
+          client.sendMessageFrame(FrameMessage.field('Contains:'));
+          for (const child of client.gs.entity(item).get(HierarchyContainer)
+            .children) {
+            client.sendMessageFrame(
+              FrameMessage.field(' * '),
+              FrameMessage.field(client.gs.nameOf(child))
+            );
+          }
+        }
       }
     );
 
