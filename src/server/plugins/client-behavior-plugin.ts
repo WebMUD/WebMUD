@@ -79,11 +79,11 @@ export class ClientBehaviorPlugin extends WebMUDServerPlugin {
       client.sendMessageFrame(
         this.formatName(client, senderID),
         FrameMessage.field(' whisper '),
-        FrameMessage.field(`${message}`), //you whispered to Player.... 
+        FrameMessage.field(`${message}`),
         FrameMessage.field(' to '),
         FrameMessage.field(`${client.gs.nameOf(recieverID)}`)
-      )
-        
+      );
+      
       client.sendChat(recieverID, message);
     })
 

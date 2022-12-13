@@ -2,7 +2,7 @@ import Peer from 'peerjs';
 import { Connection } from '../common/connection/connection';
 import { ConnectionBase, ConnectionStatus } from '../common/connection/connection-base';
 import { Logger } from '../common/logger';
-import { Frame, FrameMessage, frames, FrameSendCommand } from '../common/frames';
+import { Frame, FrameAssignToken, FrameConnect, FrameMessage, frames, FrameSendCommand } from '../common/frames';
 import { EventEmitter } from '../common/event-emitter';
 import { ClientView } from './client-view';
 import * as Parser from './parser/parser';
@@ -30,21 +30,29 @@ export class Client extends Logger {
   constructor( 
   ) {
     super();
+
     this.onReady(() =>{
+      const stopWaitAssignToken = this.connection.onData(data => {
+        const frame = frames.parse(data);
+        
+        if (frame instanceof FrameAssignToken) {
+          stopWaitAssignToken();
+          stopWaitUsername();
+          this.startListening();
+        }
+      });
+
       this.print("Please enter a username.");
-      const stop = this.onInput((data)=>{
+      const stopWaitUsername = this.onInput((data)=>{
         if(!this.containsWhitespace(data) && data !== "")
         {
           this.print(`Joining as: ${data}.`);
           this.join(data);
-          stop();
-          this.startListening();       
         }
       }) 
     });
   }
 
-  
   startListening(){
     this.onInput((data)=>{
       data = data.toLowerCase();
@@ -143,16 +151,11 @@ export class Client extends Logger {
 
     const close = this.connection.onData(data => {
       const frame = frames.parse(data);
-      if (!frame) throw new Error('Unable to parse incoming data: ' + data);
+      if (!frame) return console.error(new Error('Unable to parse incoming data: ' + data));
       
-      // handle incoming data
-      // console.log(frame);
-
-     
-  
       if (frame instanceof FrameMessage) return this.message(frame);
 
-      throw `Unexpected ${frame.type} frame`;
+      console.error(`Unexpected ${frame.type} frame`);
     });
 
     this.onReady.emit();
@@ -170,10 +173,7 @@ export class Client extends Logger {
     this.connection.send(frameConnect.serialize());
   }
 
-
   static peerOptions = {
     reliable: true,
   };
-
-  
 }
