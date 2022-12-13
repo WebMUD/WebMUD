@@ -4,6 +4,8 @@
 
   overflow-y: scroll;
   overflow-wrap: normal;
+
+  white-space: pre-wrap;
 }
 
 .console {
