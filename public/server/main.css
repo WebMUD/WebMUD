@@ -1,0 +1,103 @@
+/* reset padding and margin, set document font */
+* {
+    padding: 0;
+    margin: 5;
+    font-family: 'Times New Roman';
+}
+
+body {
+    width: 100%;
+    height: 100%;
+    background-color: #333;
+}
+
+/* Sets color of link texts to white */
+a {
+    text-decoration: none;
+    color: #fff;
+    font-weight: 700;
+}
+
+li {
+    list-style-type: none;
+}
+
+/* Header 100 percent of body, position relative to body */
+header {
+    width: 100%;
+    padding: 0 2%;
+    background-color: #151515;
+    position: relative;
+}
+
+/* Display logo and nav side by side to each other (flex) */
+.header-container {
+    width: 90%;
+    margin: 0;
+    padding: 10px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Set color for Font Awesome icons */
+.fas {
+    color: #fff;
+}
+
+.logo a {
+    font-size: 50px;
+    font-family: fantasy;
+}
+
+.menu {
+    display: flex;
+    font-size: 25px;
+}
+
+    .menu li {
+        text-align: center;
+    }
+
+        .menu li a {
+            padding: 10px 0;
+        }
+
+            /* Change color of link texts when hovered upon */
+            .menu li a:hover {
+                color: #fb743e;
+            }
+
+                /* Also change color of icon when hover on link */
+                .menu li a:hover - .fas {
+                    color: #fb743e;
+                }
+
+/* Hide all sub nav links by default, display children in column when displayed */
+.navT-items {
+    text-align: left;
+    display: none;
+    flex-direction: column;
+    background-color: black;
+}
+
+.navT:hover .navT-items {
+    display: flex;
+}
+
+.navT-items a {
+    font-size: 14px;
+}
+
+.navT-items {
+    width: 100%;
+    max-width: 100px;
+    position: absolute;
+    top: 64px;
+    padding: 10px;
+}
+
+/* This will be used to display sub links for a nav when active */
+.navActive {
+    display: flex;
+}

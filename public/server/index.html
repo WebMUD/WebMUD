@@ -12,36 +12,65 @@
     <script defer="defer" src="/server/main.bundle.js"></script>
   </head>
   <body>
-    <h1>WebMUD Server</h1>
+      <header>
+          <div class="header-container">
+              <div class="logo">
+                  <a href="">WEBMUD</a>
+              </div>
+              <nav>
+                  <ul class="menu">
+                      <li class="navT">
+                          <a href="#">Menu</a>
+                          <i class="fas fa-arrow-down"></i>
+                          <div class="navT-items">
+                              <button name="button1" type="button" onclick="loadDev()">
+                                  Load Dev World
+                              </button>
+                              <script>
+                                  function loadDev() {
+                                      server.loadLevel("/levels/dev.json")
+                                  }
+                              </script>
+                              <button name="button2" type="button" onclick="loadPDemo()">
+                                  Load Presentation Demo
+                              </button>
+                              <script>
+                                  function loadPDemo() {
+                                      server.loadLevel("/levels/presentationDemo.json")
+                                  }
+                              </script>
+                          </div>
+                      </li>
+                  </ul>
+              </nav>
+          </div>
+      </header>
+      <h1>WebMUD Server</h1>
 
-    <div>
-      <p>
-        <a id="joinLink" href="#" rel="noopener noreferrer" target="_blank"
-          >Join game in a new tab</a
-        >
-      </p>
-      <p>Invite link: <span class="joinlink" id="joinURL">...</span></p>
-    </div>
-
-    <div id="client-list"></div>
-
-    <div class="console">
-      <div class="console-section">
-        Console
-        <span class="float-right">
-          <label for="enable-debug">Debug</label>
-          <input type="checkbox" id="enable-debug" />
-        </span>
+      <div>
+          <p>
+              <a id="joinLink" href="#" rel="noopener noreferrer" target="_blank">Join game in a new tab</a>
+          </p>
+          <p>Invite link: <span class="joinlink" id="joinURL">...</span></p>
       </div>
-      <div class="console-section log">
-        <div class="text-output" id="console-output"></div>
+
+      <div id="client-list"></div>
+
+      <div class="console">
+          <div class="console-section">
+              Console
+              <span class="float-right">
+                  <label for="enable-debug">Debug</label>
+                  <input type="checkbox" id="enable-debug" />
+              </span>
+          </div>
+          <div class="console-section log">
+              <div class="text-output" id="console-output"></div>
+          </div>
+          <input class="console-section command"
+                 type="text"
+                 id="console-input"
+                 placeholder=">" />
       </div>
-      <input
-        class="console-section command"
-        type="text"
-        id="console-input"
-        placeholder=">"
-      />
-    </div>
   </body>
 </html>
