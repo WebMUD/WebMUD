@@ -52,8 +52,6 @@ export class Client {
     this.useConnection(connection);
   }
 
-
-
   get gs() {
     return this.server.gamestate;
   }
@@ -111,10 +109,8 @@ export class Client {
    */
   public start(world: EntityID) {
     const closeCallbacks: Array<Function> = [];
-    
+
     if (!this.connection) throw new Error('No attached connection');
-    
-   
 
     this.onConnectionClose.once(
       this.connection.onData(data => {
@@ -148,8 +144,6 @@ export class Client {
           this.chatMessage(data, 'whispers');
         })
     );
-
-    
 
     if (this.gs.hasParent(this.player)) this.onMove();
   }
