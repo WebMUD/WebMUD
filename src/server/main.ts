@@ -8,7 +8,6 @@ import { ClientBehaviorPlugin } from './plugins/client-behavior-plugin';
 import { SaveStatePlugin } from './plugins/savestate-plugin';
 import { NPCGreeterPlugin } from './plugins/npc-greeter-plugin';
 import { NPCPlugin } from './plugins/npc-plugin';
-import { MapEditPlugin } from './plugins/map-edit-plugin'
 
 declare global {
   interface Window {
@@ -26,8 +25,7 @@ export function createServer(
     new HelpCommandPluggin(),
     new SaveStatePlugin(),
     new NPCPlugin(),
-      new NPCGreeterPlugin(),
-    new MapEditPlugin(),
+    new NPCGreeterPlugin(),
   ];
 
   const el = util.getElements({
