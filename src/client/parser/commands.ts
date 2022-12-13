@@ -30,36 +30,8 @@ export enum CommandName {
 export class MoveCommand {
   text: string;
 
-  constructor(text: string)
-  {
-    if(text == "n")
-    {
-      this.text = "north";
-    }
-    else if(text == "s")
-    {
-      this.text = "south";
-    }
-    else if(text == "w")
-    {
-      this.text = "west";
-    }
-    else if(text == "e")
-    {
-      this.text = "east";
-    }
-    else if (text == "u")
-    {
-      this.text = "up";
-    }
-    else if(text == "d")
-    {
-      this.text = "down";
-    }
-    else
-    {
-      this.text = text;
-    }
+  constructor(text: string) {
+    this.text = text;
   }
 }
 
