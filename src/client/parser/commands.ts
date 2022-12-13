@@ -1,9 +1,9 @@
-import { commandName } from "./parser";
-import {Client} from "../../server/client"
-import { CodeKeywordDefinition } from "ajv";
-import { Server } from "../../server/server";
-import { Connection } from "../../common/connection/connection";
-import { Player } from "../../server/gamestate/components";
+import { commandName } from './parser';
+import { Client } from '../../server/client';
+import { CodeKeywordDefinition } from 'ajv';
+import { Server } from '../../server/server';
+import { Connection } from '../../common/connection/connection';
+import { Player } from '../../server/gamestate/components';
 
 export enum Direction {
   NORTH = 'NORTH',
@@ -28,21 +28,19 @@ export enum CommandName {
   WHISPER = 'WHISPER',
 }
 export class MoveCommand {
-  text:string
+  text: string;
 
-  constructor(text: string)
-  {
+  constructor(text: string) {
     this.text = text;
   }
 }
 
 export class HelpCommand {
-    commandName : CommandName;
-    
-    constructor(commandName : CommandName)
-    {
-        this.commandName = commandName;
-    }
+  commandName: CommandName;
+
+  constructor(commandName: CommandName) {
+    this.commandName = commandName;
+  }
 }
 
 export class ExitCommand {
@@ -54,41 +52,38 @@ export class InventoryCommand {
 }
 
 export class SayCommand {
-  text : string;
-  constructor(text : string) {
+  text: string;
+  constructor(text: string) {
     this.text = text;
   }
-  
 }
 
 export class WhisperCommand {
-  text : string;
-  username : string;
-  constructor(text : string, username : string) {
+  text: string;
+  username: string;
+  constructor(text: string, username: string) {
     this.text = text;
     this.username = username;
   }
 }
 
 export class LookCommand {
-  text : string;
-  constructor(text : string) {
+  text: string;
+  constructor(text: string) {
     this.text = text;
   }
 }
 
 export class TakeCommand {
-  text : string;
+  text: string;
   constructor(text: string) {
-    this.text=text;
+    this.text = text;
   }
 }
-
 
 export class DropCommand {
   text: string;
   constructor(text: string) {
-    this.text=text;
+    this.text = text;
   }
 }
-

@@ -287,7 +287,7 @@ export class Server extends Logger {
 
     return client;
   }
-/*
+  /*
   public loadClient(data: unknown): Client {
     const client = Client.deseralize(this, data);
     if (!client) throw new Error('invalid client data');
@@ -324,7 +324,9 @@ export class Server extends Logger {
 
       if (frame instanceof frames.FrameConnect) {
         if (this.gs.findPlayer(frame.username)) {
-          const frame = new FrameMessage([{text: 'That username is taken.', format: []}]);
+          const frame = new FrameMessage([
+            { text: 'That username is taken.', format: [] },
+          ]);
           connection.send(frame.serialize());
           return;
         }

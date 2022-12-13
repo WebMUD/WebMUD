@@ -5,7 +5,12 @@ import {
   ConnectionStatus,
 } from '../common/connection/connection-base';
 import { EntityID } from './gamestate/entity';
-import { Frame, FrameAssignToken, FrameMessage, frames } from '../common/frames';
+import {
+  Frame,
+  FrameAssignToken,
+  FrameMessage,
+  frames,
+} from '../common/frames';
 import { EventEmitter } from '../common/event-emitter';
 import { ChatChannel, ChatMessage } from './gamestate/components/chat-channel';
 import {
@@ -110,10 +115,8 @@ export class Client {
    */
   public start(world: EntityID) {
     const closeCallbacks: Array<Function> = [];
-    
+
     if (!this.connection) throw new Error('No attached connection');
-    
-   
 
     this.onConnectionClose.once(
       this.connection.onData(data => {
@@ -147,8 +150,6 @@ export class Client {
           this.chatMessage(data, 'whispers');
         })
     );
-
-    
 
     if (this.gs.hasParent(this.player)) this.onMove();
   }
