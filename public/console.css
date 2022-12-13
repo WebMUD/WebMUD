@@ -70,6 +70,10 @@
   color: var(--color-entityname);
 }
 
+.console-propname {
+  color: var(--color-propname);
+}
+
 .small {
   font-weight: lighter;
 }

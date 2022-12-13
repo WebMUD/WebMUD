@@ -147,7 +147,7 @@ export class MapEditPlugin extends WebMUDServerPlugin {
     server.commands.addCommand({
       command: 'createprop',
       alias: ['cp'],
-      usage: 'cprop <name> <description> [<owner>]',
+      usage: 'cp <name> <description> [<owner>]',
       about: 'create a prop',
 
       use(argv: string[]) {
@@ -159,6 +159,68 @@ export class MapEditPlugin extends WebMUDServerPlugin {
         if (!name) return server.error(`Missing value for name`);
 
         const result = server.gamestate.createProp(name, description, false);
+        if (owner) {
+          const ownerID = server.gamestate.find(owner);
+          if (!ownerID)
+            return server.error(
+              `Could not find entity by the name of ${owner}`
+            );
+          server.gamestate.move(result, ownerID);
+          server.info(
+            `Created prop: ${name} in ${server.gamestate.nameOf(ownerID)}`
+          );
+        } else {
+          server.info(`Created prop: ${name}`);
+        }
+      },
+    });
+
+    server.commands.addCommand({
+      command: 'createcontainer',
+      alias: ['cc'],
+      usage: 'cc <name> <description> [<owner>]',
+      about: 'create a prop that can contain items',
+
+      use(argv: string[]) {
+        const name = argv.shift();
+        const description = argv.shift() ?? '';
+        const owner = argv.pop();
+        let world;
+
+        if (!name) return server.error(`Missing value for name`);
+
+        const result = server.gamestate.createProp(name, description, true);
+        if (owner) {
+          const ownerID = server.gamestate.find(owner);
+          if (!ownerID)
+            return server.error(
+              `Could not find entity by the name of ${owner}`
+            );
+          server.gamestate.move(result, ownerID);
+          server.info(
+            `Created prop: ${name} in ${server.gamestate.nameOf(ownerID)}`
+          );
+        } else {
+          server.info(`Created prop: ${name}`);
+        }
+      },
+    });
+
+    server.commands.addCommand({
+      command: 'createitem',
+      alias: ['ci'],
+      usage: 'createitem <name> <description> [<owner>]',
+      about: 'create an item',
+
+      use(argv: string[]) {
+        const name = argv.shift();
+        const description = argv.shift() ?? '';
+        const owner = argv.pop();
+        let world;
+
+        if (!name) return server.error(`Missing value for name`);
+
+        const result = server.gamestate.createItem(name, description, false);
         if (owner) {
           const ownerID = server.gamestate.find(owner);
           if (!ownerID)

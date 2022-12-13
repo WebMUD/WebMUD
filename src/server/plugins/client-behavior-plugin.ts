@@ -114,7 +114,7 @@ export class ClientBehaviorPlugin extends WebMUDServerPlugin {
         for (const child of client.gs
           .entity(client.player)
           .get(HierarchyContainer).children) {
-          if (client.gs.nameOf(child) === itemName) {
+          if (client.gs.nameEqual(client.gs.nameOf(child), itemName)) {
             item = child;
           }
         }
