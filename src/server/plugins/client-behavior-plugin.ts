@@ -177,7 +177,7 @@ export class ClientBehaviorPlugin extends WebMUDServerPlugin {
         client.sendMessageFrame(FrameMessage.field(`You pick up ${itemName}.`));
       }
     );
-    
+
     this.addCommand(
       'help',
       (frame: FrameSendCommand, client: Client, server: Server) => {
@@ -208,8 +208,11 @@ export class ClientBehaviorPlugin extends WebMUDServerPlugin {
             'usage: (d)rop <item> ',
             ' Drops the item from your inventory to the ground',
           ],
-          //take: ['usage: (t)ake <item> ',' Grabs the specificed item'],
-          //examine: [ '(e)xamine <item> ',' Tells you more about the specified item'],
+          take: ['usage: (t)ake <item> ', ' Grabs the specificed item'],
+          look: [
+            'usage: (l)ook <object>  ',
+            ' Will give information on the room you are currently in, including which players reside there. If you input an object after look, it will give detailed information about the object',
+          ],
         };
 
         for (const [commandName, helpLines] of Object.entries(commands)) {
