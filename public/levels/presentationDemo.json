@@ -1,0 +1,500 @@
+{
+	"e-5975ee06-c24f-4560-8081-7c94d52740a1": [{
+		"type": "component-name",
+		"data": "world"
+	}, {
+		"type": "component-hierarchy-container",
+		"children": ["e-be793d82-ca23-4aeb-a276-06c8fa90afc8", "e-5ea30de5-7be9-4906-81dc-71298b618732", "e-29d3417c-1207-4752-b0dc-90ee333f4336", "e-809a2be9-fd90-42c1-a3da-f4d703c585ac", "e-87d8611a-d1af-4ac3-abba-aece74e00538", "e-eaa1f359-22a2-45a8-8f2c-ae6a7cdfc661", "e-07f5a313-496f-4b54-bdb3-576a05b23bde", "e-39d0050b-d6af-43d8-ac92-bc010c1e61e1", "e-1e5e43e0-51c9-49c1-ace3-258ecef3e610", "e-7ab12a45-7c51-47a0-a016-cd974a09583a", "e-5738864a-efec-4d8f-b939-0486e1fdebb6"]
+	}, {
+		"type": "component-chat-channel"
+	}, {
+		"type": "component-world"
+	}],
+	"e-be793d82-ca23-4aeb-a276-06c8fa90afc8": [{
+		"type": "component-name",
+		"data": "Foyer"
+	}, {
+		"type": "component-description",
+		"data": "A grandiose foyer"
+	}, {
+		"type": "component-room"
+	}, {
+		"type": "component-adjacent",
+		"east": "e-5ea30de5-7be9-4906-81dc-71298b618732",
+		"west": "e-29d3417c-1207-4752-b0dc-90ee333f4336"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-5975ee06-c24f-4560-8081-7c94d52740a1"
+	}, {
+		"type": "component-hierarchy-container",
+		"children": ["e-00c10228-0f85-4d60-b284-704caab0e9a1"]
+	}, {
+		"type": "component-chat-channel"
+	}, {
+		"type": "component-entry-room"
+	}],
+	"e-5ea30de5-7be9-4906-81dc-71298b618732": [{
+		"type": "component-name",
+		"data": "Garden"
+	}, {
+		"type": "component-description",
+		"data": "A garden in winter, covered in snow and treacherously icy"
+	}, {
+		"type": "component-room"
+	}, {
+		"type": "component-adjacent",
+		"west": "e-be793d82-ca23-4aeb-a276-06c8fa90afc8"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-5975ee06-c24f-4560-8081-7c94d52740a1"
+	}, {
+		"type": "component-hierarchy-container",
+		"children": []
+	}, {
+		"type": "component-chat-channel"
+	}],
+	"e-29d3417c-1207-4752-b0dc-90ee333f4336": [{
+		"type": "component-name",
+		"data": "Main Hall"
+	}, {
+		"type": "component-description",
+		"data": "The grandeur of the hall is spoiled by all the blood"
+	}, {
+		"type": "component-room"
+	}, {
+		"type": "component-adjacent",
+		"south": "e-5738864a-efec-4d8f-b939-0486e1fdebb6",
+		"east": "e-be793d82-ca23-4aeb-a276-06c8fa90afc8",
+		"west": "e-1e5e43e0-51c9-49c1-ace3-258ecef3e610",
+		"up": "e-39d0050b-d6af-43d8-ac92-bc010c1e61e1",
+		"down": "e-809a2be9-fd90-42c1-a3da-f4d703c585ac"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-5975ee06-c24f-4560-8081-7c94d52740a1"
+	}, {
+		"type": "component-hierarchy-container",
+		"children": []
+	}, {
+		"type": "component-chat-channel"
+	}],
+	"e-809a2be9-fd90-42c1-a3da-f4d703c585ac": [{
+		"type": "component-name",
+		"data": "Basement"
+	}, {
+		"type": "component-description",
+		"data": "A dingy basement"
+	}, {
+		"type": "component-room"
+	}, {
+		"type": "component-adjacent",
+		"north": "e-eaa1f359-22a2-45a8-8f2c-ae6a7cdfc661",
+		"south": "e-87d8611a-d1af-4ac3-abba-aece74e00538",
+		"up": "e-29d3417c-1207-4752-b0dc-90ee333f4336"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-5975ee06-c24f-4560-8081-7c94d52740a1"
+	}, {
+		"type": "component-hierarchy-container",
+		"children": ["e-0131377b-c4b0-4fc4-afcb-edf67efb6d2d"]
+	}, {
+		"type": "component-chat-channel"
+	}],
+	"e-87d8611a-d1af-4ac3-abba-aece74e00538": [{
+		"type": "component-name",
+		"data": "Cellar"
+	}, {
+		"type": "component-description",
+		"data": "The wine cellar"
+	}, {
+		"type": "component-room"
+	}, {
+		"type": "component-adjacent",
+		"north": "e-809a2be9-fd90-42c1-a3da-f4d703c585ac",
+		"down": "e-07f5a313-496f-4b54-bdb3-576a05b23bde"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-5975ee06-c24f-4560-8081-7c94d52740a1"
+	}, {
+		"type": "component-hierarchy-container",
+		"children": ["e-b42910c3-97aa-4913-8bc4-d696fe492d8d"]
+	}, {
+		"type": "component-chat-channel"
+	}],
+	"e-eaa1f359-22a2-45a8-8f2c-ae6a7cdfc661": [{
+		"type": "component-name",
+		"data": "Murder Basement"
+	}, {
+		"type": "component-description",
+		"data": "A basement, tailor made for murders, with creepy lighting, exposed wires, and hard concrete floors. There is, however, no sign of a murder"
+	}, {
+		"type": "component-room"
+	}, {
+		"type": "component-adjacent",
+		"south": "e-809a2be9-fd90-42c1-a3da-f4d703c585ac"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-5975ee06-c24f-4560-8081-7c94d52740a1"
+	}, {
+		"type": "component-hierarchy-container",
+		"children": ["e-954dec8b-6cef-4ae0-8ed0-5ec348762dc3"]
+	}, {
+		"type": "component-chat-channel"
+	}],
+	"e-07f5a313-496f-4b54-bdb3-576a05b23bde": [{
+		"type": "component-name",
+		"data": "Catacombs"
+	}, {
+		"type": "component-description",
+		"data": "The mythic home of a cask of Amontillado, enter at your own risk"
+	}, {
+		"type": "component-room"
+	}, {
+		"type": "component-adjacent",
+		"up": "e-87d8611a-d1af-4ac3-abba-aece74e00538"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-5975ee06-c24f-4560-8081-7c94d52740a1"
+	}, {
+		"type": "component-hierarchy-container",
+		"children": ["e-5b0e306a-b925-4dbb-848d-c27ec3708c9c", "e-426860bd-0b90-4e30-bc54-be79c3a4780b", "e-300de104-444f-4dbe-b7d1-22792f830587"]
+	}, {
+		"type": "component-chat-channel"
+	}],
+	"e-5b0e306a-b925-4dbb-848d-c27ec3708c9c": [{
+		"type": "component-name",
+		"data": "Suspicious wall"
+	}, {
+		"type": "component-description",
+		"data": "A freshly laid masonry wall, hastily covered by bones"
+	}, {
+		"type": "component-prop"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-07f5a313-496f-4b54-bdb3-576a05b23bde"
+	}],
+	"e-426860bd-0b90-4e30-bc54-be79c3a4780b": [{
+		"type": "component-name",
+		"data": "A voice from the other side of the wall"
+	}, {
+		"type": "component-npc"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-07f5a313-496f-4b54-bdb3-576a05b23bde"
+	}, {
+		"type": "component-hierarchy-container",
+		"children": []
+	}, {
+		"type": "component-npc-greeter",
+		"messages": ["Amontillado...?"],
+		"greeted": ["e-e9a2df5b-1cdc-4dde-995d-4fd990a2dc89"],
+		"delay": 5
+	}],
+	"e-00c10228-0f85-4d60-b284-704caab0e9a1": [{
+		"type": "component-name",
+		"data": "Police Detective"
+	}, {
+		"type": "component-npc"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-be793d82-ca23-4aeb-a276-06c8fa90afc8"
+	}, {
+		"type": "component-hierarchy-container",
+		"children": []
+	}, {
+		"type": "component-npc-greeter",
+		"messages": ["I'm to lazy to do my job, can you figure out what's going on?"],
+		"greeted": ["e-e9a2df5b-1cdc-4dde-995d-4fd990a2dc89"],
+		"delay": 1
+	}],
+	"e-39d0050b-d6af-43d8-ac92-bc010c1e61e1": [{
+		"type": "component-name",
+		"data": "Roof"
+	}, {
+		"type": "component-description",
+		"data": "It's icy and a long way down, don't fall"
+	}, {
+		"type": "component-room"
+	}, {
+		"type": "component-adjacent",
+		"down": "e-29d3417c-1207-4752-b0dc-90ee333f4336"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-5975ee06-c24f-4560-8081-7c94d52740a1"
+	}, {
+		"type": "component-hierarchy-container",
+		"children": ["e-064a7145-0e90-4ee2-afe2-eeb538dfa04b"]
+	}, {
+		"type": "component-chat-channel"
+	}],
+	"e-064a7145-0e90-4ee2-afe2-eeb538dfa04b": [{
+		"type": "component-name",
+		"data": "Raven"
+	}, {
+		"type": "component-npc"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-39d0050b-d6af-43d8-ac92-bc010c1e61e1"
+	}, {
+		"type": "component-hierarchy-container",
+		"children": []
+	}, {
+		"type": "component-npc-greeter",
+		"messages": ["Nevermore.", "Nevermore.", "Nevermore.", "Nevermore.", "Nevermore.", "Nevermore.", "Nevermore."],
+		"greeted": ["e-e9a2df5b-1cdc-4dde-995d-4fd990a2dc89"],
+		"delay": 10
+	}],
+	"e-1e5e43e0-51c9-49c1-ace3-258ecef3e610": [{
+		"type": "component-name",
+		"data": "Dining Room"
+	}, {
+		"type": "component-description",
+		"data": "Speckless and tidy, it seems nobody had much of an appetite after the murder."
+	}, {
+		"type": "component-room"
+	}, {
+		"type": "component-adjacent",
+		"south": "e-7ab12a45-7c51-47a0-a016-cd974a09583a",
+		"east": "e-29d3417c-1207-4752-b0dc-90ee333f4336"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-5975ee06-c24f-4560-8081-7c94d52740a1"
+	}, {
+		"type": "component-hierarchy-container",
+		"children": ["e-6711b874-4336-453b-b4d8-e1bbee44fa75"]
+	}, {
+		"type": "component-chat-channel"
+	}],
+	"e-6711b874-4336-453b-b4d8-e1bbee44fa75": [{
+		"type": "component-name",
+		"data": "Butler"
+	}, {
+		"type": "component-npc"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-1e5e43e0-51c9-49c1-ace3-258ecef3e610"
+	}, {
+		"type": "component-hierarchy-container",
+		"children": []
+	}, {
+		"type": "component-npc-greeter",
+		"messages": ["Good evening %p. I don't kill people.", "I just hide the bodies.", "Look in the Basement for one--not the Murder Basement mind you, I do my best to keep the Murder Basement spotless."],
+		"greeted": [],
+		"delay": 1
+	}],
+	"e-7ab12a45-7c51-47a0-a016-cd974a09583a": [{
+		"type": "component-name",
+		"data": "Kitchen"
+	}, {
+		"type": "component-description",
+		"data": "There isn't a single knife to be found in here"
+	}, {
+		"type": "component-room"
+	}, {
+		"type": "component-adjacent",
+		"north": "e-1e5e43e0-51c9-49c1-ace3-258ecef3e610",
+		"east": "e-5738864a-efec-4d8f-b939-0486e1fdebb6"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-5975ee06-c24f-4560-8081-7c94d52740a1"
+	}, {
+		"type": "component-hierarchy-container",
+		"children": ["e-d2be186b-b589-4392-a743-b193569e7514"]
+	}, {
+		"type": "component-chat-channel"
+	}],
+	"e-d2be186b-b589-4392-a743-b193569e7514": [{
+		"type": "component-name",
+		"data": "Cook"
+	}, {
+		"type": "component-npc"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-7ab12a45-7c51-47a0-a016-cd974a09583a"
+	}, {
+		"type": "component-hierarchy-container",
+		"children": []
+	}, {
+		"type": "component-npc-greeter",
+		"messages": ["Knives? I give them out to whoever asks, don't keep track.", "Could have been anyone that took them"],
+		"greeted": [],
+		"delay": 3
+	}],
+	"e-5738864a-efec-4d8f-b939-0486e1fdebb6": [{
+		"type": "component-name",
+		"data": "Living Room"
+	}, {
+		"type": "component-description",
+		"data": "The victim won't be doing any more living in here"
+	}, {
+		"type": "component-room"
+	}, {
+		"type": "component-adjacent",
+		"north": "e-29d3417c-1207-4752-b0dc-90ee333f4336",
+		"west": "e-7ab12a45-7c51-47a0-a016-cd974a09583a"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-5975ee06-c24f-4560-8081-7c94d52740a1"
+	}, {
+		"type": "component-hierarchy-container",
+		"children": ["e-1255c846-d05f-4c79-8561-59dad5ae0079"]
+	}, {
+		"type": "component-chat-channel"
+	}],
+	"e-b42910c3-97aa-4913-8bc4-d696fe492d8d": [{
+		"type": "component-name",
+		"data": "Wine Shelves"
+	}, {
+		"type": "component-description",
+		"data": "Almost empty now..."
+	}, {
+		"type": "component-prop"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-87d8611a-d1af-4ac3-abba-aece74e00538"
+	}, {
+		"type": "component-hierarchy-container",
+		"children": ["e-42776e07-5756-4a5d-85bd-ee7c2f7b8100"]
+	}],
+	"e-42776e07-5756-4a5d-85bd-ee7c2f7b8100": [{
+		"type": "component-name",
+		"data": "Sherry"
+	}, {
+		"type": "component-description",
+		"data": "A bottle of sherry."
+	}, {
+		"type": "component-prop"
+	}, {
+		"type": "component-item"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-b42910c3-97aa-4913-8bc4-d696fe492d8d"
+	}],
+	"e-954dec8b-6cef-4ae0-8ed0-5ec348762dc3": [{
+		"type": "component-name",
+		"data": "Baseball bat"
+	}, {
+		"type": "component-description",
+		"data": "A potential murder weapon? No sign that it has been used"
+	}, {
+		"type": "component-prop"
+	}, {
+		"type": "component-item"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-eaa1f359-22a2-45a8-8f2c-ae6a7cdfc661"
+	}],
+	"e-300de104-444f-4dbe-b7d1-22792f830587": [{
+		"type": "component-name",
+		"data": "Masonry Tools"
+	}, {
+		"type": "component-description",
+		"data": "A trowel and bucket of plaster"
+	}, {
+		"type": "component-prop"
+	}, {
+		"type": "component-item"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-07f5a313-496f-4b54-bdb3-576a05b23bde"
+	}],
+	"e-0131377b-c4b0-4fc4-afcb-edf67efb6d2d": [{
+		"type": "component-name",
+		"data": "Corpse"
+	}, {
+		"type": "component-description",
+		"data": "A corpse, hastily shoved in the corner. Dozens of knives are sticking out of it"
+	}, {
+		"type": "component-prop"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-809a2be9-fd90-42c1-a3da-f4d703c585ac"
+	}, {
+		"type": "component-hierarchy-container",
+		"children": ["e-8909515f-56ae-4e12-b08e-0a58c4607604", "e-067c738c-4102-463a-b28f-a55c24a68869", "e-b014c15d-729b-4c46-9ee8-7bb6049044b6", "e-9e2da570-5d18-40aa-8739-04c9923236fc"]
+	}],
+	"e-8909515f-56ae-4e12-b08e-0a58c4607604": [{
+		"type": "component-name",
+		"data": "Bread knives"
+	}, {
+		"type": "component-description",
+		"data": "A collection of bread knives, they're covered in blood."
+	}, {
+		"type": "component-prop"
+	}, {
+		"type": "component-item"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-0131377b-c4b0-4fc4-afcb-edf67efb6d2d"
+	}],
+	"e-067c738c-4102-463a-b28f-a55c24a68869": [{
+		"type": "component-name",
+		"data": "Steak knives"
+	}, {
+		"type": "component-description",
+		"data": "They appear to have done the meat of the stabbing"
+	}, {
+		"type": "component-prop"
+	}, {
+		"type": "component-item"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-0131377b-c4b0-4fc4-afcb-edf67efb6d2d"
+	}],
+	"e-b014c15d-729b-4c46-9ee8-7bb6049044b6": [{
+		"type": "component-name",
+		"data": "Cleaver"
+	}, {
+		"type": "component-description",
+		"data": "A blood soaked cleaver"
+	}, {
+		"type": "component-prop"
+	}, {
+		"type": "component-item"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-0131377b-c4b0-4fc4-afcb-edf67efb6d2d"
+	}],
+	"e-9e2da570-5d18-40aa-8739-04c9923236fc": [{
+		"type": "component-name",
+		"data": "Butter knives"
+	}, {
+		"type": "component-description",
+		"data": "They aren't even sharp"
+	}, {
+		"type": "component-prop"
+	}, {
+		"type": "component-item"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-0131377b-c4b0-4fc4-afcb-edf67efb6d2d"
+	}],
+	"e-1255c846-d05f-4c79-8561-59dad5ae0079": [{
+		"type": "component-name",
+		"data": "Loose floorboards"
+	}, {
+		"type": "component-description",
+		"data": "A couple of floorboards look awfully loose, there might be something hidden under them."
+	}, {
+		"type": "component-prop"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-5738864a-efec-4d8f-b939-0486e1fdebb6"
+	}, {
+		"type": "component-hierarchy-container",
+		"children": ["e-7f6ca99a-47a4-4048-9cf6-47c77458cb4c"]
+	}],
+	"e-7f6ca99a-47a4-4048-9cf6-47c77458cb4c": [{
+		"type": "component-name",
+		"data": "Heart"
+	}, {
+		"type": "component-description",
+		"data": "A still-beating heart"
+	}, {
+		"type": "component-prop"
+	}, {
+		"type": "component-item"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-1255c846-d05f-4c79-8561-59dad5ae0079"
+	}]
+}
