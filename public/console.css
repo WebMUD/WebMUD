@@ -4,8 +4,6 @@
 
   overflow-y: scroll;
   overflow-wrap: normal;
-
-  white-space: pre;
 }
 
 .console {
@@ -68,10 +66,6 @@
 
 .console-entityname {
   color: var(--color-entityname);
-}
-
-.console-propname {
-  color: var(--color-propname);
 }
 
 .small {

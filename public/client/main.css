@@ -69,7 +69,7 @@ header {
 }
 
 /* Also change color of icon when hover on link */
-.menu li a:hover .fas {
+.menu li a:hover - .fas {
   color: #fb743e;
 }
 
@@ -115,14 +115,4 @@ header {
   background: #333;
   color: #fff;
   margin: 10px;
-}
-
-.text-output {
-  height: 48ch;
-}
-
-.console {
-  font-size: 12pt;
-
-  width: 160ch;
 }

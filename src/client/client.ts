@@ -7,8 +7,6 @@ import {
 import { Logger } from '../common/logger';
 import {
   Frame,
-  FrameAssignToken,
-  FrameConnect,
   FrameMessage,
   frames,
   FrameSendCommand,
@@ -51,23 +49,14 @@ export class Client extends Logger {
 
   constructor() {
     super();
-
     this.onReady(() => {
-      const stopWaitAssignToken = this.connection.onData(data => {
-        const frame = frames.parse(data);
-
-        if (frame instanceof FrameAssignToken) {
-          stopWaitAssignToken();
-          stopWaitUsername();
-          this.startListening();
-        }
-      });
-
       this.print('Please enter a username.');
-      const stopWaitUsername = this.onInput(data => {
+      const stop = this.onInput(data => {
         if (!this.containsWhitespace(data) && data !== '') {
           this.print(`Joining as: ${data}.`);
           this.join(data);
+          stop();
+          this.startListening();
         }
       });
     });
@@ -173,14 +162,14 @@ export class Client extends Logger {
 
     const close = this.connection.onData(data => {
       const frame = frames.parse(data);
-      if (!frame)
-        return console.error(
-          new Error('Unable to parse incoming data: ' + data)
-        );
+      if (!frame) throw new Error('Unable to parse incoming data: ' + data);
+
+      // handle incoming data
+      // console.log(frame);
 
       if (frame instanceof FrameMessage) return this.message(frame);
 
-      console.error(`Unexpected ${frame.type} frame`);
+      throw `Unexpected ${frame.type} frame`;
     });
 
     this.onReady.emit();

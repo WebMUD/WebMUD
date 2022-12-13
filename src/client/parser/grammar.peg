@@ -18,7 +18,7 @@ import {
 start := commands
 
 commands := moveCommand | helpCommand | exitCommand | inventoryCommand | sayCommand | whisperCommand | 
-lookCommand | takeCommand | dropCommand
+lookCommand | takeCommand | dropCommand |shortenedMoveCommand
 
 space := ' '
 
@@ -88,7 +88,15 @@ moveCommand :=
     moveKeyword space text=word
     .command = MoveCommand {return new MoveCommand(text);}
 
+shortenedMoveCommand := directions=directions .command = MoveCommand {return new MoveCommand(directions);}
+
+directions := northKeyword | southKeyword | westKeyword | eastKeyword |  upKeyword |downKeyword
+
+northKeyword := 'north' | 'n'
+southKeyword := 'south' | 's'
+westKeyword := 'west' | 'w'
+eastKeyword := 'east' | 'e'
+upKeyword := 'up' | 'u'
+downKeyword := 'down' | 'd'
+
 moveKeyword := 'move' | 'm'
-
-
-

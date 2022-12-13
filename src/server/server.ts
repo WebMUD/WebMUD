@@ -6,7 +6,7 @@ import { cloneDeep, StringChain } from 'lodash';
 import { ConnectionBase } from '../common/connection/connection-base';
 import { Connection } from '../common/connection/connection';
 import { Collection } from '../common/collection';
-import { FrameMessage, frames } from '../common/frames';
+import { frames } from '../common/frames';
 import { EntityID } from './gamestate/entity';
 import { Logger } from '../common/logger';
 import {
@@ -20,7 +20,6 @@ import {
 import { ServerCommands } from './server-commands';
 import { WebMUDServerPlugin } from './webmud-server-plugin';
 import { SaveStatePlugin } from './plugins/savestate-plugin';
-import { connect } from 'http2';
 
 export type ServerSystem = (server: Server, deltaTime: number) => void;
 
@@ -278,8 +277,6 @@ export class Server extends Logger {
     const player = this.gs.createPlayer(username);
     const client = new Client(this, connection, player);
 
-    client.assignToken();
-
     this.clients.add(client);
     this.onClientJoin.emit(client);
 
@@ -323,13 +320,6 @@ export class Server extends Logger {
       if (!frame) throw new Error('Unable to parse incoming data: ' + data);
 
       if (frame instanceof frames.FrameConnect) {
-        if (this.gs.findPlayer(frame.username)) {
-          const frame = new FrameMessage([
-            { text: 'That username is taken.', format: [] },
-          ]);
-          connection.send(frame.serialize());
-          return;
-        }
         const client = this.createClient(connection, frame.username);
         stop(); // incoming data can now be handled elsewhere
         return;
