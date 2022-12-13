@@ -32,7 +32,34 @@ export class MoveCommand {
 
   constructor(text: string)
   {
-    this.text = text;
+    if(text == "n")
+    {
+      this.text = "north";
+    }
+    else if(text == "s")
+    {
+      this.text = "south";
+    }
+    else if(text == "w")
+    {
+      this.text = "west";
+    }
+    else if(text == "e")
+    {
+      this.text = "east";
+    }
+    else if (text == "u")
+    {
+      this.text = "up";
+    }
+    else if(text == "d")
+    {
+      this.text = "down";
+    }
+    else
+    {
+      this.text = text;
+    }
   }
 }
 
