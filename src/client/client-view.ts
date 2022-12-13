@@ -13,6 +13,10 @@ export class ClientView extends View {
     super(options);
     this.client = options.client;
 
+    this.onInput(data => {
+      this.print(this.formatSmall('>>> ' + data));
+    });
+
     options.client.useView(this);
   }
 }
