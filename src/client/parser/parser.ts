@@ -208,7 +208,6 @@ export type commands_6 = whisperCommand;
 export type commands_7 = lookCommand;
 export type commands_8 = takeCommand;
 export type commands_9 = dropCommand;
-export type commands_10 = shortenedMoveCommand;
 export type space = string;
 export class dropCommand {
   public kind: ASTKinds.dropCommand = ASTKinds.dropCommand;
@@ -587,6 +586,7 @@ export class moveCommand {
     })();
   }
 }
+
 export class shortenedMoveCommand {
   public kind: ASTKinds.shortenedMoveCommand = ASTKinds.shortenedMoveCommand;
   public directions: directions;

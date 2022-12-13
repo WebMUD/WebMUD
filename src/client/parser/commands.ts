@@ -29,8 +29,6 @@ export enum CommandName {
 }
 export class MoveCommand {
   text: string;
-
-
   constructor(text: string) {
     if (text == 'n') {
       this.text = 'north';
@@ -48,6 +46,7 @@ export class MoveCommand {
 
       this.text = text;
     }
+
   }
 }
 
