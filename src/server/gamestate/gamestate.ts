@@ -172,6 +172,9 @@ export class Gamestate extends Manager {
         'cannot move entity to itself'
       );
 
+    if (parent && !this.entity(parent).has(HierarchyContainer)) throw new Error(`parent is not a container`);
+    if (!this.entity(target).has(HierarchyChild)) throw new Error(`target is not a child`);
+
     let oldParent: EntityID | undefined;
     const hasOldParent = this.hasParent(target);
 
