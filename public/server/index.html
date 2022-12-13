@@ -12,32 +12,93 @@
     <script defer="defer" src="/server/main.bundle.js"></script>
   </head>
   <body>
-      <h1>WebMUD Server</h1>
-
-      <div>
-          <p>
-              <a id="joinLink" href="#" rel="noopener noreferrer" target="_blank">Join game in a new tab</a>
-          </p>
-          <p>Invite link: <span class="joinlink" id="joinURL">...</span></p>
+    <header>
+      <div class="header-container">
+        <div class="logo">
+          <a href="">WEBMUD</a>
+        </div>
+        <nav>
+          <ul class="menu">
+            <li class="navT">
+              <a href="#">Menu</a>
+              <i class="fas fa-arrow-down"></i>
+              <div class="navT-items">
+                <button name="button1" type="button" onclick="loadTestWorld()">
+                  Load Test World
+                </button>
+                <script>
+                  function loadTestWorld() {
+                    server.loadGamestate('e-2');
+                  }
+                </script>
+                <button name="button2" type="button" onclick="loadLobby()">
+                  Load Lobby
+                </button>
+                <script>
+                  function loadLobby() {
+                    server.loadGamestate('e-3');
+                  }
+                </script>
+                <button name="button3" type="button" onclick="loadShop()">
+                  Load Shop
+                </button>
+                <script>
+                  function loadShop() {
+                    server.loadGamestate('e-4');
+                  }
+                </script>
+                <button name="button4" type="button" onclick="loadTownSquare()">
+                  Load Town Square
+                </button>
+                <script>
+                  function loadTownSquare() {
+                    server.loadGamestate('e-5');
+                  }
+                </script>
+                <button name="button5" type="button" onclick="loadRoad()">
+                  Load Road
+                </button>
+                <script>
+                  function loadRoad() {
+                    server.loadGamestate('e-6');
+                  }
+                </script>
+              </div>
+            </li>
+          </ul>
+        </nav>
       </div>
+    </header>
+    <h1>WebMUD Server</h1>
 
-      <div id="client-list"></div>
+    <div>
+      <p>
+        <a id="joinLink" href="#" rel="noopener noreferrer" target="_blank"
+          >Join game in a new tab</a
+        >
+      </p>
+      <p>Invite link: <span class="joinlink" id="joinURL">...</span></p>
+    </div>
 
-      <div class="console">
-          <div class="console-section">
-              Console
-              <span class="float-right">
-                  <label for="enable-debug">Debug</label>
-                  <input type="checkbox" id="enable-debug" />
-              </span>
-          </div>
-          <div class="console-section log">
-              <div class="text-output" id="console-output"></div>
-          </div>
-          <input class="console-section command"
-                 type="text"
-                 id="console-input"
-                 placeholder=">" />
+    <div id="client-list"></div>
+
+    <div class="console">
+      <div class="console-section">
+        Console
+        <span class="float-right">
+          <label for="enable-debug">Debug</label>
+          <input type="checkbox" id="enable-debug" />
+        </span>
       </div>
+      <div class="console-section log">
+        <div class="text-output" id="console-output"></div>
+      </div>
+      <input
+        class="console-section command"
+        type="text"
+        id="console-input"
+        placeholder=">"
+      />
+    </div>
   </body>
 </html>

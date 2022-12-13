@@ -8,6 +8,7 @@ import { ClientBehaviorPlugin } from './plugins/client-behavior-plugin';
 import { SaveStatePlugin } from './plugins/savestate-plugin';
 import { NPCGreeterPlugin } from './plugins/npc-greeter-plugin';
 import { NPCPlugin } from './plugins/npc-plugin';
+import { MapEditPlugin } from './plugins/map-edit-plugin';
 
 declare global {
   interface Window {
@@ -18,7 +19,7 @@ declare global {
 
 export function createServer(
   devMode: boolean = false,
-    plugins: WebMUDServerPlugin[] = [],
+  plugins: WebMUDServerPlugin[] = []
 ) {
   const PLUGINS = [
     new ClientBehaviorPlugin(),
@@ -26,17 +27,18 @@ export function createServer(
     new SaveStatePlugin(),
     new NPCPlugin(),
     new NPCGreeterPlugin(),
+    new MapEditPlugin(),
   ];
 
   const el = util.getElements({
     output: 'console-output',
     input: 'console-input',
-      debug: 'enable-debug',
+    debug: 'enable-debug',
     clientList: 'client-list',
   });
 
-    const server = (window.server = new Server('my game', {
-        plugins: [...PLUGINS, ...plugins],
+  const server = (window.server = new Server('my game', {
+    plugins: [...PLUGINS, ...plugins],
   }));
 
   window.serverView = new ServerView({
