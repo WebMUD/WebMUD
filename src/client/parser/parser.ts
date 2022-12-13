@@ -18,7 +18,7 @@
 * ---
 * start := commands
 * commands := moveCommand | helpCommand | exitCommand | inventoryCommand | sayCommand | whisperCommand | 
-* lookCommand | takeCommand | dropCommand
+* lookCommand | takeCommand | dropCommand |shortenedMoveCommand
 * space := ' '
 * dropCommand := dropKeyword=dropKeyword space text=word .command =  DropCommand {return new DropCommand(text);}
 * dropKeyword := 'drop'
@@ -69,6 +69,14 @@
 * moveCommand := 
 *     moveKeyword space text=word
 *     .command = MoveCommand {return new MoveCommand(text);}
+* shortenedMoveCommand := directions=directions .command = MoveCommand {return new MoveCommand(directions);}
+* directions := northKeyword | southKeyword | westKeyword | eastKeyword |  upKeyword |downKeyword
+* northKeyword := 'north' | 'n'
+* southKeyword := 'south' | 's'
+* westKeyword := 'west' | 'w'
+* eastKeyword := 'east' | 'e'
+* upKeyword := 'up' | 'u'
+* downKeyword := 'down' | 'd'
 * moveKeyword := 'move' | 'm'
 */
 
@@ -103,6 +111,7 @@ export enum ASTKinds {
     commands_7 = "commands_7",
     commands_8 = "commands_8",
     commands_9 = "commands_9",
+    commands_10 = "commands_10",
     space = "space",
     dropCommand = "dropCommand",
     dropKeyword = "dropKeyword",
@@ -156,11 +165,30 @@ export enum ASTKinds {
     help = "help",
     item = "item",
     moveCommand = "moveCommand",
+    shortenedMoveCommand = "shortenedMoveCommand",
+    directions_1 = "directions_1",
+    directions_2 = "directions_2",
+    directions_3 = "directions_3",
+    directions_4 = "directions_4",
+    directions_5 = "directions_5",
+    directions_6 = "directions_6",
+    northKeyword_1 = "northKeyword_1",
+    northKeyword_2 = "northKeyword_2",
+    southKeyword_1 = "southKeyword_1",
+    southKeyword_2 = "southKeyword_2",
+    westKeyword_1 = "westKeyword_1",
+    westKeyword_2 = "westKeyword_2",
+    eastKeyword_1 = "eastKeyword_1",
+    eastKeyword_2 = "eastKeyword_2",
+    upKeyword_1 = "upKeyword_1",
+    upKeyword_2 = "upKeyword_2",
+    downKeyword_1 = "downKeyword_1",
+    downKeyword_2 = "downKeyword_2",
     moveKeyword_1 = "moveKeyword_1",
     moveKeyword_2 = "moveKeyword_2",
 }
 export type start = commands;
-export type commands = commands_1 | commands_2 | commands_3 | commands_4 | commands_5 | commands_6 | commands_7 | commands_8 | commands_9;
+export type commands = commands_1 | commands_2 | commands_3 | commands_4 | commands_5 | commands_6 | commands_7 | commands_8 | commands_9 | commands_10;
 export type commands_1 = moveCommand;
 export type commands_2 = helpCommand;
 export type commands_3 = exitCommand;
@@ -170,6 +198,7 @@ export type commands_6 = whisperCommand;
 export type commands_7 = lookCommand;
 export type commands_8 = takeCommand;
 export type commands_9 = dropCommand;
+export type commands_10 = shortenedMoveCommand;
 export type space = string;
 export class dropCommand {
     public kind: ASTKinds.dropCommand = ASTKinds.dropCommand;
@@ -540,6 +569,42 @@ export class moveCommand {
         })();
     }
 }
+export class shortenedMoveCommand {
+    public kind: ASTKinds.shortenedMoveCommand = ASTKinds.shortenedMoveCommand;
+    public directions: directions;
+    public command: MoveCommand;
+    constructor(directions: directions){
+        this.directions = directions;
+        this.command = ((): MoveCommand => {
+        return new MoveCommand(directions);
+        })();
+    }
+}
+export type directions = directions_1 | directions_2 | directions_3 | directions_4 | directions_5 | directions_6;
+export type directions_1 = northKeyword;
+export type directions_2 = southKeyword;
+export type directions_3 = westKeyword;
+export type directions_4 = eastKeyword;
+export type directions_5 = upKeyword;
+export type directions_6 = downKeyword;
+export type northKeyword = northKeyword_1 | northKeyword_2;
+export type northKeyword_1 = string;
+export type northKeyword_2 = string;
+export type southKeyword = southKeyword_1 | southKeyword_2;
+export type southKeyword_1 = string;
+export type southKeyword_2 = string;
+export type westKeyword = westKeyword_1 | westKeyword_2;
+export type westKeyword_1 = string;
+export type westKeyword_2 = string;
+export type eastKeyword = eastKeyword_1 | eastKeyword_2;
+export type eastKeyword_1 = string;
+export type eastKeyword_2 = string;
+export type upKeyword = upKeyword_1 | upKeyword_2;
+export type upKeyword_1 = string;
+export type upKeyword_2 = string;
+export type downKeyword = downKeyword_1 | downKeyword_2;
+export type downKeyword_1 = string;
+export type downKeyword_2 = string;
 export type moveKeyword = moveKeyword_1 | moveKeyword_2;
 export type moveKeyword_1 = string;
 export type moveKeyword_2 = string;
@@ -574,6 +639,7 @@ export class Parser {
             () => this.matchcommands_7($$dpth + 1, $$cr),
             () => this.matchcommands_8($$dpth + 1, $$cr),
             () => this.matchcommands_9($$dpth + 1, $$cr),
+            () => this.matchcommands_10($$dpth + 1, $$cr),
         ]);
     }
     public matchcommands_1($$dpth: number, $$cr?: ErrorTracker): Nullable<commands_1> {
@@ -602,6 +668,9 @@ export class Parser {
     }
     public matchcommands_9($$dpth: number, $$cr?: ErrorTracker): Nullable<commands_9> {
         return this.matchdropCommand($$dpth + 1, $$cr);
+    }
+    public matchcommands_10($$dpth: number, $$cr?: ErrorTracker): Nullable<commands_10> {
+        return this.matchshortenedMoveCommand($$dpth + 1, $$cr);
     }
     public matchspace($$dpth: number, $$cr?: ErrorTracker): Nullable<space> {
         return this.regexAccept(String.raw`(?: )`, $$dpth + 1, $$cr);
@@ -1171,6 +1240,119 @@ export class Parser {
                 }
                 return $$res;
             });
+    }
+    public matchshortenedMoveCommand($$dpth: number, $$cr?: ErrorTracker): Nullable<shortenedMoveCommand> {
+        return this.run<shortenedMoveCommand>($$dpth,
+            () => {
+                let $scope$directions: Nullable<directions>;
+                let $$res: Nullable<shortenedMoveCommand> = null;
+                if (true
+                    && ($scope$directions = this.matchdirections($$dpth + 1, $$cr)) !== null
+                ) {
+                    $$res = new shortenedMoveCommand($scope$directions);
+                }
+                return $$res;
+            });
+    }
+    public matchdirections($$dpth: number, $$cr?: ErrorTracker): Nullable<directions> {
+        return this.choice<directions>([
+            () => this.matchdirections_1($$dpth + 1, $$cr),
+            () => this.matchdirections_2($$dpth + 1, $$cr),
+            () => this.matchdirections_3($$dpth + 1, $$cr),
+            () => this.matchdirections_4($$dpth + 1, $$cr),
+            () => this.matchdirections_5($$dpth + 1, $$cr),
+            () => this.matchdirections_6($$dpth + 1, $$cr),
+        ]);
+    }
+    public matchdirections_1($$dpth: number, $$cr?: ErrorTracker): Nullable<directions_1> {
+        return this.matchnorthKeyword($$dpth + 1, $$cr);
+    }
+    public matchdirections_2($$dpth: number, $$cr?: ErrorTracker): Nullable<directions_2> {
+        return this.matchsouthKeyword($$dpth + 1, $$cr);
+    }
+    public matchdirections_3($$dpth: number, $$cr?: ErrorTracker): Nullable<directions_3> {
+        return this.matchwestKeyword($$dpth + 1, $$cr);
+    }
+    public matchdirections_4($$dpth: number, $$cr?: ErrorTracker): Nullable<directions_4> {
+        return this.matcheastKeyword($$dpth + 1, $$cr);
+    }
+    public matchdirections_5($$dpth: number, $$cr?: ErrorTracker): Nullable<directions_5> {
+        return this.matchupKeyword($$dpth + 1, $$cr);
+    }
+    public matchdirections_6($$dpth: number, $$cr?: ErrorTracker): Nullable<directions_6> {
+        return this.matchdownKeyword($$dpth + 1, $$cr);
+    }
+    public matchnorthKeyword($$dpth: number, $$cr?: ErrorTracker): Nullable<northKeyword> {
+        return this.choice<northKeyword>([
+            () => this.matchnorthKeyword_1($$dpth + 1, $$cr),
+            () => this.matchnorthKeyword_2($$dpth + 1, $$cr),
+        ]);
+    }
+    public matchnorthKeyword_1($$dpth: number, $$cr?: ErrorTracker): Nullable<northKeyword_1> {
+        return this.regexAccept(String.raw`(?:north)`, $$dpth + 1, $$cr);
+    }
+    public matchnorthKeyword_2($$dpth: number, $$cr?: ErrorTracker): Nullable<northKeyword_2> {
+        return this.regexAccept(String.raw`(?:n)`, $$dpth + 1, $$cr);
+    }
+    public matchsouthKeyword($$dpth: number, $$cr?: ErrorTracker): Nullable<southKeyword> {
+        return this.choice<southKeyword>([
+            () => this.matchsouthKeyword_1($$dpth + 1, $$cr),
+            () => this.matchsouthKeyword_2($$dpth + 1, $$cr),
+        ]);
+    }
+    public matchsouthKeyword_1($$dpth: number, $$cr?: ErrorTracker): Nullable<southKeyword_1> {
+        return this.regexAccept(String.raw`(?:south)`, $$dpth + 1, $$cr);
+    }
+    public matchsouthKeyword_2($$dpth: number, $$cr?: ErrorTracker): Nullable<southKeyword_2> {
+        return this.regexAccept(String.raw`(?:s)`, $$dpth + 1, $$cr);
+    }
+    public matchwestKeyword($$dpth: number, $$cr?: ErrorTracker): Nullable<westKeyword> {
+        return this.choice<westKeyword>([
+            () => this.matchwestKeyword_1($$dpth + 1, $$cr),
+            () => this.matchwestKeyword_2($$dpth + 1, $$cr),
+        ]);
+    }
+    public matchwestKeyword_1($$dpth: number, $$cr?: ErrorTracker): Nullable<westKeyword_1> {
+        return this.regexAccept(String.raw`(?:west)`, $$dpth + 1, $$cr);
+    }
+    public matchwestKeyword_2($$dpth: number, $$cr?: ErrorTracker): Nullable<westKeyword_2> {
+        return this.regexAccept(String.raw`(?:w)`, $$dpth + 1, $$cr);
+    }
+    public matcheastKeyword($$dpth: number, $$cr?: ErrorTracker): Nullable<eastKeyword> {
+        return this.choice<eastKeyword>([
+            () => this.matcheastKeyword_1($$dpth + 1, $$cr),
+            () => this.matcheastKeyword_2($$dpth + 1, $$cr),
+        ]);
+    }
+    public matcheastKeyword_1($$dpth: number, $$cr?: ErrorTracker): Nullable<eastKeyword_1> {
+        return this.regexAccept(String.raw`(?:east)`, $$dpth + 1, $$cr);
+    }
+    public matcheastKeyword_2($$dpth: number, $$cr?: ErrorTracker): Nullable<eastKeyword_2> {
+        return this.regexAccept(String.raw`(?:e)`, $$dpth + 1, $$cr);
+    }
+    public matchupKeyword($$dpth: number, $$cr?: ErrorTracker): Nullable<upKeyword> {
+        return this.choice<upKeyword>([
+            () => this.matchupKeyword_1($$dpth + 1, $$cr),
+            () => this.matchupKeyword_2($$dpth + 1, $$cr),
+        ]);
+    }
+    public matchupKeyword_1($$dpth: number, $$cr?: ErrorTracker): Nullable<upKeyword_1> {
+        return this.regexAccept(String.raw`(?:up)`, $$dpth + 1, $$cr);
+    }
+    public matchupKeyword_2($$dpth: number, $$cr?: ErrorTracker): Nullable<upKeyword_2> {
+        return this.regexAccept(String.raw`(?:u)`, $$dpth + 1, $$cr);
+    }
+    public matchdownKeyword($$dpth: number, $$cr?: ErrorTracker): Nullable<downKeyword> {
+        return this.choice<downKeyword>([
+            () => this.matchdownKeyword_1($$dpth + 1, $$cr),
+            () => this.matchdownKeyword_2($$dpth + 1, $$cr),
+        ]);
+    }
+    public matchdownKeyword_1($$dpth: number, $$cr?: ErrorTracker): Nullable<downKeyword_1> {
+        return this.regexAccept(String.raw`(?:down)`, $$dpth + 1, $$cr);
+    }
+    public matchdownKeyword_2($$dpth: number, $$cr?: ErrorTracker): Nullable<downKeyword_2> {
+        return this.regexAccept(String.raw`(?:d)`, $$dpth + 1, $$cr);
     }
     public matchmoveKeyword($$dpth: number, $$cr?: ErrorTracker): Nullable<moveKeyword> {
         return this.choice<moveKeyword>([
