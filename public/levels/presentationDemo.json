@@ -202,7 +202,7 @@
 		"children": []
 	}, {
 		"type": "component-npc-greeter",
-		"messages": ["I'm to lazy to do my job, can you figure out what's going on?"],
+		"messages": ["I'm too lazy to do my job, can you figure out what's going on?"],
 		"greeted": ["e-e9a2df5b-1cdc-4dde-995d-4fd990a2dc89"],
 		"delay": 1
 	}],
