@@ -183,12 +183,12 @@ export class ClientBehaviorPlugin extends WebMUDServerPlugin {
       (frame: FrameSendCommand, client: Client, server: Server) => {
         const commands = {
           help: [
-            'usage: (h)elp or (h)elp <command> ',
+            'usage: (h)elp',
             ' Lists out the commands available to the player and can be used to get specific information about a specific command',
           ],
           move: [
             'usage: (m)ove <target> ',
-            ' Can move to specific target, i.e. person place or thing. Alternatly can use cardinal directions. (north, east, south, or west)',
+            'Move in cardinal directions ((n)orth, (e)ast, (s)outh, or (w)est) or (u)p/(d)own.',
           ],
           exit: ['usage: (e)xit ', ' Tells you where all the exits are'],
           inventory: [
@@ -212,6 +212,24 @@ export class ClientBehaviorPlugin extends WebMUDServerPlugin {
           look: [
             'usage: (l)ook <object>  ',
             ' Will give information on the room you are currently in, including which players reside there. If you input an object after look, it will give detailed information about the object',
+          ],
+          north: [
+            'usage: (n)orth',
+          ],
+          south: [
+            'usage: (s)outh',
+          ],
+          east: [
+            'usage: (e)ast',
+          ],
+          west: [
+            'usage: (w)est',
+          ],
+          up: [
+            'usage: (u)p',
+          ],
+          down: [
+            'usage: (d)own',
           ],
         };
 
