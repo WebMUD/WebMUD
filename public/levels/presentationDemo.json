@@ -27,7 +27,7 @@
 		"parent": "e-5975ee06-c24f-4560-8081-7c94d52740a1"
 	}, {
 		"type": "component-hierarchy-container",
-		"children": ["e-00c10228-0f85-4d60-b284-704caab0e9a1"]
+		"children": ["e-00c10228-0f85-4d60-b284-704caab0e9a1", "e-014fa1a1-ae1a-4346-bcf2-4f255793375a"]
 	}, {
 		"type": "component-chat-channel"
 	}, {
@@ -38,7 +38,7 @@
 		"data": "Garden"
 	}, {
 		"type": "component-description",
-		"data": "A garden in winter, covered in snow and treacherously icy"
+		"data": "A garden in winter, covered in snow and treacherously icy."
 	}, {
 		"type": "component-room"
 	}, {
@@ -49,7 +49,7 @@
 		"parent": "e-5975ee06-c24f-4560-8081-7c94d52740a1"
 	}, {
 		"type": "component-hierarchy-container",
-		"children": []
+		"children": ["e-aa1af358-7da6-4933-a980-80be941af4be"]
 	}, {
 		"type": "component-chat-channel"
 	}],
@@ -58,7 +58,7 @@
 		"data": "Main Hall"
 	}, {
 		"type": "component-description",
-		"data": "The grandeur of the hall is spoiled by all the blood"
+		"data": "The grandeur of the hall is spoiled by all the blood."
 	}, {
 		"type": "component-room"
 	}, {
@@ -73,7 +73,7 @@
 		"parent": "e-5975ee06-c24f-4560-8081-7c94d52740a1"
 	}, {
 		"type": "component-hierarchy-container",
-		"children": []
+		"children": ["e-9c79a1cc-c59f-4cd4-9e77-f4a4d3f780ba"]
 	}, {
 		"type": "component-chat-channel"
 	}],
@@ -82,7 +82,7 @@
 		"data": "Basement"
 	}, {
 		"type": "component-description",
-		"data": "A dingy basement"
+		"data": "A dingy basement, with bloodstains on the floor and a corpse."
 	}, {
 		"type": "component-room"
 	}, {
@@ -104,7 +104,7 @@
 		"data": "Cellar"
 	}, {
 		"type": "component-description",
-		"data": "The wine cellar"
+		"data": "The wine cellar."
 	}, {
 		"type": "component-room"
 	}, {
@@ -125,7 +125,7 @@
 		"data": "Murder Basement"
 	}, {
 		"type": "component-description",
-		"data": "A basement, tailor made for murders, with creepy lighting, exposed wires, and hard concrete floors. There is, however, no sign of a murder"
+		"data": "A basement, tailor made for murders, with creepy lighting, exposed wires, and hard concrete floors. There is, however, no sign of a murder."
 	}, {
 		"type": "component-room"
 	}, {
@@ -145,7 +145,7 @@
 		"data": "Catacombs"
 	}, {
 		"type": "component-description",
-		"data": "The mythic home of a cask of Amontillado, enter at your own risk"
+		"data": "The mythic home of a cask of Amontillado, enter at your own risk."
 	}, {
 		"type": "component-room"
 	}, {
@@ -165,7 +165,7 @@
 		"data": "Suspicious wall"
 	}, {
 		"type": "component-description",
-		"data": "A freshly laid masonry wall, hastily covered by bones"
+		"data": "A freshly laid masonry wall, hastily covered by bones."
 	}, {
 		"type": "component-prop"
 	}, {
@@ -211,7 +211,7 @@
 		"data": "Roof"
 	}, {
 		"type": "component-description",
-		"data": "It's icy and a long way down, don't fall"
+		"data": "It's icy and a long way down, don't fall."
 	}, {
 		"type": "component-room"
 	}, {
@@ -241,7 +241,7 @@
 		"type": "component-npc-greeter",
 		"messages": ["Nevermore.", "Nevermore.", "Nevermore.", "Nevermore.", "Nevermore.", "Nevermore.", "Nevermore."],
 		"greeted": ["e-e9a2df5b-1cdc-4dde-995d-4fd990a2dc89"],
-		"delay": 10
+		"delay": 8
 	}],
 	"e-1e5e43e0-51c9-49c1-ace3-258ecef3e610": [{
 		"type": "component-name",
@@ -260,7 +260,7 @@
 		"parent": "e-5975ee06-c24f-4560-8081-7c94d52740a1"
 	}, {
 		"type": "component-hierarchy-container",
-		"children": ["e-6711b874-4336-453b-b4d8-e1bbee44fa75"]
+		"children": ["e-6711b874-4336-453b-b4d8-e1bbee44fa75", "e-7b35d090-90e1-4939-a5e7-c30c51e0b95b"]
 	}, {
 		"type": "component-chat-channel"
 	}],
@@ -286,7 +286,7 @@
 		"data": "Kitchen"
 	}, {
 		"type": "component-description",
-		"data": "There isn't a single knife to be found in here"
+		"data": "There isn't a single knife to be found in here."
 	}, {
 		"type": "component-room"
 	}, {
@@ -324,7 +324,7 @@
 		"data": "Living Room"
 	}, {
 		"type": "component-description",
-		"data": "The victim won't be doing any more living in here"
+		"data": "The victim won't be doing any more living in here."
 	}, {
 		"type": "component-room"
 	}, {
@@ -336,7 +336,7 @@
 		"parent": "e-5975ee06-c24f-4560-8081-7c94d52740a1"
 	}, {
 		"type": "component-hierarchy-container",
-		"children": ["e-1255c846-d05f-4c79-8561-59dad5ae0079"]
+		"children": ["e-1255c846-d05f-4c79-8561-59dad5ae0079", "e-405c5d93-182f-480e-8e39-7fcd1b70bc78"]
 	}, {
 		"type": "component-chat-channel"
 	}],
@@ -374,7 +374,7 @@
 		"data": "Baseball bat"
 	}, {
 		"type": "component-description",
-		"data": "A potential murder weapon? No sign that it has been used"
+		"data": "A potential murder weapon? No sign that it has been used... yet."
 	}, {
 		"type": "component-prop"
 	}, {
@@ -388,7 +388,7 @@
 		"data": "Masonry Tools"
 	}, {
 		"type": "component-description",
-		"data": "A trowel and bucket of plaster"
+		"data": "A trowel and bucket of plaster."
 	}, {
 		"type": "component-prop"
 	}, {
@@ -402,7 +402,7 @@
 		"data": "Corpse"
 	}, {
 		"type": "component-description",
-		"data": "A corpse, hastily shoved in the corner. Dozens of knives are sticking out of it"
+		"data": "A corpse, hastily shoved in the corner. Dozens of knives are sticking out of it."
 	}, {
 		"type": "component-prop"
 	}, {
@@ -431,7 +431,7 @@
 		"data": "Steak knives"
 	}, {
 		"type": "component-description",
-		"data": "They appear to have done the meat of the stabbing"
+		"data": "They appear to have done the meat of the stabbing."
 	}, {
 		"type": "component-prop"
 	}, {
@@ -445,7 +445,7 @@
 		"data": "Cleaver"
 	}, {
 		"type": "component-description",
-		"data": "A blood soaked cleaver"
+		"data": "A blood soaked cleaver."
 	}, {
 		"type": "component-prop"
 	}, {
@@ -459,7 +459,7 @@
 		"data": "Butter knives"
 	}, {
 		"type": "component-description",
-		"data": "They aren't even sharp"
+		"data": "They aren't even sharp."
 	}, {
 		"type": "component-prop"
 	}, {
@@ -488,7 +488,7 @@
 		"data": "Heart"
 	}, {
 		"type": "component-description",
-		"data": "A still-beating heart"
+		"data": "A still-beating heart, a tell-tale sign of foul play."
 	}, {
 		"type": "component-prop"
 	}, {
@@ -496,5 +496,203 @@
 	}, {
 		"type": "component-hierarchy-child",
 		"parent": "e-1255c846-d05f-4c79-8561-59dad5ae0079"
+	}],
+	"e-9c79a1cc-c59f-4cd4-9e77-f4a4d3f780ba": [{
+		"type": "component-name",
+		"data": "Bloodstains"
+	}, {
+		"type": "component-description",
+		"data": "Bloodstains leading towards the basement stairs. It'll be a nightmare to get out of the carpet."
+	}, {
+		"type": "component-prop"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-29d3417c-1207-4752-b0dc-90ee333f4336"
+	}],
+	"e-405c5d93-182f-480e-8e39-7fcd1b70bc78": [{
+		"type": "component-name",
+		"data": "Desk"
+	}, {
+		"type": "component-description",
+		"data": "A mahogany writing desk"
+	}, {
+		"type": "component-prop"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-5738864a-efec-4d8f-b939-0486e1fdebb6"
+	}, {
+		"type": "component-hierarchy-container",
+		"children": ["e-3cf5ec1e-9e4d-4c19-97f2-5aff7ab348f3", "e-ab2813cb-882a-4be7-9b5a-4c1dc0b0b2f1", "e-b556ad6e-c114-4c88-9a0a-c1c0a74e555f", "e-8ea927ab-3c7a-45ce-8013-e0f28d4738dc", "e-b07ad7fc-270b-46c3-ba26-3b166feb766d", "e-183c7396-c80e-492a-95a4-72882de0c34f", "e-f8d98b54-6c9f-4f4a-8b6b-f9c89d5d324e"]
+	}],
+	"e-3cf5ec1e-9e4d-4c19-97f2-5aff7ab348f3": [{
+		"type": "component-name",
+		"data": "Cook's Confession"
+	}, {
+		"type": "component-description",
+		"data": "The Cook's mournful confession to arson."
+	}, {
+		"type": "component-prop"
+	}, {
+		"type": "component-item"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-405c5d93-182f-480e-8e39-7fcd1b70bc78"
+	}],
+	"e-ab2813cb-882a-4be7-9b5a-4c1dc0b0b2f1": [{
+		"type": "component-name",
+		"data": "Detective's Confession"
+	}, {
+		"type": "component-description",
+		"data": "The Police Detective's boastful Confession to perjury. How did it end up here? Does he have some prior connection to this house?"
+	}, {
+		"type": "component-prop"
+	}, {
+		"type": "component-item"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-405c5d93-182f-480e-8e39-7fcd1b70bc78"
+	}],
+	"e-b556ad6e-c114-4c88-9a0a-c1c0a74e555f": [{
+		"type": "component-name",
+		"data": "Butler's Confession"
+	}, {
+		"type": "component-description",
+		"data": "The Butler's tear-stained confession to jaywalking."
+	}, {
+		"type": "component-prop"
+	}, {
+		"type": "component-item"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-405c5d93-182f-480e-8e39-7fcd1b70bc78"
+	}],
+	"e-8ea927ab-3c7a-45ce-8013-e0f28d4738dc": [{
+		"type": "component-name",
+		"data": "Raven's Confession"
+	}, {
+		"type": "component-description",
+		"data": "The Raven's confession to having a one-word vocabulary. Presumably ghost-written or false."
+	}, {
+		"type": "component-prop"
+	}, {
+		"type": "component-item"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-405c5d93-182f-480e-8e39-7fcd1b70bc78"
+	}],
+	"e-b07ad7fc-270b-46c3-ba26-3b166feb766d": [{
+		"type": "component-name",
+		"data": "Desk Lamp"
+	}, {
+		"type": "component-description",
+		"data": "A lamp, missing its lampshade"
+	}, {
+		"type": "component-prop"
+	}, {
+		"type": "component-item"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-405c5d93-182f-480e-8e39-7fcd1b70bc78"
+	}],
+	"e-5d8aa721-d1a9-4e52-89a4-54b6e72e7118": [{
+		"type": "component-name",
+		"data": "Lampshade"
+	}, {
+		"type": "component-description",
+		"data": "Just an ordinary lampshade, don't worry about it"
+	}, {
+		"type": "component-prop"
+	}, {
+		"type": "component-item"
+	}, {
+		"type": "component-hierarchy-child"
+	}],
+	"e-014fa1a1-ae1a-4346-bcf2-4f255793375a": [{
+		"type": "component-name",
+		"data": "Lampshade"
+	}, {
+		"type": "component-description",
+		"data": "Just an ordinary lampshade, don't worry about it"
+	}, {
+		"type": "component-prop"
+	}, {
+		"type": "component-item"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-be793d82-ca23-4aeb-a276-06c8fa90afc8"
+	}],
+	"e-183c7396-c80e-492a-95a4-72882de0c34f": [{
+		"type": "component-name",
+		"data": "Crow's Confession"
+	}, {
+		"type": "component-description",
+		"data": "The Crow's confession to being involved in a murder... of crows?"
+	}, {
+		"type": "component-prop"
+	}, {
+		"type": "component-item"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-405c5d93-182f-480e-8e39-7fcd1b70bc78"
+	}],
+	"e-f8d98b54-6c9f-4f4a-8b6b-f9c89d5d324e": [{
+		"type": "component-name",
+		"data": "Victim's Confession"
+	}, {
+		"type": "component-description",
+		"data": "'Dear Sister: By the time you read this, I’ll be dead. This is how I think it’s gonna happen...'"
+	}, {
+		"type": "component-prop"
+	}, {
+		"type": "component-item"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-405c5d93-182f-480e-8e39-7fcd1b70bc78"
+	}],
+	"e-7b35d090-90e1-4939-a5e7-c30c51e0b95b": [{
+		"type": "component-name",
+		"data": "Dinner table"
+	}, {
+		"type": "component-description",
+		"data": "An oak dinner table. The tablecloth is rumpled. Perhaps something is hidden underneath it?"
+	}, {
+		"type": "component-prop"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-1e5e43e0-51c9-49c1-ace3-258ecef3e610"
+	}, {
+		"type": "component-hierarchy-container",
+		"children": ["e-547e6c79-5612-4e27-ba2b-d4d9e2ff1f42"]
+	}],
+	"e-547e6c79-5612-4e27-ba2b-d4d9e2ff1f42": [{
+		"type": "component-name",
+		"data": "The Communist Manifesto"
+	}, {
+		"type": "component-description",
+		"data": "'The history of all hitherto existing society is the history of class struggles...' A red herring?"
+	}, {
+		"type": "component-prop"
+	}, {
+		"type": "component-item"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-7b35d090-90e1-4939-a5e7-c30c51e0b95b"
+	}],
+	"e-aa1af358-7da6-4933-a980-80be941af4be": [{
+		"type": "component-name",
+		"data": "Crow"
+	}, {
+		"type": "component-npc"
+	}, {
+		"type": "component-hierarchy-child",
+		"parent": "e-5ea30de5-7be9-4906-81dc-71298b618732"
+	}, {
+		"type": "component-hierarchy-container",
+		"children": []
+	}, {
+		"type": "component-npc-greeter",
+		"messages": ["Caw Caw, there's nothing to see here! Go inside! Caw caw!", "Texy", "Raven whispers 'Nevermore.'"],
+		"greeted": [],
+		"delay": 533
 	}]
 }
