@@ -99,7 +99,7 @@ export class Server extends Logger {
       this.loadGamestate(text);
     } catch (err) {
       this.error(`failed to load level data from ${url}`);
-      throw err;
+      console.error(err);
     }
   }
 
@@ -319,7 +319,10 @@ export class Server extends Logger {
 
     const stop = connection.onData(data => {
       const frame = frames.parse(data);
-      if (!frame) throw new Error('Unable to parse incoming data: ' + data);
+      if (!frame) {
+        console.error(new Error('Unable to parse incoming data: ' + data));
+        return;
+      };
 
       if (frame instanceof frames.FrameConnect) {
         if (this.gs.findPlayer(frame.username)) {

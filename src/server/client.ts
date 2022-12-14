@@ -117,7 +117,7 @@ export class Client {
   public start(world: EntityID) {
     const closeCallbacks: Array<Function> = [];
 
-    if (!this.connection) throw new Error('No attached connection');
+    if (!this.connection) return console.error(new Error(`No attached connection for client ${this.name}`));
 
     this.onConnectionClose.once(
       this.connection.onData(data => {
@@ -209,9 +209,18 @@ export class Client {
 
   public sendFrame(frame: Frame) {
     const data = frame.serialize();
-    if (!this.connection || this.connection.status !== ConnectionStatus.OK)
-      throw new Error('connection not available');
-    this.connection.send(data);
+    if (!this.connection || this.connection.status !== ConnectionStatus.OK) {
+      console.warn(new Error('connection not available'));
+      return;
+    }
+
+    try {
+      const err = this.connection.send(data);
+      if (err) throw err;
+    } catch (err) {
+      console.info(`ERROR on client for ${this.name} (send frame)`);
+      console.warn(err);
+    }
   }
 
   public sendMessageFrame(...parts: { text: string; format: string[] }[]) {

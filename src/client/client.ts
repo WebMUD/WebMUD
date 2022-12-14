@@ -136,7 +136,7 @@ export class Client extends Logger {
         console.error(error.toString());
       }
       this.error('Could not parse input: ' + input);
-      throw new Error(`error while parsing ${input}`);
+      console.error(`error while parsing ${input}`);
     }
 
     if (!ast) throw new Error('missing ast');
